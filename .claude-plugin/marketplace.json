@@ -1,0 +1,14 @@
+{
+  "name": "padrao",
+  "description": "Plugin padrao-spring-boot: skills e agents para construir, testar, operar e evoluir APIs Spring Boot 4 / Java 25 no padrão do pacote.",
+  "owner": {
+    "name": "edimilsonldutra"
+  },
+  "plugins": [
+    {
+      "name": "padrao-spring-boot",
+      "source": "./plugins",
+      "description": "72 skills (Spring Boot, testes, mensageria, microsserviços, Kubernetes, AWS, produto) e 7 agents (product manager, architect, tech lead, developer, QA, code reviewer e orquestrador)."
+    }
+  ]
+}
