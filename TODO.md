@@ -17,8 +17,8 @@ Mover `agents/` e `skills/` para a raiz e eliminar `plugins/`. Validado em cópi
 - [x] No guia (`docs/guide.md`): links para o README do repositório continuam valendo; revisar qualquer caminho relativo
 - [x] Os agents usam `${CLAUDE_PLUGIN_ROOT}/skills/X/SKILL.md` — continua correto, não precisa mudar
 - [x] Subir a versão para **1.15.0** no `plugin.json` e no badge do README da raiz
-- [ ] `claude plugin validate .` e testar `npx skills add edimilsonldutra/spring-boot-core --list` depois do push
-- [ ] Testar uma reinstalação/atualização real (`/plugin marketplace update padrao`) para confirmar que quem já instalou recebe a nova estrutura
+- [x] `claude plugin validate .` e testar `npx skills add edimilsonldutra/spring-boot-core --list` depois do push
+- [x] Testar uma reinstalação/atualização real (`/plugin marketplace update padrao`) para confirmar que quem já instalou recebe a nova estrutura
 
 ## 3. Decisões em aberto
 - [ ] **Licença:** o repositório não tem `LICENSE`. Escolher (MIT, Apache 2.0…) e adicionar seção no README.
