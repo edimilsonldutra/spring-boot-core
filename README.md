@@ -1,6 +1,6 @@
 # Padrão Spring Boot — Agents & Skills para Claude Code
 
-![version](https://img.shields.io/badge/version-1.14.1-blue)
+![version](https://img.shields.io/badge/version-1.15.0-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-D97757)
@@ -242,7 +242,7 @@ flowchart LR
 
 ## Skills
 
-88 skills em 12 grupos. A lista completa, com descrição e exemplo de prompt de cada uma, está no [guia de referência](plugins/README.md#catálogo-de-skills).
+88 skills em 12 grupos. A lista completa, com descrição e exemplo de prompt de cada uma, está no [guia de referência](docs/guide.md#catálogo-de-skills).
 
 | Grupo | Skills |
 |---|---|
@@ -271,7 +271,7 @@ Para usar as skills em **outras ferramentas de IA** (Cursor, Codex, Gemini CLI, 
 npx skills add edimilsonldutra/spring-boot-core --skill '*'
 ```
 
-Instala as 88 skills de uma vez (recomendado — as skills se referenciam entre si). Use `-g` para o nível do usuário ou `-a <ferramenta> -y` para escolher a ferramenta sem perguntas. **Os agents não são instalados** neste modo, e no Claude Code não combine com o plugin (as skills ficariam duplicadas). Detalhes no [guia](plugins/README.md#só-as-skills-em-outras-ferramentas-npx-skills).
+Instala as 88 skills de uma vez (recomendado — as skills se referenciam entre si). Use `-g` para o nível do usuário ou `-a <ferramenta> -y` para escolher a ferramenta sem perguntas. **Os agents não são instalados** neste modo, e no Claude Code não combine com o plugin (as skills ficariam duplicadas). Detalhes no [guia](docs/guide.md#só-as-skills-em-outras-ferramentas-npx-skills).
 
 ---
 
@@ -287,30 +287,29 @@ Instala as 88 skills de uma vez (recomendado — as skills se referenciam entre 
 ```
 spring-boot-core/
 ├── .claude-plugin/
-│   └── marketplace.json        # marketplace "padrao"
-└── plugins/                    # plugin "padrao-spring-boot"
-    ├── .claude-plugin/
-    │   └── plugin.json         # nome, versão, descrição
-    ├── agents/                 # 7 agents (um .md cada)
-    ├── skills/                 # 88 skills (<nome>/SKILL.md)
-    └── README.md               # guia de referência
+│   ├── marketplace.json        # marketplace "padrao"
+│   └── plugin.json             # plugin "padrao-spring-boot": nome, versão, descrição
+├── agents/                     # 7 agents (um .md cada)
+├── skills/                     # 88 skills (<nome>/SKILL.md)
+├── docs/
+│   └── guide.md                # guia de referência
+└── README.md
 ```
 
 ---
 
 ## Contribuindo
 
-1. **Nova skill:** crie `plugins/skills/<nome>/SKILL.md` com frontmatter `name` e `description` (o que cobre + "Use quando…"), siga o formato das existentes (pré-requisitos com links relativos, seções, "Regras principais") e mantenha o padrão do pacote (sem Lombok, layout de `code-organization`).
-2. **Ligue a skill ao time:** cite-a nos agents que devem usá-la (`plugins/agents/*.md`), na skill `guide` e no catálogo do [guia de referência](plugins/README.md).
-3. **Versão:** aumente `version` em `plugins/.claude-plugin/plugin.json` — sem isso, quem já instalou não recebe a mudança.
+1. **Nova skill:** crie `skills/<nome>/SKILL.md` com frontmatter `name` e `description` (o que cobre + "Use quando…"), siga o formato das existentes (pré-requisitos com links relativos, seções, "Regras principais") e mantenha o padrão do pacote (sem Lombok, layout de `code-organization`).
+2. **Ligue a skill ao time:** cite-a nos agents que devem usá-la (`agents/*.md`), na skill `guide` e no catálogo do [guia de referência](docs/guide.md).
+3. **Versão:** aumente `version` em `.claude-plugin/plugin.json` — sem isso, quem já instalou não recebe a mudança.
 4. **Valide** antes do PR:
    ```bash
    claude plugin validate .
-   claude plugin validate ./plugins
    ```
 
 ---
 
 ## Documentação
 
-O [guia de referência](plugins/README.md) — que acompanha o plugin instalado — detalha a instalação, as preferências de projeto, as formas de uso, o time de agents, o catálogo completo de skills com exemplos de prompt e a solução de problemas.
+O [guia de referência](docs/guide.md) — que acompanha o plugin instalado — detalha a instalação, as preferências de projeto, as formas de uso, o time de agents, o catálogo completo de skills com exemplos de prompt e a solução de problemas.
