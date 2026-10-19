@@ -36,7 +36,7 @@ Antes de descrever a lista de skills, verifique o que realmente está presente e
 - **Deixe a API sólida:** `exception-handling` (um contrato de erro), `web-config` (CORS + JSON/XML/YAML), `bean-validation` (rejeitar input ruim com 400), `pagination` (listas paginadas com limite), `hateoas` (links HAL nas respostas), `api-versioning` (v1 → v2 sem quebrar clients; versionamento nativo do Spring 7).
 - **Documente:** `swagger` (springdoc/OpenAPI), `swagger-advanced` (grupos por versão, erros comuns, exemplos, OpenAPI como contrato no CI, geração de clients).
 - **Arquivos e e-mail:** `file-upload-download` (upload/download seguro), `file-import-export` (XLSX/CSV, criação em massa), `pdf-reports` (JasperReports 7, QR code), `email` (Spring Mail/SMTP, assíncrono depois do commit; na AWS, `aws-ses`).
-- **Finalize um projeto novo:** `project-claude-md` gera o `CLAUDE.md` do próprio projeto do aluno.
+- **Finalize um projeto novo:** `project-claude-md` gera o `CLAUDE.md` do próprio projeto do desenvolvedor.
 - **Especificação:** `design-docs` (design doc / tech spec como spec do fluxo spec-driven: critérios `CA-n`, aprovação antes do plano, rastreabilidade critério → tarefa → teste).
 - **Segurança e design de código:** `application-security` (OWASP API Security Top 10: IDOR, mass assignment, limites, injeção, SSRF, headers, segredos, SBOM), `threat-modeling` (STRIDE e casos de abuso antes de construir), `solid` (princípios e quando não aplicar), `design-patterns` (padrões no Spring, auto-invocação, anti-padrões).
 - **Segurança e Java:** `authentication` (JWT + Spring Security 7), `caching` (Caffeine/Redis), `java-modern-features` (Java 17–25, virtual threads), `jvm-performance` (JVM em container, pool, queries, diagnóstico).

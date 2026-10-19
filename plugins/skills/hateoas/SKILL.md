@@ -13,7 +13,7 @@ Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](..
 
 | Use quando | Evite quando |
 |---|---|
-| O curso/projeto adotou o padrão (o pacote assume HATEOAS no CRUD de exemplo) | API interna consumida só pelo próprio front, que já conhece as rotas |
+| O projeto adotou o padrão (o pacote assume HATEOAS no CRUD de exemplo) | API interna consumida só pelo próprio front, que já conhece as rotas |
 | API pública/navegável, clients genéricos, descoberta de ações | Endpoints de alto volume em que o payload extra pesa |
 | As ações disponíveis variam com o estado (ex.: `renew` só quando o empréstimo está ativo) | Equipe sem intenção de os clients **usarem** os links (vira enfeite) |
 

@@ -13,7 +13,7 @@ Upload é uma das superfícies de ataque mais exploradas de uma API: **path trav
 
 | Armazenamento | Quando | Observação |
 |---|---|---|
-| **Disco local** (`file.upload-dir`) | Desenvolvimento, uma instância única, curso | **Não** sobrevive a um pod/container recriado e não é compartilhado entre réplicas |
+| **Disco local** (`file.upload-dir`) | Desenvolvimento, protótipo, uma instância única | **Não** sobrevive a um pod/container recriado e não é compartilhado entre réplicas |
 | **Volume persistente** (PVC no Kubernetes) | Poucas réplicas, sem nuvem de objetos | `ReadWriteMany` é necessário para várias réplicas — caro e lento em muitos provedores |
 | **Object storage** (S3 e equivalentes) | Produção, várias réplicas, arquivos grandes | Padrão recomendado: veja `aws-s3-sqs` (presigned URL, bucket privado) |
 
@@ -200,7 +200,7 @@ public class FileController implements FileControllerDocs {
 
 ## 5. Metadados e autorização (produção)
 
-O exemplo acima serve qualquer arquivo para quem souber o nome — aceitável num exercício, **IDOR** em produção. Em uma aplicação real:
+O exemplo acima serve qualquer arquivo para quem souber o nome — aceitável num protótipo local, **IDOR** em produção. Em uma aplicação real:
 - Grave uma linha por arquivo (`files`: `id`, `stored_name`, `original_name`, `content_type`, `size`, `owner_id`, `created_at`) com migration Flyway (`flyway-migrations`) e entity própria (`spring-data-jpa`).
 - O download recebe o **id** do arquivo, carrega a linha, **confere o dono/permissão** (`authentication`) e só então lê o `stored_name`.
 - Exclusão: apague a linha e o arquivo; para LGPD, o arquivo entra no fluxo de eliminação do titular (`privacy-lgpd`).

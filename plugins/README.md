@@ -1,21 +1,17 @@
-# Padrão Spring Boot — Agents e Skills para o Claude Code
+# Padrão Spring Boot — Guia de referência
 
-**Ainda não instalou?** Vá direto para a **Parte 2** — são dois comandos. **Já instalou?** Este README viaja junto com o plugin, e tudo o que você precisa saber para usá-lo está nesta página.
+Guia de referência do plugin `padrao-spring-boot` para o Claude Code: instalação, configuração do projeto, formas de uso, time de agents, catálogo de skills e solução de problemas. Este arquivo acompanha o plugin instalado. A visão geral do projeto e o fluxo individual de cada agent estão no [README do repositório](https://github.com/edimilsonldutra/spring-boot-core#readme).
 
-Este plugin ensina o **Claude Code** (o assistente de código com IA) a construir REST APIs com Spring Boot 4 (Java 25) exatamente no padrão ensinado no curso: package layout, code style, security, testing, documentation — tudo. Ele traz duas coisas que trabalham juntas: um **time de agents** (product manager, architect, tech lead, developer, QA, code reviewer e um orquestrador) e as **skills** que esses agents seguem. Depois de instalado, basta pedir em linguagem natural (em inglês, português ou qualquer idioma) o que você quer, e o trabalho sai no padrão do curso.
-
-Você não precisa ler nenhum código dentro deste plugin. Você não precisa abrir as pastas `agents/` nem `skills/`. Você só precisa saber como instalá-lo uma vez e depois como conversar com o Claude Code sobre ele. Essa é toda a curva de aprendizado.
-
-> Construindo as mesmas APIs em Kotlin? Existe um plugin separado, `padrao-spring-boot-kt`, com as mesmas skills (cada uma com o prefixo `kt-`). Instale o da linguagem em que você está trabalhando — ou os dois.
+**Sumário:** [Visão geral](#visão-geral) · [Instalação](#instalação) · [Configuração do projeto](#configuração-do-projeto) · [Formas de uso](#formas-de-uso) · [Agents](#agents) · [Catálogo de skills](#catálogo-de-skills) · [Atualização](#atualização) · [Problemas comuns](#problemas-comuns)
 
 ---
 
-## Parte 1 — Como o plugin funciona: agents usam skills
+## Visão geral
 
-O plugin tem duas camadas:
+O plugin leva para o Claude Code um padrão único de construção de APIs REST com **Java 25 e Spring Boot 4** — package layout, code style, segurança, testes, documentação e entrega — em duas camadas:
 
-- **Skills — o "como" e o padrão.** Uma skill é um conjunto escrito de instruções que ensina uma maneira específica de fazer algo: como escrever uma entity, uma migration, um teste de integração, um PRD, um manifest do Kubernetes. São 88 tópicos (Spring Boot, API, arquivos e e-mail, especificação, segurança e design de código, testes, mensageria, microsserviços, CI/CD, Kubernetes, AWS e produto). A skill é a **fonte de verdade do padrão** — ninguém responde de memória.
-- **Agents — o "quem" e o papel.** Um agent é um especialista com um papel, permissões e um formato de entrega: o `developer` implementa, o `qa` prova e quebra, o `code-reviewer` revisa, o `architect` decide a estrutura, o `tech-lead` planeja e o `product-manager` define o quê e o porquê. Cada agent **carrega as skills da tarefa** antes de trabalhar. O `orchestrator` coordena o time: escolhe quais agents entram, em que ordem, e quais skills cada um deve ler.
+- **Skills (88)** — o *como*. Cada skill documenta uma maneira específica de fazer algo: uma entity, uma migration, um teste de integração, um design doc, um pipeline. São a **fonte de verdade do padrão**: agents e o próprio Claude Code as carregam sob demanda, em vez de responder de memória.
+- **Agents (7)** — o *quem*. Especialistas com papel, permissões e formato de entrega próprios: `product-manager`, `architect`, `tech-lead`, `developer`, `qa` e `code-reviewer`, coordenados pelo `orchestrator`. Cada agent carrega as skills da sua tarefa antes de agir.
 
 ```
 Você ──pede──▶ orchestrator ──delega──▶ agents especialistas ──carregam──▶ skills (o padrão)
@@ -24,188 +20,159 @@ Você ──pede──▶ orchestrator ──delega──▶ agents especialista
        gates humanos
 ```
 
-Você pode usar o plugin em três níveis, todos explicados na Parte 3:
-
-| Nível | Quando usar | Exemplo |
-|---|---|---|
-| **Só pedir** | Tarefa pequena e clara | "Crie a Flyway migration da tabela books." O Claude Code escolhe a skill sozinho. |
-| **Chamar um agent** | Um papel específico: revisar, testar, planejar, desenhar | "Use o agent `code-reviewer` para revisar o diff." |
-| **Chamar o orquestrador** | Trabalho de ponta a ponta, com várias etapas | "Entregue a renovação online de empréstimo." Ele monta o pipeline de agents. |
-
 ---
 
-## Parte 2 — Instalando este plugin (passo a passo, do zero)
+## Instalação
 
-Se você já o instalou e está funcionando, pode **pular para a Parte 3**. Guarde esta seção para quando reinstalar em outro computador; para receber as atualizações, veja a **Parte 4**.
+O plugin é distribuído pelo repositório público [github.com/edimilsonldutra/spring-boot-core](https://github.com/edimilsonldutra/spring-boot-core), registrado no Claude Code como o marketplace **`padrao`**.
 
-O plugin fica em um repositório público no GitHub: **[github.com/edimilsonldutra/spring-boot-core](https://github.com/edimilsonldutra/spring-boot-core)**. Você **não** precisa baixar nada à mão — o próprio Claude Code busca o repositório.
+### Requisitos
 
-### O que você precisa antes de começar
+| Para | Requisito |
+|---|---|
+| Instalar o plugin | [Claude Code](https://claude.com/claude-code) e Git (`git --version`). Não é necessária conta no GitHub |
+| Executar os projetos gerados | JDK 25, Maven ou Gradle (o wrapper acompanha o projeto) e Docker (Testcontainers) |
 
-- **Claude Code instalado no seu computador.** Se ainda não tem, acesse [claude.com/claude-code](https://claude.com/claude-code) e siga primeiro as instruções de instalação. Volte aqui quando conseguir abrir um terminal e digitar `claude` com sucesso.
-- **Git instalado.** O Claude Code usa o Git para buscar o plugin no GitHub. Para conferir, digite `git --version` em um terminal; se der erro, instale em [git-scm.com](https://git-scm.com/downloads).
-- Só isso. Você **não** precisa de conta no GitHub (o repositório é público), nem de Maven ou Java para instalar este plugin (você vai precisar de Java 25 e Maven — e Docker para os integration tests — mais tarde, claro, para realmente executar os projetos Spring Boot que ele ajuda a construir).
+### Instalar o plugin
 
-### Atalho — instalar com dois comandos no terminal
-
-Se você está à vontade com o terminal, rode estes dois comandos em um terminal comum (Prompt de Comando, PowerShell ou Terminal no Mac), **fora** do Claude Code:
-
-```
+No terminal:
+```bash
 claude plugin marketplace add edimilsonldutra/spring-boot-core
 claude plugin install padrao-spring-boot@padrao
 ```
 
-O primeiro registra o repositório; o segundo instala o plugin com o scope **User** (disponível em todos os seus projetos). Depois, pule para o **Passo 4** para confirmar. Prefere fazer tudo dentro do Claude Code? Siga os passos abaixo — o resultado é o mesmo.
-
-### Passo 1 — Abra um terminal e inicie o Claude Code
-
-Abra um terminal (Prompt de Comando, PowerShell ou Terminal no Mac) em **qualquer** pasta — não precisa ser a pasta de um projeto, qualquer lugar serve para este passo. Digite:
-
-```
-claude
-```
-
-e pressione Enter. Você deve ver o prompt interativo do Claude Code aparecer.
-
-### Passo 2 — Registre o repositório do plugin ("marketplace add")
-
-Dentro do prompt do Claude Code (não um terminal comum — você já precisa estar dentro do `claude` do Passo 1), digite:
-
+Ou dentro de uma sessão do Claude Code:
 ```
 /plugin marketplace add edimilsonldutra/spring-boot-core
-```
-
-Pressione Enter. Este passo apenas **registra** o repositório do GitHub como uma fonte conhecida — ainda não instala nada. Você deve ver a mensagem `Successfully added marketplace: padrao`. Esse nome, `padrao`, é o que você vai usar no próximo passo.
-
-### Passo 3 — Instale o plugin
-
-Ainda dentro do Claude Code, digite:
-
-```
 /plugin install padrao-spring-boot@padrao
 ```
 
-Pressione Enter. O Claude Code abre os detalhes do plugin; escolha instalar e ele vai perguntar em qual **scope**. Veja exatamente o que cada opção significa, em palavras simples:
+O primeiro comando registra o marketplace (a confirmação esperada é `Successfully added marketplace: padrao`); o segundo instala o plugin. O formato da instalação é `<plugin>@<marketplace>` — o nome do marketplace vem do `marketplace.json`, não do nome do repositório.
 
-| Opção | O que significa, em palavras simples | Quando escolher |
+### Escopo da instalação
+
+| Escopo | Disponibilidade | Recomendado para |
 |---|---|---|
-| **User** | "Disponível para mim, em todo projeto que eu abrir neste computador, para sempre." | **Escolha esta se estiver em dúvida.** É a opção mais simples e mais útil para um curso — você vai usar estas skills em vários projetos de prática diferentes. |
-| **Project** | "Disponível somente dentro desta pasta/projeto, e compartilhada com qualquer pessoa que abrir este mesmo projeto." | Somente se você estiver trabalhando em um **projeto de equipe compartilhado** e quiser que seus colegas recebam automaticamente a mesma skill ao abri-lo. |
-| **Local** | "Disponível somente dentro desta pasta/projeto, e somente para mim — não compartilhada com ninguém." | Raro — somente se você quiser um override específico do projeto que ninguém mais deva ver. |
+| **User** (padrão do CLI) | Todos os projetos do usuário nesta máquina | Uso individual em vários projetos |
+| **Project** | Apenas este projeto, compartilhado pelo `.claude/settings.json` versionado | Times: todos que abrirem o repositório recebem o plugin |
+| **Local** | Apenas este projeto, apenas para o usuário atual | Ajustes locais que não devem ser compartilhados |
 
-**Se estiver em dúvida: escolha User.** Você sempre pode mudar depois (veja "Problemas comuns" abaixo).
+Para padronizar um time inteiro em um repositório, use o escopo **Project** e versione o `.claude/settings.json` gerado.
 
-### Passo 4 — Confirme que funcionou
+### Verificar
 
-Ainda dentro do Claude Code, digite uma barra:
+Digite `/padrao-spring-boot` em uma sessão e confira as skills no autocomplete, ou rode `/plugin list`. Se nada aparecer, veja [Problemas comuns](#problemas-comuns).
+
+### Só as skills, em outras ferramentas (npx skills)
+
+Os passos acima instalam o **plugin completo** no Claude Code: agents, skills e atualização automática. Se você usa **outra ferramenta de IA** (Cursor, Codex, Gemini CLI, GitHub Copilot…) ou quer **só as skills**, o CLI [`skills`](https://github.com/vercel-labs/skills) instala direto do repositório. Ele precisa de **Node.js** (o `npx` vem junto).
+
+Na pasta do projeto onde as skills vão ficar, rode:
 
 ```
-/
+npx skills add edimilsonldutra/spring-boot-core --skill '*'
 ```
 
-...e comece a digitar `padrao-spring-boot`. Você deve ver uma lista de nomes de skills aparecer como sugestões (isso se chama "autocomplete"). Se você as vê, a instalação funcionou. Você também pode digitar:
+O `'*'` instala **as 88 skills de uma vez** — e é o recomendado, porque as skills se referenciam umas às outras (a `design-docs` aponta para `prd-writing` e `threat-modeling`, por exemplo) e esses links só funcionam quando todas estão instaladas lado a lado. O CLI pergunta para quais ferramentas instalar.
 
-```
-/plugin list
-```
-
-e procurar por `padrao-spring-boot` na lista que aparece.
-
-**Se nada aparecer**, veja "Problemas comuns" no final deste arquivo antes de pedir ajuda — a causa mais comum tem uma correção de uma linha.
-
----
-## Parte 3 — Como realmente usar (esta é a parte que você vai usar todo dia)
-
-Existem três maneiras de trabalhar com o plugin: pedir direto (o Claude Code escolhe a skill), chamar uma skill pelo nome, ou chamar um agent — inclusive o orquestrador, que coordena o time inteiro. Antes, uma coisa que acontece em qualquer uma delas:
-
-### Na primeira vez, ele faz algumas perguntas — uma única vez
-
-Na primeira vez que você usa qualquer skill deste plugin em uma conversa, o Claude Code faz uma pequena lista de perguntas sobre **como você quer que o projeto seja**, e depois lembra as respostas para todas as outras skills. Toda pergunta tem um default — responder "use os defaults" é uma resposta válida:
-
-| Pergunta | Opções (a primeira é o default) |
+| Quero… | Comando |
 |---|---|
-| Comentários no código gerado? | **Não** / Sim |
-| Qual database? | **MySQL** / PostgreSQL / SQL Server / Oracle / MariaDB |
-| Onde ficam as annotations do Swagger? | **Uma interface `*ControllerDocs` separada** / direto no controller (veja a nota abaixo) |
-| Qual build tool? | **Maven** / Gradle (Groovy ou Kotlin DSL) |
-| Qual versão do Java? | **A última LTS** / qualquer LTS a partir da 17 / outro número (uma não-LTS gera um aviso) |
-| `application.yml` ou `application.properties`? | **YAML** / properties |
-| Idioma do texto que o client lê (mensagens de validation e de erro, textos do Swagger)? | **Inglês** / o seu idioma — nomes de classes, campos e métodos ficam **sempre** em inglês |
-| Mapper Entity ↔ DTO? | **Dozer** / MapStruct |
-| Estilo de dependency injection? | **Field (`@Autowired`)** / constructor |
+| Todas as skills no projeto atual | `npx skills add edimilsonldutra/spring-boot-core --skill '*'` |
+| Todas, valendo para qualquer projeto (nível do usuário) | `npx skills add edimilsonldutra/spring-boot-core --skill '*' -g` |
+| Todas, para uma ferramenta específica, sem perguntas | `npx skills add edimilsonldutra/spring-boot-core --skill '*' -a cursor -y` |
+| Todas, para todas as ferramentas detectadas, sem perguntas | `npx skills add edimilsonldutra/spring-boot-core --all` |
+| Ver a lista de skills sem instalar nada | `npx skills add edimilsonldutra/spring-boot-core --list` |
+| Uma skill só | `npx skills add edimilsonldutra/spring-boot-core --skill design-docs` |
+| Atualizar as skills instaladas | `npx skills update` |
 
-Ele só pergunta o que for necessário: database e mapper só aparecem quando o projeto tem persistence, e a posição das annotations do Swagger só quando você usa Swagger. Uma pergunta que ficou de fora é feita depois, na primeira vez que uma skill precisar dela.
+No PowerShell, mantenha as aspas simples em `'*'`.
 
-Em seguida ele se oferece para salvar suas respostas em uma seção `## Project preferences` do `CLAUDE.md` do seu projeto, para que a próxima conversa já comece sabendo. **Lombok nunca é usado — ele não é uma das opções.**
-
-Duas observações honestas sobre estas escolhas:
-
-- **Interface vs. Bean Validation.** Quando as annotations do Swagger ficam em uma interface `*ControllerDocs`, as annotations de validation (`@Valid`, `@Min`, …) também precisam ficar nessa mesma interface — colocá-las no override do controller quebra o controller inteiro em tempo de request. O Claude Code avisa isso quando você escolhe.
-- **MySQL é o caminho que o curso percorreu de ponta a ponta.** Os outros quatro databases são suportados pelas skills — driver, módulo do Flyway, módulo do Testcontainers, imagem Docker, sintaxe SQL — mas são caminhos nos quais o curso não construiu um projeto inteiro, então leia a saída do Claude Code sobre eles com um pouco mais de cuidado. Maven e Gradle são ambos suportados: o `scaffold` cria qualquer um dos dois tipos de projeto, e `maven-config`, `docker-and-docker-compose` e `github-actions-aws` trazem os equivalentes de Gradle (dependencies, Flyway plugin, Dockerfile, pipeline). Os dois build tools foram executados de verdade.
-
-### Forma 1 — Apenas descreva o que você quer, em linguagem natural
-
-O Claude Code lê seu pedido e descobre, sozinho, quais skills se aplicam. Você não precisa saber nenhum nome de skill para isso funcionar. Exemplo:
-
-> "Crie um CRUD para uma entity `Book` (title, author, price, launch date), com uma Flyway migration e documentação Swagger."
-
-O Claude Code vai reconhecer que isso envolve três skills diferentes (`spring-data-jpa`, `flyway-migrations`, `swagger`) e aplicar as três automaticamente, no estilo correto.
-
-### Forma 2 — Chame a skill pelo nome exato
-
-Se você já sabe exatamente qual tópico quer, digite `/` seguido do nome da skill. Isso é útil quando seu pedido poderia corresponder a mais de uma skill e você quer ser 100% explícito sobre qual. Exemplo:
-
-```
-/padrao-spring-boot:authentication
-```
-
-Isso diz imediatamente ao Claude Code: "use a skill authentication, independentemente de como eu formule o resto da minha mensagem."
-
-### Forma 3 — Chame um agent (ou o orquestrador)
-
-Para um papel específico, chame o agent pelo nome (`@developer`) ou peça ao Claude Code: "use o agent `qa` para montar o plano de testes do BookService". Para um trabalho de ponta a ponta, abra a sessão com o orquestrador como agent principal:
-
-```
-claude --agent padrao-spring-boot:orchestrator
-```
-
-e descreva o objetivo: "Entregue a renovação online de empréstimo." Ele escolhe os agents, a ordem, e as skills que cada um deve carregar. A próxima seção mostra esse fluxo.
+**O que muda em relação ao plugin:**
+- **Os agents não vêm junto.** O CLI só instala skills, então o orquestrador e o time não existem nesse modo — as skills são usadas por pedido direto ou pelo nome.
+- **As skills não têm o prefixo** `padrao-spring-boot:` — no Claude Code, a skill se chama `/design-docs`, não `/padrao-spring-boot:design-docs`.
+- **Uma skill instalada sozinha** funciona, mas as referências dela a outras skills ficam sem destino. Prefira instalar todas.
+- **A atualização** é pelo `npx skills update`, não pela atualização automática do plugin.
+- **No Claude Code, escolha uma das duas formas.** Plugin e `npx skills` juntos deixam cada skill duplicada. Para o Claude Code, o plugin é o recomendado.
 
 ---
 
-## O time de agents e o fluxo de trabalho
+## Configuração do projeto
 
-Cada agent tem um papel, permissões próprias e as skills que guiam seu trabalho. Todos leem `code-organization` (o layout e as preferências do projeto) e, conforme a tarefa, carregam as skills da área **com a ferramenta `Skill`** — nunca descrevem uma skill de memória.
+Na primeira utilização em um projeto, o Claude Code coleta as **preferências do projeto** (skill `code-organization`) e as aplica em todas as skills e agents. Toda pergunta tem um padrão — "usar os padrões" é uma resposta válida:
 
-| Agent | Papel | Pode alterar arquivos? | Skills que guiam o trabalho |
+| Preferência | Opções (padrão primeiro) |
+|---|---|
+| Comentários no código gerado | **Não** / Sim |
+| Database | **MySQL** / PostgreSQL / SQL Server / Oracle / MariaDB |
+| Annotations do Swagger | **Interface `*ControllerDocs` separada** / direto no controller |
+| Build tool | **Maven** / Gradle (Groovy ou Kotlin DSL) |
+| Versão do Java | **Última LTS** / qualquer LTS a partir da 17 / outra (não-LTS gera aviso) |
+| Arquivo de configuração | **`application.yml`** / `application.properties` |
+| Idioma do texto voltado ao client (mensagens de validação e erro, Swagger) | **Inglês** / idioma do time — identificadores de código são sempre em inglês |
+| Mapper Entity ↔ DTO | **Dozer** / MapStruct |
+| Dependency injection | **Field (`@Autowired`)** / constructor |
+
+Somente o necessário é perguntado: database e mapper apenas quando há persistência; posição das annotations apenas quando há Swagger. As respostas podem ser salvas na seção `## Project preferences` do `CLAUDE.md` do projeto. **Lombok não é usado** e não é uma opção.
+
+**Observações:**
+- **Interface `*ControllerDocs` e Bean Validation:** com a interface, as annotations de validação (`@Valid`, `@Min`…) precisam ser declaradas na interface — no override do controller, o Hibernate Validator rejeita e o endpoint responde 500. O Claude Code avisa ao configurar.
+- **Databases:** MySQL é o caminho validado de ponta a ponta. Os demais são suportados (driver, módulo do Flyway, Testcontainers, imagem Docker, sintaxe SQL), mas ainda não tiveram um projeto completo construído e testado com eles — revise a saída com atenção redobrada.
+- **Build tools:** Maven e Gradle são suportados e foram executados de verdade; `scaffold`, `maven-config`, `docker-and-docker-compose` e `github-actions-aws` trazem os equivalentes de Gradle.
+
+---
+
+## Formas de uso
+
+| Forma | Quando | Como |
+|---|---|---|
+| **Pedido direto** | Tarefa pequena e clara | Descreva em linguagem natural; o Claude Code identifica as skills pela `description` de cada uma. Ex.: *"Crie um CRUD para `Book` com Flyway migration e Swagger"* aplica `spring-data-jpa`, `flyway-migrations` e `swagger` |
+| **Skill pelo nome** | Para garantir qual skill será usada | `/padrao-spring-boot:<skill>` — ex.: `/padrao-spring-boot:authentication` |
+| **Agent** | Um papel específico (revisar, testar, planejar, desenhar) | `@developer`, ou *"use o agent qa para montar o plano de testes do BookService"* |
+| **Orquestrador** | Entrega de ponta a ponta, com várias etapas e aprovações | `claude --agent padrao-spring-boot:orchestrator` e descreva o objetivo — ex.: *"Entregue a renovação online de empréstimo."* |
+
+---
+
+## Agents
+
+Cada agent tem papel, permissões e formato de entrega próprios. Todos leem `code-organization` (layout e preferências do projeto) e carregam as skills da tarefa com a ferramenta `Skill` — nunca descrevem uma skill de memória. O fluxo individual de cada agent (entrada, etapas, skills, entrega e próximo passo) está no [README do repositório](https://github.com/edimilsonldutra/spring-boot-core#fluxo-individual-de-cada-agent).
+
+| Agent | Papel | Pode alterar | Skills que guiam o trabalho |
 |---|---|---|---|
-| `orchestrator` | 🎼 Coordenar o time, verificar entregas, parar nos gates humanos | **Não** (só delega e lê) | Não carrega skills: **cita no brief** de cada agent as skills da tarefa (ex.: mensageria → `messaging` + a do broker + `transactional-outbox` + `idempotency`) |
-| `product-manager` | 📋 O **quê**, o **porquê** e o **quão bom** | Só docs em `docs/product/` (com confirmação) | As 12 de produto (`product-discovery`, `prd-writing`, `user-stories`, `prioritization`, `product-roadmap`, `product-metrics`, `release-management`, `privacy-lgpd`…) e `backlog-refinement` |
-| `architect` | 🏛️ Decisões estruturais e ADR | Só docs/ADR (com confirmação) | **Começa por `microservices`**; compara opções com as tabelas "quando usar × quando não" de `modular-monolith`, `ddd-hexagonal`, `messaging` e brokers, `kubernetes`/`aws-eks` × `aws-ecs-fargate` × `aws-lambda`, `spring-data-jpa` × `aws-dynamodb` × `aws-keyspaces`, `authentication` × `aws-cognito`; critérios de `technical-product-management` e `privacy-lgpd` |
-| `tech-lead` | 🧭 Plano, tarefas, riscos, estimativa, DoD | Não (somente leitura) | **Atribui uma skill a cada tarefa** do plano, para o `developer` e o `qa` executarem no padrão; DoD com `test-coverage` (90%); `repository-understanding`, `refactoring`, `backlog-refinement` |
-| `developer` | 💻 Implementar e corrigir, com testes e build real | Sim (código e testes) | **Sempre** `code-organization` + `code-style`, e `application-security` em todo endpoint; depois a skill da área (`spring-data-jpa`, `flyway-migrations`, `bean-validation`, `exception-handling`, `swagger`, `authentication`, `maven-config`…); `aws-sdk-java` antes de qualquer AWS; `testing`, `test-patterns`, `integration-testing`. Padrões estruturais (saga, CQRS, hexagonal) **só com ADR** |
-| `qa` | 🧪 Provar que funciona e achar o que quebra | Só código de teste | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `application-security` (IDOR, permissão, limites); cada ameaça do threat model vira teste; a skill da área diz **o que provar** (`idempotency`, `resilience`, `contract-testing`, `localstack`, `saga-pattern`…); **cada critério Given/When/Then** de `prd-writing`/`user-stories` vira caso de teste |
-| `code-reviewer` | 🔍 Revisar o diff e dar o veredito | Não (somente leitura) | `code-organization` + `code-style`; para cada área do diff, usa a seção **"Regras principais"** da skill correspondente como **checklist** (violação = achado) |
+| `orchestrator` | Coordenar o time, verificar entregas, parar nos gates humanos | Nada (delega e lê) | Não carrega skills: **cita no brief** de cada agent as skills da tarefa (ex.: mensageria → `messaging` + a do broker + `transactional-outbox` + `idempotency`) |
+| `product-manager` | O **quê**, o **porquê** e o **quão bom** | `docs/product/` (com confirmação) | As 12 de produto (`product-discovery`, `prd-writing`, `user-stories`, `prioritization`, `product-roadmap`, `product-metrics`, `release-management`, `privacy-lgpd`…), `backlog-refinement` e `threat-modeling` (casos de abuso) |
+| `architect` | Decisões estruturais e especificação técnica | `docs/design/`, `docs/adr/`, `docs/security/` (com confirmação) | `design-docs` (a spec), `threat-modeling`, `application-security`; **começa por `microservices`**; compara opções com as tabelas "quando usar × quando não" de `modular-monolith`, `ddd-hexagonal`, `messaging` e brokers, `kubernetes`/`aws-eks` × `aws-ecs-fargate` × `aws-lambda`, `spring-data-jpa` × `aws-dynamodb` × `aws-keyspaces`, `authentication` × `aws-cognito`; critérios de `technical-product-management` e `privacy-lgpd` |
+| `tech-lead` | Plano, tarefas, riscos, estimativa, DoD | Nada (somente leitura) | Planeja a partir dos critérios do design doc; **atribui uma skill a cada tarefa** do plano, para o `developer` e o `qa` executarem no padrão; DoD com `test-coverage` (90%); `repository-understanding`, `refactoring`, `backlog-refinement` |
+| `developer` | Implementar e corrigir, com testes e build real | Código e testes | **Sempre** `code-organization` + `code-style`, e `application-security` em todo endpoint; depois a skill da área (`spring-data-jpa`, `flyway-migrations`, `bean-validation`, `exception-handling`, `swagger`, `authentication`, `maven-config`…); `aws-sdk-java` antes de qualquer AWS; `testing`, `test-patterns`, `integration-testing`. Padrões estruturais (saga, CQRS, hexagonal) **só com ADR** |
+| `qa` | Provar que funciona e achar o que quebra | Somente testes | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `application-security` (IDOR, permissão, limites); cada ameaça do threat model vira teste; a skill da área diz **o que provar** (`idempotency`, `resilience`, `contract-testing`, `localstack`, `saga-pattern`…); **cada critério Given/When/Then** de `prd-writing`/`user-stories` vira caso de teste |
+| `code-reviewer` | Revisar o diff e dar o veredito | Nada (somente leitura) | `code-organization` + `code-style`; revisa contra o design doc quando existe; para cada área do diff, usa a seção **"Regras principais"** da skill correspondente como **checklist** (violação = achado) |
 
-**O fluxo completo de uma feature** — cada etapa com o agent e as skills que ele carrega:
+### Fluxo completo de uma feature
+
+Cada etapa traz o agent e as skills que ele carrega; os losangos são aprovações humanas.
 
 ```mermaid
 flowchart TD
-    U([Você]) --> O[orchestrator<br/>escolhe o menor pipeline]
-    O --> PM["product-manager<br/>product-discovery · prd-writing · user-stories<br/>prioritization · privacy-lgpd"]
-    PM -->|gate: aprovar escopo| AR["architect — feature média/grande, estrutural ou sensível<br/>design-docs · threat-modeling · ADR"]
-    AR -->|gate: aprovar design doc| TL["tech-lead<br/>tarefas a partir dos critérios CA-n · DoD com test-coverage"]
-    PM -.->|feature pequena| TL
-    TL -->|gate: aprovar plano| DEV["developer<br/>segue o design doc · code-organization · code-style<br/>+ a skill de cada tarefa"]
-    DEV --> QA["qa<br/>um teste por critério · integration-testing<br/>test-coverage · skill da área"]
-    QA --> CR["code-reviewer<br/>diff contra o design doc<br/>Regras principais da skill de cada área"]
-    CR -->|blocker: corrigir, máx. 3 ciclos| DEV
-    CR -->|gate: commit / push / deploy| U
+    U(["Você: pedido de alto nível"]) --> O["orchestrator<br/>lê o contexto e escolhe o pipeline"]
+    O --> PM["product-manager<br/>product-discovery · prd-writing · user-stories<br/>threat-modeling (abusos) · privacy-lgpd"]
+    PM --> G1{"Aprovar escopo<br/>(PRD)"}
+    G1 -->|"feature média/grande<br/>ou sensível"| AR["architect<br/>design-docs · threat-modeling · ADR<br/>microservices e skills de comparação"]
+    G1 -->|"feature pequena"| TL
+    AR --> G2{"Aprovar design doc<br/>(critérios CA-n)"}
+    G2 --> TL["tech-lead<br/>tarefas a partir dos critérios<br/>uma skill por tarefa · DoD"]
+    TL --> G3{"Aprovar plano"}
+    G3 --> DEV["developer<br/>code-organization · code-style · application-security<br/>+ skill de cada tarefa · build real"]
+    DEV --> QA["qa<br/>um teste por critério · integration-testing<br/>test-patterns · test-coverage"]
+    QA --> CR["code-reviewer<br/>diff contra o design doc<br/>Regras principais de cada skill"]
+    CR -->|"blocker (máx. 3 ciclos)"| DEV
+    CR -->|"aprovado"| G4{"Aprovar commit / push / deploy"}
+    G4 --> FIM(["Entrega + relatório do orchestrator"])
 ```
 
-**O design doc é a spec.** Em features médias e grandes, o fluxo é *spec-driven*: depois do PRD, o `architect` escreve o design doc (`design-docs`) com critérios de aceite numerados (`CA-1`, `CA-2`…); você aprova; o plano cobre cada critério, a implementação segue o documento, o `qa` escreve um teste por critério e o `code-reviewer` confere o código contra ele. Uma mudança de contrato, dados ou critério no meio do caminho volta para o documento e para a sua aprovação antes de seguir.
+**Spec-driven:** em features médias e grandes, o design doc aprovado (`design-docs`) é a especificação. O plano cobre cada critério de aceite (`CA-1`, `CA-2`…), a implementação segue o documento, o `qa` escreve um teste por critério e o `code-reviewer` confere o código contra ele. Mudança de contrato, dados, critério, segurança ou rollout durante a implementação volta ao documento e à aprovação antes de seguir.
 
-Nem todo pedido precisa do fluxo inteiro. O orquestrador usa **o menor pipeline que resolve**:
+### Pipelines
+
+O orquestrador usa sempre **o menor pipeline que resolve**:
 
 | Pedido | Pipeline | Gates humanos |
 |---|---|---|
@@ -220,32 +187,33 @@ Nem todo pedido precisa do fluxo inteiro. O orquestrador usa **o menor pipeline 
 | Entender / mapear um repositório | `architect` (grava o mapa) *ou* `tech-lead` (mapa só no relatório) | Gravar o mapa |
 | Prontidão para lançamento (go/no-go) | `product-manager` + `tech-lead` + `qa` + `code-reviewer` em paralelo (só leitura) | Go/no-go é seu |
 
-**Regras do orquestrador:**
+### Regras do orquestrador
+
 - **Não faz o trabalho dos especialistas** nem decide por eles: quando dois agents divergem, **leva as opções a você**.
-- **Gates humanos:** para e pede sua aprovação para o **escopo** (PRD), a **decisão estrutural** (ADR), o **plano** e **qualquer ação irreversível ou externa** (`commit`, `push`, deploy, `kubectl`, `aws`, `terraform apply`). Ele **não executa** essas ações.
+- **Gates humanos:** para e pede sua aprovação para o **escopo** (PRD), o **design doc**, a **decisão estrutural** (ADR), o **plano** e **qualquer ação irreversível ou externa** (`commit`, `push`, deploy, `kubectl`, `aws`, `terraform apply`). Ele **não executa** essas ações.
 - **Verifica**: lê o que mudou e exige a saída real dos testes; "funciona" sem evidência volta para o agent. O que ficou **sem verificação** aparece marcado como tal no relatório.
 - **Loops limitados:** revisão com bloqueio → `developer` corrige → `code-reviewer` revisa de novo, no **máximo 3 ciclos**; depois escala a você.
 - **Como iniciar:** o melhor é abrir a sessão com ele como agent principal (`claude --agent padrao-spring-boot:orchestrator`), para que ele fale com você direto nos gates. Chamado como subagent ele também funciona, mas devolve cada aprovação no relatório em vez de perguntar. Se a ferramenta `Agent` não estiver disponível, ele **não finge delegar**: entrega um **runbook** com o brief de cada agent para você invocar.
 
-**Bom saber:** como subagents, os agents não fazem perguntas no meio do trabalho nem conversam entre si — quando falta uma preferência, assumem o default da skill e dizem isso no relatório; dúvidas para outro agent também voltam no relatório. Salve suas preferências no `CLAUDE.md` (`project-claude-md`) para evitar suposições. Todos pedem confirmação antes de ações destrutivas ou externas (`git push`, `kubectl apply`, comandos `aws` que alteram recursos), nunca imprimem segredos e relatam honestamente o que **não** conseguiram verificar.
+**Comportamento como subagent:** os agents não fazem perguntas no meio do trabalho nem conversam entre si — quando falta uma preferência, assumem o default da skill e dizem isso no relatório; dúvidas para outro agent também voltam no relatório. Salve suas preferências no `CLAUDE.md` (`project-claude-md`) para evitar suposições. Todos pedem confirmação antes de ações destrutivas ou externas (`git push`, `kubectl apply`, comandos `aws` que alteram recursos), nunca imprimem segredos e relatam honestamente o que **não** conseguiram verificar.
 
 ---
 
-## Catálogo de skills (referência)
+## Catálogo de skills
 
-Estas são as skills que os agents carregam — e que você também pode chamar direto (Formas 1 e 2). Cada grupo diz quais agents o usam.
+Skills que os agents carregam e que também podem ser usadas diretamente (pedido em linguagem natural ou `/padrao-spring-boot:<skill>`). Cada grupo diz quais agents o usam.
 
-**Fundação (12 skills)** — comece por aqui
+**Fundação (12 skills)**
 
 *Usadas por:* todos os agents leem `code-organization`; `developer` e `code-reviewer` leem também `code-style` e a skill da área (CRUD, migration, validation, erros, Swagger); `tech-lead` as atribui às tarefas; `qa` usa `spring-data-jpa`, `bean-validation` e `exception-handling` para testar o contrato.
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `guide` | `/padrao-spring-boot:guide` | Explica para que serve este pacote, como as skills se agrupam e qual usar para cada necessidade — o "índice" do pacote inteiro. | "O que este plugin faz, e qual skill eu preciso para adicionar login com JWT?" |
 | `scaffold` | `/padrao-spring-boot:scaffold` | Cria um projeto Spring Boot novo do zero, a partir do Spring Initializr. **Ele pergunta** o group e o nome do projeto, a versão do Java (sugere a última LTS — se você escolher uma versão que não é LTS, ele avisa que não é uma boa ideia para produção), Maven ou Gradle (Groovy ou Kotlin DSL), YAML (default) ou `.properties`, e o idioma das mensagens que o client lê — depois pergunta quais building blocks opcionais incluir: persistence (Spring Data JPA + um database), Flyway migrations, exception handling, web config (CORS/content negotiation), Swagger/OpenAPI e Bean Validation, cada um ligado por default mas fácil de recusar um de cada vez. Ele escreve código real para o que você mantiver (usando um exemplo `Book` compartilhado), faz o build do projeto e roda os testes para provar que funciona. A application class é sempre `Startup`. | "Crie um novo projeto Spring Boot chamado library-api." |
-| `code-organization` | `/padrao-spring-boot:code-organization` | Faz as perguntas acima, depois decide onde cada arquivo vai no seu projeto (folder layout) e as regras de naming das classes. É a base sobre a qual toda outra skill se apoia. | "Explique a package structure que este curso usa." |
-| `code-style` | `/padrao-spring-boot:code-style` | As regras exatas de formatação Java usadas em todo o curso (sem Lombok, como escrever `equals()`/`hashCode()`, estilo de logger, etc.). Também é usada automaticamente, na maior parte, pelas outras skills. | "Revise esta classe e corrija seu estilo para seguir a convenção do curso." |
-| `maven-config` | `/padrao-spring-boot:maven-config` | Configura o `pom.xml` do seu projeto — dependencies, plugins, o setup de testes e como consultar as versões mais recentes. | "Configure o pom.xml para um novo projeto Spring Boot com as dependencies deste curso." |
+| `code-organization` | `/padrao-spring-boot:code-organization` | Faz as perguntas acima, depois decide onde cada arquivo vai no seu projeto (folder layout) e as regras de naming das classes. É a base sobre a qual toda outra skill se apoia. | "Explique a package structure que este padrão usa." |
+| `code-style` | `/padrao-spring-boot:code-style` | As regras exatas de formatação Java usadas em todo o pacote (sem Lombok, como escrever `equals()`/`hashCode()`, estilo de logger, etc.). Também é usada automaticamente, na maior parte, pelas outras skills. | "Revise esta classe e corrija seu estilo para seguir a convenção do projeto." |
+| `maven-config` | `/padrao-spring-boot:maven-config` | Configura o `pom.xml` do seu projeto — dependencies, plugins, o setup de testes e como consultar as versões mais recentes. | "Configure o pom.xml para um novo projeto Spring Boot com as dependencies do padrão." |
 | `spring-data-jpa` | `/padrao-spring-boot:spring-data-jpa` | Cria entities (sem Lombok), relationships, repositories com queries custom e DTOs com mapper Dozer ou MapStruct — o núcleo de qualquer feature de CRUD. Também resolve N+1 e `LazyInitializationException` e testa os repositories contra um banco real. | "Crie um CRUD completo para uma entity `Book`: title, author, price, launch date." |
 | `exception-handling` | `/padrao-spring-boot:exception-handling` | Configura como sua API responde quando algo dá errado (404s, 400s, erros customizados), em um único lugar central. | "Adicione um exception handling adequado para quando um Book não for encontrado." |
 | `flyway-migrations` | `/padrao-spring-boot:flyway-migrations` | Escreve os arquivos de SQL migration que criam/alteram as tabelas do seu database, na sintaxe do database que você escolheu. | "Crie a Flyway migration para a tabela books." |
@@ -258,7 +226,7 @@ Estas são as skills que os agents carregam — e que você também pode chamar 
 
 *Usadas por:* `developer` (implementar), `tech-lead` (atribuir às tarefas), `architect` (contrato e evolução da API), `qa` (limites, links e versões) e `code-reviewer` (paginação sem limite, quebra de contrato).
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `pagination` | `/padrao-spring-boot:pagination` | Listagens paginadas com `page`, `size` (com máximo) e `direction`, ordenação só por campos permitidos, formato estável (HAL ou `PagedModel`), custo do `count` e keyset para páginas profundas. | "Pagine a listagem de Book com no máximo 100 itens por página." |
 | `hateoas` | `/padrao-spring-boot:hateoas` | Links nas respostas (`_links` em HAL): DTO com `RepresentationModel` e `@Relation`, links montados no service, links condicionais por estado, XML/YAML e testes. | "Adicione links HATEOAS aos endpoints de Book." |
@@ -269,7 +237,7 @@ Estas são as skills que os agents carregam — e que você também pode chamar 
 
 *Usadas por:* `developer` (implementar), `architect` (onde guardar arquivos, qual provedor de e-mail), `qa` (path traversal, linha inválida, rollback sem e-mail) e `code-reviewer` (upload inseguro, relay de spam, formula injection).
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `file-upload-download` | `/padrao-spring-boot:file-upload-download` | Upload e download seguros: nome gerado, proteção contra path traversal, tipo validado pela assinatura do arquivo, limites (413), download em stream com `Content-Disposition` correto e dono do arquivo checado. | "Crie os endpoints de upload e download da capa do livro." |
 | `file-import-export` | `/padrao-spring-boot:file-import-export` | Importa XLSX/CSV validando cada linha (tudo ou nada, com o número da linha nos erros) e exporta uma página de dados em XLSX/CSV pelo header `Accept`, com proteção contra CSV injection. | "Crie a importação em massa de livros por planilha e a exportação em XLSX e CSV." |
@@ -280,7 +248,7 @@ Estas são as skills que os agents carregam — e que você também pode chamar 
 
 *Usadas por:* `architect` (escreve o design doc e o threat model, desenha os módulos), `developer` (segue o design doc; `application-security` em todo endpoint; `solid` e `design-patterns` ao desenhar classes), `tech-lead` (planeja a partir dos critérios do design doc; mitigações viram tarefas), `qa` (cada critério e cada ameaça mitigada vira teste), `code-reviewer` (revisa contra o design doc; checklist de segurança e de design) e `product-manager` (revisa os critérios de produto; casos de abuso no PRD).
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `design-docs` | `/padrao-spring-boot:design-docs` | O **design doc** (tech spec / SDD) que serve de **spec** no desenvolvimento orientado a especificação: template em `docs/design/`, critérios de aceite numerados (`CA-1`…) e testáveis, aprovação antes do plano, desvios registrados e a matriz critério → tarefa → teste. | "Escreva o design doc da renovação online de empréstimo a partir do PRD." |
 | `application-security` | `/padrao-spring-boot:application-security` | Segurança da API pelo **OWASP API Security Top 10**: autorização por objeto (IDOR), mass assignment, limites e rate limit, injeção, SSRF, desserialização, security headers, segredos, logs de segurança, dependências e SBOM, e testes (incluindo SAST, secret scanning e ZAP). | "Faça uma revisão de segurança dos endpoints de empréstimo." |
@@ -292,7 +260,7 @@ Estas são as skills que os agents carregam — e que você também pode chamar 
 
 *Usadas por:* `developer` (implementar), `architect` (escolher plataforma, cache, identidade), `code-reviewer` (checklists de segurança, Docker, Kubernetes, CI) e `tech-lead`; `qa` usa `testing`, `authentication` e `jvm-performance`.
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `authentication` | `/padrao-spring-boot:authentication` | Login stateless com JWT e Spring Security 7: access/refresh token, senhas com BCrypt, autorização por permission. Para login gerenciado (MFA, social), veja `aws-cognito`. | "Adicione autenticação JWT a este projeto." |
 | `testing` | `/padrao-spring-boot:testing` | Unit tests de service (JUnit 5 + Mockito + AssertJ, sem Spring) e slice tests de controller (`@WebMvcTest` + `@MockitoBean`), com `@ParameterizedTest`, `ArgumentCaptor` e o que testar ou não. | "Escreva os testes do BookService e do BookController." |
@@ -310,11 +278,11 @@ Estas são as skills que os agents carregam — e que você também pode chamar 
 
 **Ordem sugerida para ir à AWS:** `docker-and-docker-compose` → `observability` → `kubernetes` → `aws-eks` → `aws-rds-secrets-manager` → `github-actions-aws` (e `aws-s3-sqs`, `caching`, `jvm-performance` conforme a necessidade).
 
-**Mensageria (6 skills, incluídas neste pacote)**
+**Mensageria (6 skills)**
 
 *Usadas por:* `architect` (decidir se e qual broker), `developer` (implementar com outbox e consumer idempotente), `qa` (duplicata, DLQ, desordem) e `code-reviewer` (dual write, DLQ, serialização).
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `messaging` | `/padrao-spring-boot:messaging` | **Comece por aqui.** Diz se você precisa de mensageria, compara Kafka, RabbitMQ, Artemis, SQS/SNS e outras, e define as regras comuns (idempotência, DLQ, schema, segurança). | "Preciso notificar vários serviços quando um livro é criado. Qual broker devo usar?" |
 | `kafka` | `/padrao-spring-boot:kafka` | Apache Kafka com Spring: producer seguro, `@KafkaListener`, keys/partições, DLT e retry, tópicos, MSK/Strimzi e testes. | "Publique BookCreated no Kafka e consuma em outro serviço." |
@@ -325,13 +293,13 @@ Estas são as skills que os agents carregam — e que você também pode chamar 
 
 **Ordem sugerida:** `messaging` → a skill do broker escolhido → `transactional-outbox` (sempre que o evento nascer de uma mudança no banco) → `observability` (lag, DLQ) → `kubernetes`/`aws-eks`.
 
-**AWS: serviços e integração com Spring Boot (12 skills, incluídas neste pacote)**
+**AWS: serviços e integração com Spring Boot (12 skills)**
 
 Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-sns-sqs` e `github-actions-aws` listadas acima.
 
 *Usadas por:* `architect` (comparar ECS × EKS × Lambda, RDS × DynamoDB × Keyspaces), `developer` (sempre `aws-sdk-java` primeiro) e `tech-lead`; `qa` usa `localstack` e `aws-terraform`; `code-reviewer` checa credenciais, IAM e Terraform.
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `aws-sdk-java` | `/padrao-spring-boot:aws-sdk-java` | **A base de todas as skills AWS:** SDK v2, credenciais sem chaves (IRSA/task role), clients singleton, timeouts, retries, LocalStack. | "Como configuro o SDK da AWS neste projeto do jeito certo?" |
 | `localstack` | `/padrao-spring-boot:localstack` | Emula a AWS no seu computador e nos testes (S3, SQS, SNS, DynamoDB…): docker-compose, profile `local` com trava de segurança, Testcontainers, CI — e deixa claro o que ele **não** prova (IAM, desempenho). | "Configure o LocalStack para eu rodar e testar a integração com S3 e SQS sem conta AWS." |
@@ -352,7 +320,7 @@ Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-
 
 *Usadas por:* `developer` (escrever os workflows), `architect` (escolher entre deploy direto e GitOps), `tech-lead`, `qa` (validação de manifests) e `code-reviewer` (permissões, OIDC, segredos no pipeline).
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `github-actions` | `/padrao-spring-boot:github-actions` | **O CI, para qualquer destino:** build e testes (com Testcontainers), cobertura, imagem no GitHub Container Registry sem segredo extra, release por tag, CodeQL, Dependabot, permissões mínimas e proteção da branch. | "Crie o pipeline de CI deste projeto." |
 | `github-actions-cloud` | `/padrao-spring-boot:github-actions-cloud` | Deploy no **Google Cloud** (Cloud Run, GKE) ou no **Azure** (Container Apps, AKS) com OIDC, sem chaves no GitHub, com segredos no Secret Manager/Key Vault e rollback. Na AWS, o equivalente é `github-actions-aws`. | "Faça o deploy da API no Cloud Run a cada push na main, com aprovação para produção." |
@@ -360,11 +328,11 @@ Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-
 
 **Ordem sugerida:** `github-actions` (CI) → o deploy: `github-actions-aws` (AWS), `github-actions-cloud` (GCP/Azure) ou `argocd` (GitOps em qualquer Kubernetes, que usa os manifests de `kubernetes`/`helm-charts` e troca o job de "`kubectl apply`" por um que só commita a nova tag) → smoke pós-deploy com `postman-newman`.
 
-**Arquitetura de microsserviços (10 skills, incluídas neste pacote)**
+**Arquitetura de microsserviços (10 skills)**
 
 *Usadas por:* `architect` **decide** (começando por `microservices`) e registra o ADR; `tech-lead` planeja a partir da decisão; `developer` só aplica um padrão estrutural **com ADR**; `qa` testa falha parcial, contratos e compensações; `code-reviewer` cobra o ADR de todo padrão novo.
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `microservices` | `/padrao-spring-boot:microservices` | **Comece por aqui.** Quando dividir em serviços (e quando não), decomposição por bounded context, dados privados por serviço, o "distributed monolith", pré-requisitos de plataforma, migração com Strangler Fig e um checklist de decisão. | "Devemos migrar este monolito para microsserviços? Como dividir?" |
 | `modular-monolith` | `/padrao-spring-boot:modular-monolith` | Monolito modular com **Spring Modulith**: módulos com fronteiras verificadas no build, eventos entre módulos, e o caminho para extrair um serviço depois. | "Organize esta aplicação em módulos por domínio, sem microsserviços." |
@@ -379,11 +347,11 @@ Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-
 
 **Ordem sugerida:** `microservices` (decidir) → `modular-monolith` ou os serviços → `ddd-hexagonal` (se o domínio for rico) → `api-gateway` e `service-communication` → `resilience` + `idempotency` → `messaging` + `transactional-outbox` → `saga-pattern` / `cqrs-event-sourcing` (só se necessário) → `contract-testing` → `argocd`/`kubernetes`. Para decisões de arquitetura, peça ao agent `architect`.
 
-**Produto: skills do perfil de PM (12 skills, incluídas neste pacote)**
+**Produto: skills do perfil de PM (12 skills)**
 
 *Usadas por:* `product-manager` (todas); `tech-lead` e `qa` consomem `prd-writing` e `user-stories` (critérios de aceite → tarefas e casos de teste); `release-management` e `privacy-lgpd` são usadas pelos 7 agents. São skills de **processo e documento** (sem código): trazem templates, critérios e os erros a evitar. **Nenhuma delas inventa dados** — números e pesquisa vêm de fontes reais; o resto é marcado como hipótese.
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `product-strategy` | `/padrao-spring-boot:product-strategy` | Visão e estratégia (diagnóstico → política → ações), posicionamento, análise competitiva, TAM/SAM/SOM sem inventar número, unit economics e business case. | "Monte o business case para a renovação online." |
 | `product-discovery` | `/padrao-spring-boot:product-discovery` | Entender o problema antes de construir: quatro riscos, JTBD, entrevistas sem viés, hipóteses, experimentos baratos e a decisão seguir/ajustar/parar. | "Planeje a descoberta sobre por que sócios pagam multa." |
@@ -400,11 +368,11 @@ Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-
 
 **Ordem sugerida:** `product-strategy` → `product-discovery` → `prd-writing` + `user-stories` → `prioritization` → `product-roadmap` → (handoff ao `tech-lead`) → `agile-delivery` → `release-management` → `product-metrics`; `privacy-lgpd`, `technical-product-management` e `stakeholder-communication` valem em todas as etapas.
 
-**Testes: padrões, integração, cobertura e testes de API (4 skills, incluídas neste pacote)**
+**Testes: padrões, integração, cobertura e testes de API (4 skills)**
 
 Complementam a skill `testing` (unit e slice). *Usadas por:* `qa` (o dono do tema), `developer` (testes junto com o código), `code-reviewer` (qualidade dos testes e cobertura) e `tech-lead` (DoD com 90%).
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `test-patterns` | `/padrao-spring-boot:test-patterns` | Os padrões que separam teste bom de teste ruim: Given/When/Then, **stub × mock × fake**, Test Data Builder, `@Nested`, valores-limite, property-based (jqwik), TDD/BDD, **test smells** e **testes flaky** (causas e cura). | "Revise estes testes: estão frágeis? Que padrões aplicar?" |
 | `integration-testing` | `/padrao-spring-boot:integration-testing` | Testes de integração com **banco real em container** (Testcontainers singleton, nunca H2), `@SpringBootTest` + REST Assured, **isolamento de dados**, contrato de erro, segurança, migrations e cache de contexto. | "Escreva os testes de integração do CRUD de Book." |
@@ -413,11 +381,11 @@ Complementam a skill `testing` (unit e slice). *Usadas por:* `qa` (o dono do tem
 
 **Ordem sugerida:** `testing` → `test-patterns` → `integration-testing` → `test-coverage` (→ `contract-testing` entre serviços; → `postman-newman` contra a aplicação implantada). Lembre: **cobertura mostra o que não foi testado; não prova qualidade**.
 
-**Entender, refatorar e refinar (3 skills, incluídas neste pacote)**
+**Entender, refatorar e refinar (3 skills)**
 
 *Usadas por:* `repository-understanding` — `architect` (grava o mapa), `tech-lead`, `developer`, `qa` e `code-reviewer`; `refactoring` — `qa` (rede de segurança), `developer` e `code-reviewer`; `backlog-refinement` — `product-manager` com `tech-lead` e `qa`.
 
-| Nome da skill | Comando para chamá-la diretamente | O que faz, em palavras simples | Exemplo de prompt para copiar e colar |
+| Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `repository-understanding` | `/padrao-spring-boot:repository-understanding` | Entende um repositório desconhecido **só lendo**: builda/testa de verdade, entrypoints, dados pelas migrations, integrações, hotspots no Git, uma fatia vertical rastreada, riscos com evidência e aderência ao padrão; entrega `docs/architecture/repository-map.md`. | "Mapeie este repositório e me diga os maiores riscos." |
 | `refactoring` | `/padrao-spring-boot:refactoring` | Refatoração segura: rede de segurança (characterization tests), passos pequenos e verdes, catálogo de smells → refatoração, Parallel Change/Strangler/expand → contract e como revisar o PR. | "Refatore o `LoanService` sem mudar o comportamento." |
@@ -427,30 +395,21 @@ Complementam a skill `testing` (unit e slice). *Usadas por:* `qa` (o dono do tem
 
 ---
 
-## Parte 4 — Recebendo atualizações
+## Atualização
 
-Quando o plugin ganha skills novas ou correções, elas são publicadas no mesmo repositório do GitHub. Você não baixa nada: só pede ao Claude Code para atualizar.
+Novas versões são publicadas no mesmo repositório; uma atualização chega a quem já instalou quando a `version` do `plugin.json` muda.
 
-**Opção A — atualização automática (recomendada).** Faça uma vez e esqueça:
-1. Dentro do Claude Code, digite `/plugin`.
-2. Vá em **Marketplaces**, selecione `padrao` e escolha **Enable auto-update**.
+| Modo | Como |
+|---|---|
+| **Automático** (recomendado) | `/plugin` → **Marketplaces** → `padrao` → **Enable auto-update**. O Claude Code verifica novas versões ao iniciar |
+| **Manual, na sessão** | `/plugin marketplace update padrao` |
+| **Manual, no terminal** | `claude plugin update padrao-spring-boot@padrao` |
+| **Skills instaladas via `npx skills`** | `npx skills update` |
 
-A partir daí, o Claude Code busca as novidades sozinho ao iniciar.
+Depois de atualizar, confirme com `/plugin list` (veja [Verificar](#verificar)). Se as skills novas não aparecerem, reinicie a sessão do Claude Code.
 
-**Opção B — atualizar na hora, à mão.** Dentro do Claude Code, digite:
-
-```
-/plugin marketplace update padrao
-```
-
-ou, em um terminal comum, fora do Claude Code:
-
-```
-claude plugin update padrao-spring-boot@padrao
-```
-
-Depois, confirme com `/plugin list` e com o autocomplete de `/padrao-spring-boot` (Passo 4). Se as skills novas ainda não aparecerem, feche e abra o Claude Code mais uma vez.
 ---
+
 ## Problemas comuns
 
 | Sintoma | Causa provável | Como resolver |
@@ -458,7 +417,8 @@ Depois, confirme com `/plugin list` e com o autocomplete de `/padrao-spring-boot
 | `/plugin marketplace add` falha com erro de `git` | O Git não está instalado, ou a cópia pelo GitHub via SSH falhou | Rode `git --version`; se der erro, instale o Git. Se o Git existe, registre pelo endereço HTTPS completo: `/plugin marketplace add https://github.com/edimilsonldutra/spring-boot-core.git`. |
 | `/plugin install` diz que o plugin não foi encontrado | O nome depois do `@` está errado | O comando é exatamente `/plugin install padrao-spring-boot@padrao` — o nome do marketplace não é o nome do repositório. Confira com `/plugin marketplace list`. |
 | Nada aparece ao digitar `/padrao-spring-boot` | O Claude Code ainda não recarregou o plugin | Feche e abra o Claude Code. Depois confira com `/plugin list`. |
-| As skills funcionam em um projeto, mas não em outro | O plugin foi instalado com o scope **Project** ou **Local** | Rode `/plugin uninstall padrao-spring-boot` e instale de novo (Passo 3) escolhendo **User**. Você também pode gerenciar tudo pelo menu que abre ao digitar só `/plugin`. |
-| Uma skill nova anunciada não aparece | O plugin ainda não foi atualizado | Siga a Parte 4. |
+| As skills funcionam em um projeto, mas não em outro | O plugin foi instalado com o scope **Project** ou **Local** | Rode `/plugin uninstall padrao-spring-boot` e instale de novo escolhendo o escopo **User**. Você também pode gerenciar tudo pelo menu que abre ao digitar só `/plugin`. |
+| Uma skill nova anunciada não aparece | O plugin ainda não foi atualizado | Siga [Atualização](#atualização). |
 | O Claude Code faz as perguntas de preferência em toda conversa | As respostas não foram salvas no `CLAUDE.md` do projeto | Aceite quando ele oferecer salvar, ou peça: "Crie o CLAUDE.md para este projeto" (`project-claude-md`). |
-| Uma skill citada no curso não aparece no autocomplete | O plugin instalado está desatualizado | Siga a Parte 4 e confira com `/plugin list` se a versão instalada é a mais recente. |
+| Cada skill aparece duas vezes no Claude Code (`/design-docs` e `/padrao-spring-boot:design-docs`) | O plugin e o `npx skills` foram instalados juntos | Fique com o plugin e remova as skills soltas: `npx skills remove --all` (ou `npx skills remove --all -g` se instalou com `-g`). |
+| Uma skill citada nesta documentação não aparece no autocomplete | O plugin instalado está desatualizado | Siga [Atualização](#atualização) e confira com `/plugin list` se a versão instalada é a mais recente. |

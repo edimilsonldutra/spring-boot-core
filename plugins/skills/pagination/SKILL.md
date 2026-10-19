@@ -13,7 +13,7 @@ Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](..
 
 | Formato | Quando | Tipo devolvido pelo service |
 |---|---|---|
-| **HAL com links** (padrão do curso) | O projeto usa HATEOAS (`hateoas`) | `org.springframework.hateoas.PagedModel<EntityModel<BookDTO>>` via `PagedResourcesAssembler` |
+| **HAL com links** (padrão do pacote) | O projeto usa HATEOAS (`hateoas`) | `org.springframework.hateoas.PagedModel<EntityModel<BookDTO>>` via `PagedResourcesAssembler` |
 | **Page estável do Spring Data** | Sem HATEOAS | `org.springframework.data.web.PagedModel<BookDTO>` (ou `Page<BookDTO>` com `VIA_DTO`, abaixo) |
 | **Lista + cursor** (keyset) | Feed/rolagem infinita, tabelas enormes, sem "ir para a página 37" | DTO próprio com `items` e `nextCursor` (seção 6) |
 
@@ -32,7 +32,7 @@ Com isso, um `Page<BookDTO>` devolvido pelo controller vira `{"content": [...], 
 
 ## 2. Controller — page, size, direction
 
-O padrão do curso recebe três parâmetros simples (é o que o `BookControllerDocs` da skill `swagger` documenta) e monta o `Pageable` no controller:
+O padrão do pacote recebe três parâmetros simples (é o que o `BookControllerDocs` da skill `swagger` documenta) e monta o `Pageable` no controller:
 
 ```java
 @GetMapping(produces = {

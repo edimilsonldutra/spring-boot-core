@@ -15,7 +15,7 @@ Enviar e-mail parece uma chamada de método, mas é uma **chamada de rede lenta 
 |---|---|
 | **SMTP de um provedor transacional** (SES, SendGrid, Mailgun, Postmark…) | Produção. Entregabilidade (SPF/DKIM/DMARC), métricas, bounces |
 | **API do provedor** (SDK/HTTP) | Quando precisa de templates do provedor, webhooks de entrega, envios em massa — na AWS, veja `aws-ses` |
-| **SMTP de conta pessoal** (Gmail com senha de app) | **Só** desenvolvimento/curso. Limites baixos, cai em spam, credencial pessoal no projeto |
+| **SMTP de conta pessoal** (Gmail com senha de app) | **Só** desenvolvimento e protótipos. Limites baixos, cai em spam, credencial pessoal no projeto |
 | **Mailpit** (SMTP falso com interface web) | Desenvolvimento local: nenhum e-mail sai de verdade |
 
 O código abaixo usa `JavaMailSender` (SMTP), que funciona com qualquer um deles — trocar de provedor muda **configuração**, não código.
@@ -174,7 +174,7 @@ public class WelcomeEmailListener {
 
 ## 5. Endpoint de envio (cuidado)
 
-O curso costuma expor `POST /api/email/v1` (JSON com `to`, `subject`, `body`) e `POST /api/email/v1/withAttachment` (multipart) para praticar. Em uma aplicação real, **um endpoint que manda e-mail para qualquer destinatário com qualquer conteúdo é um relay de spam**:
+É comum ver exemplos que expõem `POST /api/email/v1` (JSON com `to`, `subject`, `body`) e `POST /api/email/v1/withAttachment` (multipart) para testar o envio. Em uma aplicação real, **um endpoint que manda e-mail para qualquer destinatário com qualquer conteúdo é um relay de spam**:
 - exija autenticação e uma permissão específica (`authentication`);
 - limite destinatários (só usuários do sistema, ou domínio permitido) e use **templates** do servidor — o client não envia HTML livre;
 - aplique rate limit por usuário (`api-gateway`/`resilience`);
