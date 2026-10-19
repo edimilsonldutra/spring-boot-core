@@ -385,6 +385,6 @@ Com este filter, token ausente/inválido em path protegido resulta em **403 de b
 - `JwtTokenFilter` **sem** `@Component` (evita rodar duas vezes); token ruim → segue a chain sem autenticar, nunca lança.
 - Spring Security 7: somente lambda DSL; `anyRequest().denyAll()` no final; libere apenas o necessário.
 - Senhas com `DelegatingPasswordEncoder` (`{bcrypt}`); nunca texto puro, nem em seed.
-- `@EnableMethodSecurity` + `@PreAuthorize("hasAuthority('...')")` para autorização por permission.
+- `@EnableMethodSecurity` + `@PreAuthorize("hasAuthority('...')")` para autorização por permission. A permission não basta para recursos de um usuário: a **autorização por objeto** (IDOR) e o resto da segurança da API estão em `application-security`.
 - Mensagem de login falho genérica; não revele se o usuário existe.
 - **Sem Lombok** — deliberado.

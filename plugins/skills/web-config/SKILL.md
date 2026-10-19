@@ -13,7 +13,7 @@ Uma única classe `WebConfig` cuida de CORS e content negotiation. Os media type
 
 ## Antes de configurar content negotiation — pergunte quais content types suportar
 
-Esta mesma decisão é reutilizada por toda outra skill que toca controllers, DTOs ou testes (`code-organization`, `swagger`, `authentication`, `testing`, `integration-testing` e, quando instaladas, `hateoas`/`pagination`) — resolva-a uma vez por projeto, aqui. Pergunte ao desenvolvedor antes de escrever o `WebConfig`, qualquer controller ou qualquer DTO:
+Esta mesma decisão é reutilizada por toda outra skill que toca controllers, DTOs ou testes (`code-organization`, `swagger`, `authentication`, `testing`, `integration-testing`, `hateoas` e `pagination`) — resolva-a uma vez por projeto, aqui. Pergunte ao desenvolvedor antes de escrever o `WebConfig`, qualquer controller ou qualquer DTO:
 
 **"Esta API deve suportar vários content types (JSON + XML e/ou YAML), ou apenas o default, somente JSON?"**
 
@@ -217,7 +217,7 @@ public PersonDTO create(@RequestBody PersonDTO person) { ... }
 
 ## DTO — HATEOAS collection relation
 
-Quando o projeto usa HATEOAS (skill `hateoas`, de outro pacote), DTOs de produção usam `@Relation` para definir a chave de coleção HAL usada em `_embedded`. É isso que determina o nome da chave quando o `PagedResourcesAssembler` serializa a lista.
+Quando o projeto usa HATEOAS (skill `hateoas`), DTOs de produção usam `@Relation` para definir a chave de coleção HAL usada em `_embedded`. É isso que determina o nome da chave quando o `PagedResourcesAssembler` serializa a lista.
 
 ```java
 @Relation(collectionRelation = "books")

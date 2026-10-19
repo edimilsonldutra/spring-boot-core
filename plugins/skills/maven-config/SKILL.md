@@ -52,6 +52,7 @@ Não chute versões de memória — o Spring Boot se move rápido e várias libr
         <greenmail.version>{latest}</greenmail.version>
         <apache.poi.version>{latest}</apache.poi.version>
         <commons-csv.version>{latest}</commons-csv.version>
+        <tika.version>{latest}</tika.version>
         <jasperreports.version>{latest}</jasperreports.version>
         <zxing.version>{latest}</zxing.version>
         <java-jwt.version>{latest}</java-jwt.version>
@@ -200,10 +201,11 @@ O Jackson 2 ainda pode aparecer transitivamente (java-jwt, Dozer). Somente os pa
 | Swagger / OpenAPI | `org.springdoc:springdoc-openapi-starter-webmvc-ui` (`${springdoc.version}`, 3.x para o Boot 4) | `swagger` |
 | JWT | `com.auth0:java-jwt` | `authentication` |
 | Mapeamento Entity ↔ DTO | `com.github.dozermapper:dozer-core` | `spring-data-jpa` (preferência Dozer) |
-| Excel | `org.apache.poi:poi-ooxml` | `file-import-export` (outro pacote) |
-| CSV | `org.apache.commons:commons-csv` | `file-import-export` (outro pacote) |
-| Relatórios PDF | `net.sf.jasperreports:jasperreports`, `jasperreports-fonts`, `jasperreports-pdf`, `jasperreports-jdt` (todos `${jasperreports.version}`) | `pdf-reports` (outro pacote) |
-| QR Code | `com.google.zxing:core`, `com.google.zxing:javase` | `pdf-reports` (outro pacote) |
+| Excel | `org.apache.poi:poi-ooxml` | `file-import-export` |
+| CSV | `org.apache.commons:commons-csv` | `file-import-export` |
+| Detecção de tipo de arquivo | `org.apache.tika:tika-core` | `file-upload-download` |
+| Relatórios PDF | `net.sf.jasperreports:jasperreports`, `jasperreports-fonts`, `jasperreports-pdf`, `jasperreports-jdt` (todos `${jasperreports.version}`) | `pdf-reports` |
+| QR Code | `com.google.zxing:core`, `com.google.zxing:javase` | `pdf-reports` |
 
 Com a preferência MapStruct, substitua o Dozer por `org.mapstruct:mapstruct` (uma property `<mapstruct.version>`) mais o annotation processor `mapstruct-processor` declarado no `maven-compiler-plugin` — o processor **não** deve ser uma dependency normal:
 ```xml
@@ -415,7 +417,7 @@ dependencies {
 
 ### O que é diferente no Gradle
 
-- **O Gradle ignora os repositories que o próprio POM de uma dependency declara; o Maven os segue.** O `jasperreports-pdf` precisa do OpenPDF do repository da Jaspersoft, então com Gradle o build para com `Could not find com.github.librepdf:openpdf:…jaspersoft…` até que o repository seja adicionado ao lado de `mavenCentral()` (detalhes na skill `pdf-reports`, de outro pacote):
+- **O Gradle ignora os repositories que o próprio POM de uma dependency declara; o Maven os segue.** O `jasperreports-pdf` precisa do OpenPDF do repository da Jaspersoft, então com Gradle o build para com `Could not find com.github.librepdf:openpdf:…jaspersoft…` até que o repository seja adicionado ao lado de `mavenCentral()` (detalhes na skill `pdf-reports`):
 ```groovy
 repositories {
     mavenCentral()
@@ -468,7 +470,7 @@ No Windows o wrapper é `mvnw.cmd` / `gradlew.bat`. O Dockerfile e os steps de C
 
 - O parent é sempre `spring-boot-starter-parent` — nunca gerencie versões de dependencies do Spring manualmente.
 - Todas as versões de terceiros são declaradas em `<properties>` com uma property nomeada — nunca inline em `<dependency>`.
-- Dependencies gerenciadas pelo BOM nunca declaram `<version>` — deixe o BOM vencer. Nunca assuma que uma library é gerenciada: REST Assured, springdoc, GreenMail, java-jwt, Dozer, POI, commons-csv, JasperReports e ZXing **não** são.
+- Dependencies gerenciadas pelo BOM nunca declaram `<version>` — deixe o BOM vencer. Nunca assuma que uma library é gerenciada: REST Assured, springdoc, GreenMail, java-jwt, Dozer, POI, commons-csv, Tika, JasperReports e ZXing **não** são.
 - Os starters do Boot 4 são modulares: `spring-boot-starter-webmvc`, `-flyway`, `-hateoas`, `-validation`, `-data-jpa-test`. Uma library solta normalmente deixa de se auto-configurar.
 - Jackson 3: `tools.jackson.dataformat` para XML/YAML; as annotations continuam em `com.fasterxml.jackson.annotation`.
 - O driver do database é `<scope>runtime</scope>` — não é necessário em tempo de compilação.

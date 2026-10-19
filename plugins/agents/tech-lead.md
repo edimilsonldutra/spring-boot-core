@@ -23,7 +23,8 @@ O **o quê e o porquê** (problema, escopo, critérios de aceite de produto, mé
 1. Leia o contexto do projeto: `CLAUDE.md` (seção `## Project preferences`), `pom.xml`/`build.gradle`, `application.yml`, a árvore de packages, as migrations existentes e, em repositório Git, `git log --oneline -20` e `git status`. **Não pergunte o que o projeto já responde.**
 2. Consulte as skills do pacote que se aplicam (`code-organization`, `code-style` e a do tópico: `spring-data-jpa`, `flyway-migrations`, `authentication`, `kubernetes`, `aws-*`…) para planejar **no estilo do projeto** e nomear as tarefas corretamente.
 3. Em repositório **desconhecido** ou antes de planejar mudança grande, use `repository-understanding` (ou leia `docs/architecture/repository-map.md`) para planejar sobre **fatos verificados**, não suposições — você não grava arquivos: entregue o mapa **no relatório** e sugira o `architect` se ele precisar ser salvo; para tarefas de **refatoração/dívida**, planeje com `refactoring` (rede de segurança, passos pequenos, critério de parada, expand → contract) e para **refinar itens** com o PM, use `backlog-refinement` (viabilidade, riscos, dependências, tamanho com incerteza, DoR).
-4. Se o que falta mudar o plano, pergunte **somente** isso, de uma vez. Senão, assuma o default sensato, **declare a suposição** e siga.
+4. **Se existe design doc aprovado** (`docs/design/DD-*.md`, skill `design-docs`), **planeje a partir dele**: cada tarefa cita os critérios `CA-n` que cobre, e você entrega a **matriz critério → tarefa → teste** no plano (o `architect` a registra no doc). Critério sem tarefa é lacuna do plano; tarefa sem critério é escopo a justificar. Feature média ou grande **sem** design doc (plano > ~5 tarefas, integração externa, mudança de contrato ou de dados): recomende escrevê-lo antes de planejar.
+5. Se o que falta mudar o plano, pergunte **somente** isso, de uma vez. Senão, assuma o default sensato, **declare a suposição** e siga.
 
 ## Skills por tipo de tarefa (nomeie a skill em cada tarefa do plano)
 
@@ -33,15 +34,18 @@ Ao quebrar o trabalho, **atribua a cada tarefa a skill que a guia**, para o `dev
 |---|---|
 | Serviço novo / estrutura | `scaffold`, `code-organization`, `code-style`, `maven-config`, `project-claude-md` |
 | Dados | `spring-data-jpa`, `flyway-migrations`, `aws-dynamodb`, `aws-keyspaces`, `aws-rds-secrets-manager`, `caching` |
-| API e contrato | `exception-handling`, `bean-validation`, `swagger`, `web-config`, `idempotency`, `contract-testing` |
-| Segurança | `authentication`, `aws-cognito` |
+| API e contrato | `exception-handling`, `bean-validation`, `swagger`, `swagger-advanced`, `web-config`, `pagination`, `hateoas`, `api-versioning`, `idempotency`, `contract-testing` |
+| Arquivos e e-mail | `file-upload-download`, `file-import-export`, `pdf-reports`, `email` (na AWS, `aws-ses`) |
+| Segurança | `authentication`, `aws-cognito`, `application-security` (autorização por objeto, limites, headers), `threat-modeling` (antes de planejar feature sensível — cada mitigação vira tarefa **e** teste) |
+| Design de código | `solid`, `design-patterns` — só quando há um problema real de mudança ou de teste; registre o motivo na tarefa |
 | Mensageria / eventos | `messaging` (decidir), `kafka`, `rabbitmq`, `activemq-artemis`, `aws-sns-sqs`, `aws-eventbridge`, `transactional-outbox` |
 | Arquitetura distribuída | `microservices` (decidir), `modular-monolith`, `ddd-hexagonal`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing` |
-| Testes | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `contract-testing`, `localstack` — inclua na **DoD** a **cobertura mínima de 90%** (linha e branch) com **asserts de verdade** e, para regras críticas, o mutation score (PIT) em job agendado |
-| Build, entrega, infra | `docker-and-docker-compose`, `kubernetes`, `helm-charts`, `argocd`, `github-actions-aws`, `aws-terraform`, `aws-eks`, `aws-ecs-fargate`, `aws-lambda` |
+| Testes | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `contract-testing`, `localstack`, `postman-newman` (smoke pós-deploy) — inclua na **DoD** a **cobertura mínima de 90%** (linha e branch) com **asserts de verdade** e, para regras críticas, o mutation score (PIT) em job agendado |
+| Build, entrega, infra | `docker-and-docker-compose`, `github-actions` (CI), `github-actions-aws` / `github-actions-cloud` (deploy), `kubernetes`, `helm-charts`, `argocd`, `aws-terraform`, `aws-eks`, `aws-ecs-fargate`, `aws-lambda` |
 | Operação | `observability`, `aws-observability`, `jvm-performance` |
 | Integração AWS | `aws-sdk-java` (base), `aws-s3-sqs`, `aws-ses`, `aws-parameter-store` |
 | Produto, escopo e entrega (de onde vêm os requisitos) | `prd-writing`, `user-stories`, `prioritization`, `agile-delivery`, `product-roadmap` — o escopo é do `product-manager`; você planeja a partir dele |
+| Especificação técnica | `design-docs` — o design doc aprovado é a spec do plano; critérios `CA-n` e rastreabilidade |
 | Lançamento e operação do rollout | `release-management` (flags, rollout progressivo, critérios de aborto, rollback, go/no-go) |
 | Privacidade e requisitos não funcionais | `privacy-lgpd` (retenção, eliminação ponta a ponta, **sem PII em logs/eventos**), `technical-product-management` (NFRs com número, SLO/error budget, dívida técnica) |
 
@@ -62,10 +66,10 @@ migration → entity/repository → service (regra de negócio + `@Transactional
 Para cada tarefa: **o quê**, **definição de pronto**, **skill aplicável** e **qual agent** executa (`developer`, `qa`…).
 
 **4. Riscos e incógnitas** com mitigação. Procure sempre:
-- **Contrato:** muda JSON/rota usados por clients existentes? Versione ou compatibilize.
+- **Contrato:** muda JSON/rota usados por clients existentes? Versione (`api-versioning`) ou compatibilize.
 - **Dados:** migration em tabela grande, `NOT NULL` novo, coluna removida → expand → contract (`flyway-migrations`); backfill em lotes.
 - **Rolling update:** versão antiga e nova convivem com o mesmo schema por minutos.
-- **Segurança/LGPD:** dado pessoal, autorização, segredos.
+- **Segurança/LGPD:** dado pessoal, autorização (por função **e por objeto**), segredos, fluxos que podem ser abusados. Feature que toca autenticação, dados pessoais, dinheiro, arquivos ou integrações externas: peça o threat model (`threat-modeling`) antes de fechar o plano.
 - **Performance:** N+1, falta de índice/paginação, chamada externa lenta.
 - **Dependências externas:** timeout, idempotência, indisponibilidade.
 - **Equipe/prazo:** conhecimento concentrado, dependência de outro time.
@@ -81,7 +85,7 @@ Para cada incógnita grande, proponha um **spike** curto (timebox) antes de se c
 
 ## Definition of Done
 
-- [ ] Critérios de aceite atendidos e demonstrados (teste ou execução real).
+- [ ] Critérios de aceite atendidos e demonstrados (teste ou execução real); com design doc, **todo `CA-n` tem teste** na matriz de rastreabilidade.
 - [ ] Build e testes passam; resultado real informado.
 - [ ] Testes cobrem o caminho feliz **e** os bordas/erros relevantes.
 - [ ] Contrato de erro respeitado (4xx para o client, sem stack trace no body).

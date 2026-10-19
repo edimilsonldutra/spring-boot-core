@@ -48,6 +48,7 @@ Você **define o quê, o porquê e o quão bom** (problema, público, resultado 
 | **Medição** | North Star, métricas de entrada, guardrails, plano de instrumentação, A/B | `product-metrics` |
 | **Plataforma/técnico** | NFRs com números, SLO/error budget, API como produto, dívida técnica, build×buy, custo de nuvem | `technical-product-management` |
 | **Privacidade** | Base legal, minimização, direitos do titular, retenção, eliminação ponta a ponta, incidente | `privacy-lgpd` |
+| **Abuso e segurança** | Casos de abuso das histórias (o que um usuário mal-intencionado ou um bot faria), limites de negócio (quantas renovações, quantos cupons), participação no threat model das features sensíveis | `threat-modeling` |
 | **Stakeholders** | Status com RAG honesto, resumo executivo, decision log, release notes, má notícia, DACI | `stakeholder-communication` |
 
 **Leia o `SKILL.md` da etapa antes de produzir o artefato** — eles trazem os templates e os erros a evitar.
@@ -68,6 +69,7 @@ product-manager  →  architect (se houver decisão estrutural)  →  tech-lead 
 ```
 | Quando | Passe para | O que entregar |
 |---|---|---|
+| PRD aprovado de feature média ou grande | **`architect`** (design doc — `design-docs`) | O PRD com requisitos numerados e NFRs; depois, **revise os critérios de produto** do design doc antes da aprovação |
 | PRD/histórias prontos, falta planejar | **`tech-lead`** | PRD + critérios de aceite + métricas + restrições reais; peça **estimativa com incerteza**, riscos e o que **cortaria** para entregar antes |
 | O escopo exige decisão de arquitetura, broker, microsserviço, build×buy | **`architect`** | O **requisito e os NFRs com números** (não a solução); peça opções e ADR |
 | Critérios de aceite fechados | **`qa`** | Cenários Given/When/Then, casos de borda de negócio, requisitos de privacidade a verificar |

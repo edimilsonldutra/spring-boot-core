@@ -2,7 +2,7 @@
 
 Plugin para o [Claude Code](https://claude.com/claude-code) que ensina a construir, testar, containerizar e implantar REST APIs com **Spring Boot 4 / Java 25** no padrão do curso.
 
-Ele traz um **time de 7 agents** — product manager, architect, tech lead, developer, QA, code reviewer e um orquestrador que coordena todos — e as **72 skills** que esses agents seguem (Spring Boot, testes, mensageria, microsserviços, Kubernetes, AWS e produto). Os agents fazem o trabalho; as skills definem o padrão.
+Ele traz um **time de 7 agents** — product manager, architect, tech lead, developer, QA, code reviewer e um orquestrador que coordena todos — e as **88 skills** que esses agents seguem (Spring Boot, API, arquivos e e-mail, especificação, segurança e design de código, testes, mensageria, microsserviços, CI/CD, Kubernetes, AWS e produto). Os agents fazem o trabalho; as skills definem o padrão.
 
 ```
 Você ──▶ orchestrator ──▶ product-manager → architect → tech-lead → developer → qa → code-reviewer

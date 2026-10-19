@@ -213,7 +213,7 @@ void updatePrice(@Param("id") Long id, @Param("price") BigDecimal price);
 
 ## DTO
 
-Mesma estrutura da entity, sem annotations JPA — `implements Serializable`, getters/setters explícitos, `equals()`/`hashCode()`. Controllers nunca expõem entities. Sem `@XmlRootElement` em DTOs de produção. Quando o projeto usa HATEOAS, o DTO também estende `RepresentationModel<BookDTO>` e carrega `@Relation(collectionRelation = "books")` (skill `hateoas`, de outro pacote).
+Mesma estrutura da entity, sem annotations JPA — `implements Serializable`, getters/setters explícitos, `equals()`/`hashCode()`. Controllers nunca expõem entities. Sem `@XmlRootElement` em DTOs de produção. Quando o projeto usa HATEOAS, o DTO também estende `RepresentationModel<BookDTO>` e carrega `@Relation(collectionRelation = "books")` (skill `hateoas`).
 
 ```java
 public class BookDTO implements Serializable {
@@ -312,7 +312,7 @@ O MapStruct gera código simples de getter/setter em tempo de compilação, ent�
 
 O `update` acima copia os campos um por um de propósito: ele mantém a entity gerenciada e seu `id`, e é explícito sobre o que um client pode alterar.
 
-Quando o projeto usa HATEOAS, o service também adiciona os links (skill `hateoas`); quando pagina com HAL, ele retorna um `PagedModel` em vez de `Page` (skill `pagination`) — as duas são de outro pacote; sem elas, retorne `Page<BookDTO>`. Links nunca são adicionados no controller.
+Quando o projeto usa HATEOAS, o service também adiciona os links (skill `hateoas`); quando pagina com HAL, ele retorna um `PagedModel` em vez de `Page` (skill `pagination`); sem HATEOAS, retorne `Page<BookDTO>` com a serialização estável descrita em `pagination`. Links nunca são adicionados no controller.
 
 ---
 

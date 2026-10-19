@@ -196,7 +196,7 @@ public class Book implements Serializable {
 ```
 
 ### DTO
-Mesma estrutura da entity, sem annotations JPA. Entities nunca são expostas pelos controllers. Se o projeto usa HATEOAS, o DTO também estende `RepresentationModel<T>` e carrega `@Relation(collectionRelation = "books")` (skill `hateoas`, de outro pacote). Sem `@XmlRootElement` em DTOs de produção — o Jackson 3 escreve XML a partir do nome da classe e dos nomes das properties sem annotations JAXB (veja `web-config`).
+Mesma estrutura da entity, sem annotations JPA. Entities nunca são expostas pelos controllers. Se o projeto usa HATEOAS, o DTO também estende `RepresentationModel<T>` e carrega `@Relation(collectionRelation = "books")` (skill `hateoas`). Sem `@XmlRootElement` em DTOs de produção — o Jackson 3 escreve XML a partir do nome da classe e dos nomes das properties sem annotations JAXB (veja `web-config`).
 ```java
 public class BookDTO implements Serializable {
 

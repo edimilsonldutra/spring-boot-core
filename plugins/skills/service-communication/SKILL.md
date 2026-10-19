@@ -199,7 +199,7 @@ Custos: **complexidade operacional**, consumo de CPU/memória por pod, mais um s
 ## 8. Versionamento e compatibilidade de API
 
 - **Mudanças aditivas** na versão corrente: **adicionar** campo opcional/endpoint; **nunca** remover/renomear campo, mudar tipo ou semântica. Consumers **toleram campos desconhecidos** (tolerant reader).
-- **Quebra de contrato = nova versão** (`/api/book/v2`) com **convivência** e **deprecação com prazo** (headers `Deprecation`/`Sunset`); a skill `api-versioning` (pacote Advanced, não incluída aqui) cobre o recurso nativo do Spring para múltiplas versões.
+- **Quebra de contrato = nova versão** (`/api/book/v2`) com **convivência** e **deprecação com prazo** (headers `Deprecation`/`Sunset`); a skill `api-versioning` cobre a convivência entre versões e o versionamento nativo do Spring 7.
 - **Contract tests** (`contract-testing`) são o que impede o provedor de quebrar um consumidor sem perceber; **detecte breaking changes do OpenAPI no CI** (`springdoc` + ferramentas como `oasdiff`) antes do merge.
 - **Idempotência:** operações que o client pode repetir (por retry/timeout) exigem `Idempotency-Key` (`idempotency`).
 - **Paginação** sempre em coleções; **limites de payload**; **códigos HTTP corretos** (`4xx` do client, `5xx` do servidor) e o formato de erro padrão (`ExceptionResponse`/`ProblemDetail` — `exception-handling`).

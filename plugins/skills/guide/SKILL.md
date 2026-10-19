@@ -33,26 +33,22 @@ Antes de descrever a lista de skills, verifique o que realmente está presente e
 
 - **Fundação, lida por todas as outras:** `code-organization` (package layout, o questionário de preferências compartilhado), `code-style` (formatação, comentários, logging).
 - **Construa a data layer:** `maven-config` (dependencies/build file), `spring-data-jpa` (entities, repositories, DTOs), `flyway-migrations` (schema como SQL versionado).
-- **Deixe a API sólida:** `exception-handling` (um contrato de erro), `web-config` (CORS + JSON/XML/YAML), `bean-validation` (rejeitar input ruim com 400).
-- **Documente:** `swagger` (springdoc/OpenAPI).
+- **Deixe a API sólida:** `exception-handling` (um contrato de erro), `web-config` (CORS + JSON/XML/YAML), `bean-validation` (rejeitar input ruim com 400), `pagination` (listas paginadas com limite), `hateoas` (links HAL nas respostas), `api-versioning` (v1 → v2 sem quebrar clients; versionamento nativo do Spring 7).
+- **Documente:** `swagger` (springdoc/OpenAPI), `swagger-advanced` (grupos por versão, erros comuns, exemplos, OpenAPI como contrato no CI, geração de clients).
+- **Arquivos e e-mail:** `file-upload-download` (upload/download seguro), `file-import-export` (XLSX/CSV, criação em massa), `pdf-reports` (JasperReports 7, QR code), `email` (Spring Mail/SMTP, assíncrono depois do commit; na AWS, `aws-ses`).
 - **Finalize um projeto novo:** `project-claude-md` gera o `CLAUDE.md` do próprio projeto do aluno.
-- **Segurança e Java:** `authentication` (JWT + Spring Security 7), `caching` (Caffeine/Redis), `java-modern-features` (Java 21–25, virtual threads), `jvm-performance` (JVM em container, pool, queries, diagnóstico).
-- **Testes:** `testing` (unit + slice), `test-patterns`, `integration-testing` (Testcontainers + REST Assured, banco real), `test-coverage` (JaCoCo, PIT).
+- **Especificação:** `design-docs` (design doc / tech spec como spec do fluxo spec-driven: critérios `CA-n`, aprovação antes do plano, rastreabilidade critério → tarefa → teste).
+- **Segurança e design de código:** `application-security` (OWASP API Security Top 10: IDOR, mass assignment, limites, injeção, SSRF, headers, segredos, SBOM), `threat-modeling` (STRIDE e casos de abuso antes de construir), `solid` (princípios e quando não aplicar), `design-patterns` (padrões no Spring, auto-invocação, anti-padrões).
+- **Segurança e Java:** `authentication` (JWT + Spring Security 7), `caching` (Caffeine/Redis), `java-modern-features` (Java 17–25, virtual threads), `jvm-performance` (JVM em container, pool, queries, diagnóstico).
+- **Testes:** `testing` (unit + slice), `test-patterns`, `integration-testing` (Testcontainers + REST Assured, banco real), `test-coverage` (JaCoCo, PIT), `postman-newman` (caixa-preta e smoke pós-deploy).
 - **Docker e Kubernetes:** `docker-and-docker-compose`, `observability` (Actuator, Micrometer, probes), `kubernetes`, `helm-charts`.
+- **CI/CD:** `github-actions` (CI genérico: build, testes, cobertura, imagem no GHCR, CodeQL, Dependabot), `github-actions-aws` (deploy na AWS com OIDC), `github-actions-cloud` (deploy no Google Cloud e no Azure com OIDC), `argocd` (GitOps).
 - **Mensageria:** `messaging` (comece aqui: quando usar, qual broker, garantias, DLQ), `kafka`, `rabbitmq`, `activemq-artemis` (JMS), `aws-sns-sqs` (fan-out) e `transactional-outbox` (publicar sem dual write + consumer idempotente).
 - ➕ **Extras — Produto (perfil de PM):** `product-strategy` (visão, estratégia, business case), `product-discovery`, `prd-writing`, `user-stories`, `prioritization` (RICE/MoSCoW/WSJF), `product-roadmap` (Now/Next/Later + OKRs), `product-metrics` (North Star, tracking plan, A/B), `agile-delivery`, `release-management` (flags, rollout, go/no-go), `technical-product-management` (NFRs, SLO, API como produto), `privacy-lgpd` e `stakeholder-communication`. O agent `product-manager` as usa.
 - ➕ **Extras — Arquitetura de microsserviços:** `microservices` (**comece aqui**: quando dividir, decomposição, dados, migração), `modular-monolith` (Spring Modulith), `ddd-hexagonal` (domínio rico), `api-gateway` (gateway e BFF), `service-communication` (REST/gRPC, auth serviço-a-serviço), `resilience` (timeout, retry, circuit breaker), `saga-pattern`, `cqrs-event-sourcing`, `contract-testing` (Pact/SCC) e `idempotency`.
 - ➕ **Extras — GitOps:** `argocd` (Argo CD: repo GitOps, Application/AppProject/ApplicationSet, migration como PreSync hook, promoção por PR, secrets e segurança).
 - ➕ **Extras — AWS (serviços e integração):** `aws-sdk-java` (base: SDK v2, credenciais, clients, timeouts), `localstack` (emular a AWS local e em testes), `aws-dynamodb`, `aws-keyspaces`, `aws-lambda`, `aws-ecs-fargate`, `aws-cognito`, `aws-parameter-store` (+ AppConfig), `aws-ses`, `aws-eventbridge`, `aws-observability` (CloudWatch/X-Ray/alarmes) e `aws-terraform` (infra como código).
 - ➕ **Extras — AWS:** `aws-eks` (ECR, EKS, IRSA, ALB), `aws-rds-secrets-manager`, `aws-s3-sqs`, `github-actions-aws` (CI/CD com OIDC).
-
----
-
-## Skills de outros pacotes (não incluídas aqui)
-
-Algumas skills citadas no curso pertencem aos pacotes **Premium** e **Advanced** e **não** estão neste plugin: `hateoas`, `pagination`, `email`, `file-import-export`, `pdf-reports`, `file-upload-download`, `github-actions`, `swagger-advanced` (Premium) e `api-versioning`, `postman-newman`, `github-actions-cloud` (Advanced). Quando uma skill instalada mencionar uma delas, ou o desenvolvedor pedir esse tema:
-- confirme pela leitura ao vivo das pastas irmãs se ela foi instalada por outro pacote; se foi, use-a;
-- se não foi, diga que ela não está instalada e qual pacote a traz, e ofereça o caminho mais próximo deste pacote (por exemplo: e-mail → `aws-ses`; upload → `aws-s3-sqs`; CI → `github-actions-aws`; versionamento de API → `service-communication` e `release-management`). **Nunca invente o conteúdo de uma skill que não está instalada.**
 
 ---
 
@@ -65,21 +61,30 @@ Algumas skills citadas no curso pertencem aos pacotes **Premium** e **Advanced**
 | Schema migrations | `flyway-migrations` |
 | Responses de erro limpas e consistentes | `exception-handling` |
 | CORS, ou XML/YAML além de JSON | `web-config` |
-| Documentação da API | `swagger` |
+| Documentação da API | `swagger` (grupos, exemplos, OpenAPI no CI, clients gerados: `swagger-advanced`) |
 | Rejeitar input ruim com um 400 | `bean-validation` |
 | Um `CLAUDE.md` de projeto gerado | `project-claude-md` |
 | Login / JWT | `authentication` (login gerenciado: `aws-cognito`) |
-| Links HATEOAS ou listas paginadas com HAL | `hateoas` / `pagination` — **outro pacote (Premium)**; aqui só há `Pageable` em `spring-data-jpa` |
-| Enviar email | `aws-ses` (a skill `email` é de outro pacote) |
-| Importar/exportar XLSX/CSV, relatórios PDF | `file-import-export` / `pdf-reports` — **outro pacote (Premium)** |
-| Upload/download de arquivos | `aws-s3-sqs` (a skill `file-upload-download` é de outro pacote) |
+| Revisão de segurança da API, IDOR, mass assignment, rate limit, security headers, SSRF | `application-security` |
+| Pensar em ameaças e abusos antes de construir uma feature | `threat-modeling` |
+| Design doc, tech spec, SDD, RFC; desenvolver seguindo uma especificação | `design-docs` (decisão isolada: ADR do agent `architect`) |
+| Classe difícil de testar ou de mudar, princípios SOLID | `solid` |
+| Qual padrão de projeto usar (Strategy, Adapter, Observer, State…), `@Transactional` que não funciona | `design-patterns` |
+| Listas paginadas (page, size, direction, limite, ordenação) | `pagination` |
+| Links HATEOAS (HAL) nas respostas | `hateoas` |
+| Enviar e-mail | `email` (SMTP/Spring Mail); pela AWS: `aws-ses` |
+| Importar/exportar XLSX ou CSV, criação em massa | `file-import-export` |
+| Relatórios PDF (JasperReports), QR code | `pdf-reports` |
+| Upload/download de arquivos | `file-upload-download`; guardando no S3: `aws-s3-sqs` |
 | Dockerizar o projeto | `docker-and-docker-compose` |
-| Um pipeline de CI/CD | `github-actions-aws` |
+| Um pipeline de CI (build, testes, imagem, segurança) | `github-actions` |
+| Deploy por CI na AWS | `github-actions-aws` |
+| Deploy por CI no Google Cloud ou no Azure | `github-actions-cloud` |
 | Deploy no Kubernetes | `kubernetes` |
-| API versioning | `service-communication` (seção de versionamento) e `release-management` (deprecação); a skill `api-versioning` é de outro pacote |
+| Versionar a API (v1 → v2, versionamento nativo do Spring 7, deprecação) | `api-versioning` (deprecação também em `release-management`) |
 | Retries / resilience | `resilience` |
 | Metrics / health probes | `observability` |
-| Uma suíte Postman/Newman | **outro pacote (Advanced)** — `postman-newman` |
+| Uma suíte Postman/Newman, smoke test pós-deploy | `postman-newman` |
 | Decidir se/qual mensageria usar | `messaging` |
 | Eventos em escala, replay, streaming | `kafka` |
 | Fila de tarefas com roteamento | `rabbitmq` |
@@ -87,7 +92,7 @@ Algumas skills citadas no curso pertencem aos pacotes **Premium** e **Advanced**
 | Fan-out de eventos na AWS (SNS → SQS) | `aws-sns-sqs` |
 | Publicar evento junto com a mudança no banco, sem perder | `transactional-outbox` |
 | Cache (Caffeine/Redis/ElastiCache) | `caching` |
-| Java 21–25: records, sealed, virtual threads | `java-modern-features` |
+| Java 17–25: records, sealed, virtual threads | `java-modern-features` |
 | API lenta, tuning de JVM/pool, OOMKilled | `jvm-performance` |
 | Rodar no Kubernetes / empacotar com Helm | `kubernetes`, `helm-charts` |
 | Imagem no ECR, cluster EKS, ALB, IRSA | `aws-eks` |

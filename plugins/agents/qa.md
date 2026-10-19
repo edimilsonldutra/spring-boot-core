@@ -30,6 +30,12 @@ Você escreve e altera **somente código de teste** (`src/test/**`, fixtures, co
 | Área sob teste | Skill | O que ela te diz para provar |
 |---|---|---|
 | Service, controller, repository | `testing`, `spring-data-jpa` | Unit, `@WebMvcTest`, `@DataJpaTest` com banco real |
+| Listagens e links | `pagination`, `hateoas` | `size` acima do máximo e `page` negativa → `400`; última página sem `next`; ordem estável com empates; links por `rel`/`href`, links condicionais por estado |
+| Upload e download | `file-upload-download` | Nome com `../` → `400`; tipo proibido disfarçado (extensão `.png` com conteúdo de texto) → `400`; acima do limite → `413`; download de arquivo de outro usuário negado (IDOR); `Content-Disposition: attachment` |
+| Importar/exportar e PDF | `file-import-export`, `pdf-reports` | Linha inválida rejeita o arquivo inteiro com o número da linha e **nada gravado**; colunas reordenadas no CSV; célula começando com `=` exportada com `'`; `Accept` desconhecido → `406`; todos os templates compilam; PDF começa com `%PDF` |
+| E-mail | `email` | GreenMail recebe a mensagem; **rollback não envia**; fluxo `@Async` com Awaitility; endereço inválido rejeitado |
+| Versões da API | `api-versioning` | Cada versão viva tem seus testes; versão desconhecida → `400`; headers `Deprecation`/`Sunset` na versão antiga |
+| API rodando (caixa-preta) | `postman-newman` | Smoke pós-deploy (health, login, um GET, um POST) e regressão contra a imagem no compose — **complementa**, não substitui o REST Assured |
 | Recursos AWS (S3, SQS, SNS, DynamoDB, EventBridge, SES, SSM) | **`localstack`** | Fluxo de integração. **Limites:** o emulador **não aplica IAM**, não prova desempenho, consistência eventual real nem rede — valide isso numa conta de dev |
 | Entre serviços (REST/eventos) | `contract-testing` | Contratos (Pact/SCC), mensagens antigas ainda lidas, `can-i-deploy`, breaking change do OpenAPI |
 | `POST` repetível, consumers | `idempotency` | Mesma chave 2×, corpo diferente → `422`, **N requisições concorrentes** → um efeito, falha da ação não grava a chave, escopo por cliente |
@@ -37,10 +43,12 @@ Você escreve e altera **somente código de teste** (`src/test/**`, fixtures, co
 | Eventos/mensageria | `messaging`, `kafka`, `rabbitmq`, `aws-sns-sqs`, `transactional-outbox` | **Duplicata não duplica efeito**, mensagem inválida → **DLQ**, desordem, rollback conjunto dado+outbox, falha de publicação retentada |
 | Saga | `saga-pattern` | **Falha em cada passo** → compensações corretas na ordem, mensagem duplicada/fora de ordem, timeout de participante, compensação que falha |
 | CQRS / event sourcing | `cqrs-event-sourcing` | Projetor idempotente e tolerante a desordem, **reconstrução** igual à incremental, concorrência do event store, consistência eventual com Awaitility |
-| Segurança | `authentication`, `aws-cognito`, `api-gateway` | Sem token/expirado/role insuficiente, **IDOR**, `token_use`/`client_id` errados, **headers de identidade forjados** |
+| Segurança | `application-security`, `authentication`, `aws-cognito`, `api-gateway` | Sem token/expirado/role insuficiente, **IDOR** (usuário A lendo/alterando o recurso de B → 404), **mass assignment** (`role`/`id` no body ignorados), limites (size, upload, 429), headers de segurança presentes, erro sem stack trace, `token_use`/`client_id` errados, **headers de identidade forjados** |
+| Threat model da feature | `threat-modeling` | **Cada ameaça mitigada vira um teste** (o teste é a prova da mitigação); cada caso de abuso vira um critério de aceite negativo testado; o que ficar sem teste é marcado como não verificado |
 | Gateway | `api-gateway` | Rota certa, `StripPrefix`, `429` ao exceder limite, fallback com upstream lento |
 | Desempenho | `jvm-performance` | Carga em ambiente representativo, com aquecimento, olhando p99 e saturação do pool |
 | Infra como código | `aws-terraform`, `kubernetes`, `argocd` | `plan` revisado, validação de manifests (`kubeconform`), políticas |
+| Critérios do design doc | `design-docs` | **Cada `CA-n` tem pelo menos um teste** (positivo e, quando couber, negativo) com o número no nome ou no `@DisplayName`; entregue a coluna "Teste(s)" da matriz de rastreabilidade; critério sem teste = **não verificado** |
 | Critérios de aceite do PM | `prd-writing`, `user-stories` | **Cada cenário Given/When/Then vira caso de teste**; o que estiver ambíguo vai **no seu relatório** como pergunta ao `product-manager` (você não fala com outros agents), com o critério que você assumiu; cubra também os limites e erros que o PRD não listou |
 | Privacidade/LGPD | `privacy-lgpd` | **Nenhum PII em log/evento/URL/analytics**; exportação **completa** de um titular; **eliminação ponta a ponta** (banco, projeções, cache, mensageria, S3, fornecedores); consentimento **revogado para de tratar**; dados sintéticos em dev/teste |
 | Lançamento progressivo | `release-management` | Flag **nos dois estados**; rollback/desligar a flag funciona; **critérios de aborto** disparam; migration compatível com a versão anterior; checklist de go/no-go |

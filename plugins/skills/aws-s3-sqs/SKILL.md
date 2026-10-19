@@ -88,7 +88,7 @@ public class FileStorageService {
     }
 }
 ```
-- **Nunca confie no nome de arquivo do client**: gere a *key* com UUID e sanitize o nome (remova `..`, `/`, `\`) — path traversal e sobrescrita de objetos (a skill `file-upload-download`, de outro pacote, detalha a sanitização). Valide **tipo** (`Content-Type` e assinatura/magic bytes) e **tamanho** (`spring.servlet.multipart.max-file-size`) antes de gravar.
+- **Nunca confie no nome de arquivo do client**: gere a *key* com UUID e sanitize o nome (remova `..`, `/`, `\`) — path traversal e sobrescrita de objetos (a skill `file-upload-download` detalha a sanitização e a validação por assinatura). Valide **tipo** (`Content-Type` e assinatura/magic bytes) e **tamanho** (`spring.servlet.multipart.max-file-size`) antes de gravar.
 - **Presigned URL** (`createSignedGetURL`/`createSignedPutURL`): o client baixa/envia **direto do/para o S3** com um link temporário, sem passar o arquivo pela API (menos CPU, memória e banda no pod). Expiração curta.
 - Bucket **privado**: *Block Public Access* ligado, SSE (SSE-S3 ou SSE-KMS), versionamento para dados importantes, **lifecycle** (expirar temporários, mover para classes mais baratas) e *CORS* no bucket se o browser enviar direto.
 - Retorne ao client a **key**, não a URL permanente do objeto.

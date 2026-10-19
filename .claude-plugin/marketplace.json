@@ -8,7 +8,7 @@
     {
       "name": "padrao-spring-boot",
       "source": "./plugins",
-      "description": "72 skills (Spring Boot, testes, mensageria, microsserviços, Kubernetes, AWS, produto) e 7 agents (product manager, architect, tech lead, developer, QA, code reviewer e orquestrador)."
+      "description": "88 skills (Spring Boot, API, arquivos e e-mail, design docs, segurança, SOLID e padrões de projeto, testes, mensageria, microsserviços, CI/CD, Kubernetes, AWS, produto) e 7 agents (product manager, architect, tech lead, developer, QA, code reviewer e orquestrador)."
     }
   ]
 }

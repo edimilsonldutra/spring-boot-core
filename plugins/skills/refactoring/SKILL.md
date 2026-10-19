@@ -213,7 +213,7 @@ Refatoração que **não cabe em passos pequenos verdes** (API pública, banco, 
 - **Misturar refatoração com feature/bug** no mesmo commit/PR.
 - **"Refatoração geral"** sem objetivo nem critério de parada; **big-bang rewrite**.
 - **Refatorar código estável** que ninguém altera; **padronizar por gosto**.
-- **Design pattern sem problema** (factory/strategy/abstração "para o futuro") — over-engineering.
+- **Design pattern sem problema** (factory/strategy/abstração "para o futuro") — over-engineering. Quando o problema existe, `design-patterns` e `solid` dizem qual estrutura resolve e quando não aplicar.
 - **Passos grandes** em vez de pequenos e verdes; **commits gigantes** ilegíveis.
 - **Renomear/mover sem checar reflexão, wiring, JPQL e JSON.**
 - **Mudar API pública/contrato/banco de uma vez** (sem expand → contract).
