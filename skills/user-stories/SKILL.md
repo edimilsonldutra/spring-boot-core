@@ -1,6 +1,6 @@
 ---
 name: user-stories
-description: Histórias de usuário e fatias verticais — formato, INVEST, critérios Given/When/Then, story mapping, padrões de fatiamento, histórias habilitadoras, DoR e DoD, three amigos e como as histórias viram tarefas do tech lead e casos de teste do QA. Use quando quebrar um épico ou escrever critérios de aceite.
+description: Histórias de usuário e fatias verticais — formato, INVEST, critérios Given/When/Then, story mapping, padrões de fatiamento, histórias habilitadoras, DoR e DoD, three amigos e como as histórias viram tarefas do tech lead e casos de teste do QA. Use quando quebrar um épico ou escrever critérios de aceite. Não use para o PRD completo (prd-writing).
 ---
 
 Antes de aplicar este pattern, leia também [`../prd-writing/SKILL.md`](../prd-writing/SKILL.md) (de onde vêm os requisitos), [`../agile-delivery/SKILL.md`](../agile-delivery/SKILL.md) (refinamento e cadência) e [`../prioritization/SKILL.md`](../prioritization/SKILL.md). Para a testabilidade dos critérios: `testing`.

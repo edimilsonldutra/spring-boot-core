@@ -1,6 +1,6 @@
 ---
 name: aws-sns-sqs
-description: Pub/sub na AWS com fan-out SNS → filas SQS — Standard × FIFO, raw message delivery, filter policy, queue policy, DLQ e redrive, SnsTemplate e @SqsListener, consumer idempotente, IAM mínimo, métricas e testes com LocalStack. Use quando um evento precisa chegar a vários serviços na AWS; complementa aws-s3-sqs.
+description: Pub/sub na AWS com fan-out SNS → filas SQS — Standard × FIFO, raw message delivery, filter policy, queue policy, DLQ e redrive, SnsTemplate e @SqsListener, consumer idempotente, IAM mínimo, métricas e testes com LocalStack. Use quando um evento precisa chegar a vários serviços na AWS; complementa aws-s3-sqs. Não use para escolher o broker (messaging).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../messaging/SKILL.md`](../messaging/SKILL.md) e [`../aws-s3-sqs/SKILL.md`](../aws-s3-sqs/SKILL.md) (setup do Spring Cloud AWS, SQS básico e testes com LocalStack — **não repetido aqui**). Em produção a identidade vem de IRSA/Pod Identity (`aws-eks`). Se o evento nasce de uma mudança no database, use `transactional-outbox`.

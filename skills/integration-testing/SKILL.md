@@ -1,6 +1,6 @@
 ---
 name: integration-testing
-description: Testes de integração no Spring Boot 4 com banco real em container — Testcontainers singleton, @SpringBootTest com porta aleatória e REST Assured, isolamento de dados, contrato de erro e segurança, migrations, cache de contexto, outros containers, Awaitility e anti-patterns (nunca H2). Use quando testar o fluxo ponta a ponta contra a aplicação rodando.
+description: Testes de integração no Spring Boot 4 com banco real em container — Testcontainers singleton, @SpringBootTest com porta aleatória e REST Assured, isolamento de dados, contrato de erro e segurança, migrations, cache de contexto, outros containers, Awaitility e anti-patterns (nunca H2). Use quando testar o fluxo ponta a ponta contra a aplicação rodando. Não use para unit e slice tests (testing) nem para contratos entre serviços (contract-testing).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../testing/SKILL.md`](../testing/SKILL.md) (a base: unit e slice), [`../test-patterns/SKILL.md`](../test-patterns/SKILL.md), [`../spring-data-jpa/SKILL.md`](../spring-data-jpa/SKILL.md) (`@DataJpaTest`, container MySQL) e [`../maven-config/SKILL.md`](../maven-config/SKILL.md) (dependencies, surefire, REST Assured). Cobertura: `test-coverage`.

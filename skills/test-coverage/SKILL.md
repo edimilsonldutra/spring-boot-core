@@ -1,6 +1,6 @@
 ---
 name: test-coverage
-description: Cobertura e eficácia da suíte — o que a cobertura mede e não prova, JaCoCo com Maven e Gradle (argLine com o agent do Mockito), padrão de 90% de linha e branch, diff coverage e catraca para legado, gate no CI (Codecov, Sonar), mutation testing com PIT e anti-patterns. Use quando configurar cobertura ou um gate no pipeline, ou analisar o que está descoberto.
+description: Cobertura e eficácia da suíte — o que a cobertura mede e não prova, JaCoCo com Maven e Gradle (argLine com o agent do Mockito), padrão de 90% de linha e branch, diff coverage e catraca para legado, gate no CI (Codecov, Sonar), mutation testing com PIT e anti-patterns. Use quando configurar cobertura ou um gate no pipeline, ou analisar o que está descoberto. Não use para escrever os testes em si (testing, integration-testing).
 ---
 
 Antes de aplicar este pattern, leia também [`../testing/SKILL.md`](../testing/SKILL.md), [`../test-patterns/SKILL.md`](../test-patterns/SKILL.md) (smells: teste que nunca falha), [`../integration-testing/SKILL.md`](../integration-testing/SKILL.md), [`../maven-config/SKILL.md`](../maven-config/SKILL.md) (surefire e o `argLine` do Mockito) e [`../github-actions-aws/SKILL.md`](../github-actions-aws/SKILL.md) (o pipeline).

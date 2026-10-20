@@ -1,6 +1,6 @@
 ---
 name: aws-cognito
-description: Amazon Cognito com a API Spring Boot como OAuth2 Resource Server — User Pool, app clients, Authorization Code + PKCE e client credentials, validação do access token (token_use, client_id), cognito:groups e scopes como authorities, operações admin pelo SDK e testes. Use quando trocar o JWT próprio por login gerenciado, MFA ou login social.
+description: Amazon Cognito com a API Spring Boot como OAuth2 Resource Server — User Pool, app clients, Authorization Code + PKCE e client credentials, validação do access token (token_use, client_id), cognito:groups e scopes como authorities, operações admin pelo SDK e testes. Use quando trocar o JWT próprio por login gerenciado, MFA ou login social. Não use para JWT emitido pela própria API (authentication).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../authentication/SKILL.md`](../authentication/SKILL.md) (a alternativa com JWT emitido pela própria API) e [`../aws-sdk-java/SKILL.md`](../aws-sdk-java/SKILL.md).

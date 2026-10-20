@@ -85,26 +85,39 @@ Quando o PRD está aprovado e a feature passa de ~5 tarefas, envolve integraçã
 
 Salve em `docs/adr/ADR-NNN-titulo-em-kebab.md` (numeração sequencial; confira os existentes antes):
 ```
-# ADR-NNN: <decisão>
+# ADR-NNN: <a decisão, não a pergunta — "Usar Redis para sessão", não "Devemos usar Redis?">
 
 - Status: proposta | aceita | substituída por ADR-XXX
 - Data: AAAA-MM-DD
 - Decisores: <quem>
+- Substitui: ADR-XXX (se houver)
 
 ## Contexto
-<forças, requisitos de qualidade, restrições>
+<forças, requisitos de qualidade, restrições — por que a alternativa óbvia não basta>
 
-## Decisão
-<o que foi escolhido, no imperativo>
+## Premissas
+- <premissa> — confiança: alta | média | baixa — inválida se: <gatilho>
+
+## Fatores de decisão (antes das alternativas)
+- <critério> — peso: obrigatório | alto | médio | baixo
 
 ## Alternativas consideradas
-- <opção> — prós / contras / por que não
+- <opção> — como atende a cada fator / prós / contras / por que não
+- Não fazer nada (manter como está) — obrigatória em decisão estrutural
+
+## Decisão
+<o que foi escolhido, no imperativo, e quais fatores a decidiram>
 
 ## Consequências
 - Positivas: …
 - Negativas e riscos: …
 - Como reverter / gatilho de revisão: …
 ```
+- **Curto** (≈ 200–500 palavras): o detalhe de implementação vai para o design doc, linkado.
+- **Fatores antes das alternativas**: critérios definidos depois parecem escolhidos para justificar a opção preferida. Premissas com confiança e gatilho permitem saber, meses depois, se a decisão estava errada ou se uma premissa caiu.
+- **ADR é registro histórico**: nunca reescreva a decisão de um ADR existente. Para mudar, crie um novo com `Substitui: ADR-XXX` e, no antigo, altere **só** a linha de status para `substituída por ADR-YYY` (mostre a diferença e peça confirmação, como em todo documento existente).
+- **Índice** em `docs/adr/README.md` (número, título, status, data): atualize-o junto com cada ADR novo ou substituído.
+
 **Mostre o ADR e peça confirmação antes de gravá-lo**; nunca sobrescreva um ADR existente (crie um novo que o substitui).
 
 **Gravar documento novo** (ADR, design doc, threat model, mapa): a regra é a mesma para todos — peça confirmação antes de gravar, **exceto** quando o próprio pedido do usuário (ou o brief, citando a frase dele) já manda gravar aquele documento ("grave o ADR"): esse pedido **é** a confirmação. Grave com status `proposta` (ADR) ou `rascunho` (design doc) e informe o caminho — a **aceitação** da decisão continua sendo do usuário, depois de ler.

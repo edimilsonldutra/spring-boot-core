@@ -1,6 +1,6 @@
 ---
 name: ddd-hexagonal
-description: DDD tático e arquitetura hexagonal no Spring Boot — bounded contexts e context map, intensidade de DDD por subdomínio (Core, Supporting, Generic), entities, value objects como records, aggregates e invariantes, domain events, ports e adapters, mapeamento domínio ↔ JPA, ArchUnit, diagnóstico e refatoração de modelo anêmico e quando NÃO usar (CRUD). Use quando modelar um domínio rico ou avaliar sair do layout flat-by-layer.
+description: DDD tático e arquitetura hexagonal no Spring Boot — bounded contexts e context map, intensidade de DDD por subdomínio (Core, Supporting, Generic), entities, value objects como records, aggregates e invariantes, domain events, ports e adapters, mapeamento domínio ↔ JPA, ArchUnit, diagnóstico e refatoração de modelo anêmico e quando NÃO usar (CRUD). Use quando modelar um domínio rico ou avaliar sair do layout flat-by-layer. Não use para CRUD nem para decidir a divisão em serviços (microservices).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../spring-data-jpa/SKILL.md`](../spring-data-jpa/SKILL.md) e [`../microservices/SKILL.md`](../microservices/SKILL.md) (onde os bounded contexts viram serviços). Esta skill **estende** `code-organization` para domínios complexos; ela **não** substitui o layout flat-by-layer para serviços simples.

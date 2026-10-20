@@ -1,6 +1,6 @@
 ---
 name: argocd
-description: Entrega contínua por GitOps com Argo CD no Kubernetes/EKS — repositório de configuração, Application/AppProject/ApplicationSet, sync policy, Flyway como PreSync hook, CI que só atualiza a tag, promoção por PR, rollback por git revert, segredos fora do Git e segurança do Argo CD. Use quando configurar ou depurar deploy GitOps (OutOfSync, Degraded).
+description: Entrega contínua por GitOps com Argo CD no Kubernetes/EKS — repositório de configuração, Application/AppProject/ApplicationSet, sync policy, Flyway como PreSync hook, CI que só atualiza a tag, promoção por PR, rollback por git revert, segredos fora do Git e segurança do Argo CD. Use quando configurar ou depurar deploy GitOps (OutOfSync, Degraded). Não use para o pipeline de build e testes (github-actions).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../kubernetes/SKILL.md`](../kubernetes/SKILL.md) (os manifests que o Argo CD aplica), [`../helm-charts/SKILL.md`](../helm-charts/SKILL.md), [`../github-actions-aws/SKILL.md`](../github-actions-aws/SKILL.md) (o CI que alimenta o Argo CD) e [`../aws-eks/SKILL.md`](../aws-eks/SKILL.md).

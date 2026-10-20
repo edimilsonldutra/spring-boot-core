@@ -1,6 +1,6 @@
 ---
 name: aws-eventbridge
-description: Amazon EventBridge com Spring Boot — event bus, regras e event patterns, targets com retry e DLQ, PutEvents tratando FailedEntryCount, envelope de evento, archive/replay, schema registry e EventBridge Scheduler no lugar de @Scheduled em várias réplicas. Use quando rotear eventos por conteúdo, reagir a eventos da AWS ou agendar tarefas.
+description: Amazon EventBridge com Spring Boot — event bus, regras e event patterns, targets com retry e DLQ, PutEvents tratando FailedEntryCount, envelope de evento, archive/replay, schema registry e EventBridge Scheduler no lugar de @Scheduled em várias réplicas. Use quando rotear eventos por conteúdo, reagir a eventos da AWS ou agendar tarefas. Não use para escolher o broker (messaging).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../messaging/SKILL.md`](../messaging/SKILL.md), [`../aws-sdk-java/SKILL.md`](../aws-sdk-java/SKILL.md) e [`../aws-sns-sqs/SKILL.md`](../aws-sns-sqs/SKILL.md) (a comparação com SNS+SQS e as filas-alvo). Se o evento nasce de uma mudança no banco, use `transactional-outbox`.

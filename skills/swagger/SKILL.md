@@ -1,6 +1,6 @@
 ---
 name: swagger
-description: Swagger/OpenAPI com springdoc 3 no Spring Boot 4 — interface *ControllerDocs ou annotations no controller, configuração do springdoc (OpenAPI 3.1), OpenApiConfig, Bearer JWT no Swagger UI, rotas públicas no SecurityConfig, conjunto padrão de @ApiResponse e textos no idioma salvo. Use quando documentar endpoints ou quando o Swagger UI não abrir.
+description: Swagger/OpenAPI com springdoc 3 no Spring Boot 4 — interface *ControllerDocs ou annotations no controller, configuração do springdoc (OpenAPI 3.1), OpenApiConfig, Bearer JWT no Swagger UI, rotas públicas no SecurityConfig, conjunto padrão de @ApiResponse e textos no idioma salvo. Use quando documentar endpoints ou quando o Swagger UI não abrir. Não use para grupos, exemplos, breaking change ou OpenAPI como contrato entre times (swagger-advanced).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md) e [`../code-style/SKILL.md`](../code-style/SKILL.md) para as preferências do projeto, o package layout base e as convenções de code style.

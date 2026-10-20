@@ -1,6 +1,6 @@
 ---
 name: postman-newman
-description: Testes de API de caixa-preta com Postman e Newman — onde eles entram (smoke e regressão contra a aplicação rodando, não no lugar do REST Assured), coleção versionada no Git, environments sem segredos, login JWT no pre-request, encadeamento de ids, testes com pm.test e JSON Schema, dados únicos, data-driven, Newman no terminal e no CI contra docker compose e pós-deploy. Use quando quiser uma suíte Postman executável no pipeline ou um smoke test depois do deploy.
+description: Testes de API de caixa-preta com Postman e Newman — onde eles entram (smoke e regressão contra a aplicação rodando, não no lugar do REST Assured), coleção versionada no Git, environments sem segredos, login JWT no pre-request, encadeamento de ids, testes com pm.test e JSON Schema, dados únicos, data-driven, Newman no terminal e no CI contra docker compose e pós-deploy. Use quando quiser uma suíte Postman executável no pipeline ou um smoke test depois do deploy. Não use no lugar dos testes de integração com REST Assured (integration-testing).
 ---
 
 Antes de aplicar este pattern, leia também [`../integration-testing/SKILL.md`](../integration-testing/SKILL.md) (a suíte principal de integração, com REST Assured), [`../authentication/SKILL.md`](../authentication/SKILL.md) (`/auth/signin`), [`../docker-and-docker-compose/SKILL.md`](../docker-and-docker-compose/SKILL.md) e [`../github-actions/SKILL.md`](../github-actions/SKILL.md).

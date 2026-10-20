@@ -1,6 +1,6 @@
 # Squads — Agents & Skills para Claude Code
 
-![version](https://img.shields.io/badge/version-2.2.0-blue)
+![version](https://img.shields.io/badge/version-2.2.1-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-D97757)
@@ -333,6 +333,10 @@ spring-boot-core/
 ├── prompts/                    # prompts reutilizáveis por fluxo (feature, bug, revisão, ADR…)
 ├── docs/
 │   └── guide.md                # guia de referência
+├── scripts/
+│   └── validate-plugin.py      # validação estrutural (rodada no CI)
+├── .github/workflows/
+│   └── validate-plugin.yml
 └── README.md
 ```
 
@@ -347,7 +351,9 @@ spring-boot-core/
 5. **Valide** antes do PR:
    ```bash
    claude plugin validate .
+   python scripts/validate-plugin.py
    ```
+   O segundo comando (também rodado no CI em todo PR) confere o frontmatter de skills e agents (nome = pasta, description até 1024 caracteres, sem `<`/`>`, com "Use quando…"), os links `../<skill>/SKILL.md`, as skills citadas nos agents, prompts e guias, a lista `agents` do `plugin.json`, o catálogo do guia, os grupos do README e as contagens e a versão.
 
 ---
 

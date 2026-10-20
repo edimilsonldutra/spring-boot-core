@@ -1,6 +1,6 @@
 ---
 name: microservices
-description: Ponto de partida de arquitetura de microsserviços — quando adotar (e quando não), monolito modular primeiro, decomposição por bounded context, dados por serviço, distributed monolith, pré-requisitos de plataforma, catálogo de padrões com a skill de cada um, Strangler Fig e checklist de decisão. Use quando discutir dividir um sistema em serviços.
+description: Ponto de partida de arquitetura de microsserviços — quando adotar (e quando não), monolito modular primeiro, decomposição por bounded context, dados por serviço, distributed monolith, pré-requisitos de plataforma, catálogo de padrões com a skill de cada um, Strangler Fig e checklist de decisão. Use quando discutir dividir um sistema em serviços. Não use para analisar o código de um monolito existente (monolith-decomposition) nem para implementar os módulos (modular-monolith).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md) e [`../code-style/SKILL.md`](../code-style/SKILL.md). Esta skill é o **mapa**: decide **se** e **como dividir**, e aponta para as skills que implementam cada padrão: `ddd-hexagonal`, `modular-monolith`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing`, `idempotency`, `messaging`, `transactional-outbox`.

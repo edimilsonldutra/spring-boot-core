@@ -1,6 +1,6 @@
 ---
 name: repository-understanding
-description: Método somente leitura para entender um repositório desconhecido — objetivo, orientação, provar que builda e testa, entrypoints, camadas, dados pelas migrations, integrações, configuração, testes, hotspots no Git, uma fatia vertical, riscos com evidência e aderência ao padrão, entregando docs/architecture/repository-map.md. Use ao chegar a um código novo ou esquecido.
+description: Método somente leitura para entender um repositório desconhecido — objetivo, orientação, provar que builda e testa, entrypoints, camadas, dados pelas migrations, integrações, configuração, testes, hotspots no Git, uma fatia vertical, riscos com evidência e aderência ao padrão, entregando docs/architecture/repository-map.md. Use ao chegar a um código novo ou esquecido. Não use para mudar o código (refactoring) nem para planejar a divisão de um monolito (monolith-decomposition).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md) e [`../code-style/SKILL.md`](../code-style/SKILL.md) (o padrão contra o qual a aderência é medida), [`../project-claude-md/SKILL.md`](../project-claude-md/SKILL.md) (registrar o que foi aprendido) e [`../microservices/SKILL.md`](../microservices/SKILL.md) (sistemas com vários serviços). O que fazer **depois** de entender: `refactoring`, `test-patterns` (characterization tests), `technical-product-management` (dívida técnica) e o agent `tech-lead`.

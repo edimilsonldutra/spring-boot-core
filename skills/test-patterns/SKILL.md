@@ -1,6 +1,6 @@
 ---
 name: test-patterns
-description: Padrões de teste em Java — Given/When/Then, FIRST, test doubles (dummy, stub, spy, mock, fake), não mocke o que não possui, Test Data Builder, @Nested, AssertJ, valores-limite, property-based (jqwik), approval e characterization tests, TDD/BDD, código assíncrono, test smells e testes flaky. Use quando escrever ou revisar testes frágeis, lentos ou sem asserts.
+description: Padrões de teste em Java — Given/When/Then, FIRST, test doubles (dummy, stub, spy, mock, fake), não mocke o que não possui, Test Data Builder, @Nested, AssertJ, valores-limite, property-based (jqwik), approval e characterization tests, TDD/BDD, código assíncrono, test smells e testes flaky. Use quando escrever ou revisar testes frágeis, lentos ou sem asserts. Não use para configurar Testcontainers (integration-testing) nem JaCoCo (test-coverage).
 ---
 
 Antes de aplicar este pattern, leia também [`../testing/SKILL.md`](../testing/SKILL.md) (unit e slice com JUnit 5/Mockito/`@WebMvcTest`), [`../integration-testing/SKILL.md`](../integration-testing/SKILL.md), [`../test-coverage/SKILL.md`](../test-coverage/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md) (sem comentários no código — o Given/When/Then é por linha em branco) e [`../ddd-hexagonal/SKILL.md`](../ddd-hexagonal/SKILL.md) (fakes para ports).

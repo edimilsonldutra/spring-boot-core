@@ -1,6 +1,6 @@
 ---
 name: contract-testing
-description: Contract testing entre microsserviços — Pact (consumidor, verificação no provedor, provider states, broker, can-i-deploy), Spring Cloud Contract, contratos de eventos, breaking change do OpenAPI (oasdiff), tolerant reader e integração no CI. Use quando mudar uma API ou um evento consumido por outro serviço sem quebrá-lo.
+description: Contract testing entre microsserviços — Pact (consumidor, verificação no provedor, provider states, broker, can-i-deploy), Spring Cloud Contract, contratos de eventos, breaking change do OpenAPI (oasdiff), tolerant reader e integração no CI. Use quando mudar uma API ou um evento consumido por outro serviço sem quebrá-lo. Não use para testar o próprio serviço ponta a ponta (integration-testing).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../testing/SKILL.md`](../testing/SKILL.md), [`../microservices/SKILL.md`](../microservices/SKILL.md) e [`../service-communication/SKILL.md`](../service-communication/SKILL.md). Para eventos: `messaging`. Para o pipeline: `github-actions-aws`.

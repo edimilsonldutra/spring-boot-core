@@ -1,6 +1,6 @@
 ---
 name: kafka
-description: Apache Kafka com Spring Boot 4 — KafkaTemplate idempotente, @KafkaListener, JSON seguro (trusted packages, ErrorHandlingDeserializer), keys e partições, consumer groups, DefaultErrorHandler com DLT e @RetryableTopic, exactly-once, tópicos, Schema Registry, Strimzi/MSK, lag e testes com Testcontainers. Use quando publicar ou consumir eventos em Kafka.
+description: Apache Kafka com Spring Boot 4 — KafkaTemplate idempotente, @KafkaListener, JSON seguro (trusted packages, ErrorHandlingDeserializer), keys e partições, consumer groups, DefaultErrorHandler com DLT e @RetryableTopic, exactly-once, tópicos, Schema Registry, Strimzi/MSK, lag e testes com Testcontainers. Use quando publicar ou consumir eventos em Kafka. Não use para escolher o broker (messaging).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md) e [`../messaging/SKILL.md`](../messaging/SKILL.md) (escolha de broker, desenho de eventos, garantias) — e **`../transactional-outbox/SKILL.md`** se o evento nasce de uma mudança no database.
