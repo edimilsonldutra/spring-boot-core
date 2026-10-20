@@ -1,6 +1,6 @@
 ---
 name: ddd-hexagonal
-description: DDD tático e arquitetura hexagonal no Spring Boot — bounded contexts e context map, entities, value objects como records, aggregates e invariantes, domain events, ports e adapters, mapeamento domínio ↔ JPA, ArchUnit e quando NÃO usar (CRUD). Use quando modelar um domínio rico ou avaliar sair do layout flat-by-layer.
+description: DDD tático e arquitetura hexagonal no Spring Boot — bounded contexts e context map, intensidade de DDD por subdomínio (Core, Supporting, Generic), entities, value objects como records, aggregates e invariantes, domain events, ports e adapters, mapeamento domínio ↔ JPA, ArchUnit, diagnóstico e refatoração de modelo anêmico e quando NÃO usar (CRUD). Use quando modelar um domínio rico ou avaliar sair do layout flat-by-layer.
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../spring-data-jpa/SKILL.md`](../spring-data-jpa/SKILL.md) e [`../microservices/SKILL.md`](../microservices/SKILL.md) (onde os bounded contexts viram serviços). Esta skill **estende** `code-organization` para domínios complexos; ela **não** substitui o layout flat-by-layer para serviços simples.
@@ -36,6 +36,20 @@ Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](..
   | **Shared Kernel** | Pequeno modelo **compartilhado** entre dois contextos (use com muito cuidado: acoplamento) |
 
   O **ACL** é o padrão mais útil na prática: um adapter que chama o sistema externo e converte para tipos do **seu** domínio.
+
+### Intensidade por subdomínio — quanto DDD cada contexto merece
+
+DDD não é sim ou não para o sistema inteiro: a decisão é **por bounded context**, pelo tipo de subdomínio.
+
+| Subdomínio | O que é | Exemplo | Intensidade tática | Layout |
+|---|---|---|---|---|
+| **Core** | Onde o negócio se diferencia; regra rica e que muda muito | `lending` (políticas de empréstimo, multa, reserva) | **Completa**: aggregates com invariantes, VOs, domain events, testes de domínio puros | Hexagonal (pura ou pragmática) |
+| **Supporting** | Específico do negócio, mas sem diferencial; pouca regra | `member` (cadastro de sócios) | **Moderada**: VOs onde há validação (`Email`, `Cpf`), métodos de negócio onde há estado | Flat-by-layer, com os VOs que se pagam |
+| **Generic** | Problema resolvido que todo mundo tem | `notification`, identidade, auditoria | **Mínima**: CRUD ou produto pronto (build × buy — `technical-product-management`) | Flat-by-layer ou serviço gerenciado (`aws-cognito`, `aws-ses`) |
+
+- **Forçar modelo rico onde não há invariante é over-engineering**; tratar o Core como CRUD é o erro oposto (as regras vazam para os services e se duplicam).
+- A classificação é uma **decisão de arquitetura**: registre-a no ADR do `architect`, por contexto. Em monolito existente, ela sai da análise de `monolith-decomposition` (seção 5).
+- **Core não é "o mais importante"** (pagamento é crítico, mas costuma ser Generic): é onde está a **vantagem competitiva** e a **regra que muda**.
 
 ---
 
@@ -344,7 +358,48 @@ class ArchitectureTest {
 - **Adapters:** o **web** com `@WebMvcTest` (`testing`); a **persistência** com `@DataJpaTest` + banco real em container (`spring-data-jpa`); o **ACL** com contrato (`contract-testing`).
 - **ArchUnit** como teste de arquitetura.
 
-## 6. Anti-patterns
+## 6. Diagnosticar modelo anêmico
+
+> **Só em contexto com DDD decidido** (Core, ou ADR que adotou modelo rico). No layout flat-by-layer de `code-organization`, entity com getters/setters e regra no service **é o padrão**, não um defeito: não aponte anemia em CRUD nem em Supporting/Generic sem regra.
+
+**Sinais** (some os pesos por classe do domínio):
+
+| Sinal | Como achar | Peso |
+|---|---|---|
+| Setter público em campo de negócio (`setStatus`, `setDueDate`) | `Grep` `public void set[A-Z]` em `domain/` | +2 |
+| Cadeia de setters no chamador para **uma** operação | `loan.setStatus(…); loan.setReturnedAt(…);` no service | +3 |
+| Service que carrega, muda o estado e salva (coordenador) | `findById` → vários `set…` → `save` no mesmo método | +2 |
+| Regra calculada no service e gravada na entity | `loan.setFee(calculateFee(loan))` | +3 |
+| Classe só com getters/setters, sem método de negócio | todos os métodos `get*`/`set*`/`is*` | +4 |
+| Primitive obsession | `Long memberId`, `BigDecimal amount` + `String currency` soltos | +1 |
+| Método de negócio sem guarda de invariante | `extend()` sem checar o status | +1 |
+
+| Soma | Gravidade | Ação |
+|---|---|---|
+| 0 | Nenhuma | — |
+| 1–3 | Leve | Melhorias pontuais; há prioridades maiores |
+| 4–6 | Moderada | Refatorar: a regra está vazando para os services |
+| 7+ | Grave | O "aggregate" é um DTO; redesenhar o comportamento |
+
+**Relato** (um bloco por classe, com evidência):
+```
+Anemia: Loan (lending/domain/model/Loan.java)
+Gravidade: Moderada (5)
+Sinais: setStatus/setReturnedAt públicos (Loan.java:41,47); LoanService.returnBook encadeia 2 setters (LoanService.java:88)
+Refatoração: trocar a cadeia por Loan.returnBook(clock) com guarda de status; remover os setters
+```
+
+**Refatoração, nesta ordem** (passos pequenos e verdes — `refactoring`; testes de domínio antes):
+1. **Cadeia de setters → um método com intenção** (`setStatus` + `setReturnedAt` → `returnBook(clock)`).
+2. **Mova a regra do service para o aggregate** dono dela (o service fica só orquestrando).
+3. **Guardas no início** de cada método de negócio (invariantes: `if (status != ACTIVE) throw …`).
+4. **Registre o domain event** depois da mudança de estado (`events.add(new BookReturned(…))`).
+5. **Primitivos → value objects** (`Long` → `LoanId`, `BigDecimal` → `Money`).
+6. **Remova os setters** que ficaram sem uso.
+
+Pedido de **revisão** ("está bom?") → só diagnostique e pergunte antes de refatorar. Pedido de **correção** → diagnóstico e refatoração, com o antes/depois de cada classe.
+
+## 7. Anti-patterns
 
 - **Modelo anêmico**: entities só com getters/setters e toda a regra em `*Service`.
 - **Hexagonal em CRUD**: interfaces e mapeamentos sem regra de negócio a proteger.
@@ -360,6 +415,8 @@ class ArchitectureTest {
 ## Regras principais
 
 - **Use DDD/hexagonal só para domínios com regra rica**; para CRUD, o layout flat-by-layer de `code-organization` é o certo.
+- **Intensidade por subdomínio**: Core → DDD completo; Supporting → moderado; Generic → mínimo ou produto pronto; a classificação vai no ADR, por contexto.
+- **Anemia só é defeito onde há DDD decidido**: diagnóstico com sinais e pesos, refatoração em passos (setters → método de negócio → regra no aggregate → guardas → eventos → VOs).
 - **Ubiquitous language** nos identificadores (em inglês); **um modelo por bounded context**; **ACL** ao integrar com legado/outros modelos.
 - **Value objects como records** validados no compact constructor (`Money`, `*Id`); nunca `double` para dinheiro; evite *primitive obsession*.
 - **Aggregates pequenos**, root como único ponto de acesso, **sem setters públicos**, invariantes dentro; **outros aggregates por ID**; **uma transaction = um aggregate**; `@Version`.

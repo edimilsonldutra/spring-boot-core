@@ -1,13 +1,13 @@
 # Squads — Agents & Skills para Claude Code
 
-![version](https://img.shields.io/badge/version-2.1.2-blue)
+![version](https://img.shields.io/badge/version-2.2.0-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-D97757)
-![skills](https://img.shields.io/badge/skills-88-informational)
+![skills](https://img.shields.io/badge/skills-89-informational)
 ![agents](https://img.shields.io/badge/agents-7-informational)
 
-Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time de agents especialistas** e **88 skills** para o desenvolvimento de APIs REST com **Java 25 e Spring Boot 4**. Os agents planejam, implementam, testam e revisam; as skills definem o padrão que todos seguem — do layout de packages ao deploy — para que o código gerado por IA saia consistente, testado e seguro em qualquer projeto do time.
+Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time de agents especialistas** e **89 skills** para o desenvolvimento de APIs REST com **Java 25 e Spring Boot 4**. Os agents planejam, implementam, testam e revisam; as skills definem o padrão que todos seguem — do layout de packages ao deploy — para que o código gerado por IA saia consistente, testado e seguro em qualquer projeto do time.
 
 **Sumário:** [Visão geral](#visão-geral) · [Início rápido](#início-rápido) · [Como funciona](#como-funciona) · [Agents](#agents) · [Fluxo completo](#fluxo-completo-de-uma-feature) · [Fluxos individuais](#fluxo-individual-de-cada-agent) · [Skills](#skills) · [Instalação alternativa](#instalação-alternativa-só-as-skills) · [Atualização](#atualização) · [Estrutura](#estrutura-do-repositório) · [Contribuindo](#contribuindo)
 
@@ -18,7 +18,7 @@ Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time d
 | | |
 |---|---|
 | **Agents** | 7 — `orchestrator`, `product-manager`, `architect`, `tech-lead`, `developer`, `qa`, `code-reviewer` |
-| **Skills** | 88 — Spring Boot, API, arquivos e e-mail, especificação, segurança, design de código, testes, mensageria, microsserviços, CI/CD, Kubernetes, AWS e produto |
+| **Skills** | 89 — Spring Boot, API, arquivos e e-mail, especificação, segurança, design de código, testes, mensageria, microsserviços, CI/CD, Kubernetes, AWS e produto |
 | **Stack** | Java 25 (LTS), Spring Boot 4, Spring Framework 7, Spring Security 7, Hibernate 7, Jackson 3, Maven ou Gradle |
 | **Databases** | MySQL (padrão), PostgreSQL, SQL Server, Oracle, MariaDB |
 | **Plataformas** | Docker, Kubernetes, Helm, Argo CD, AWS (EKS, ECS, Lambda, RDS, S3, SQS/SNS…), Google Cloud e Azure via GitHub Actions |
@@ -66,7 +66,7 @@ O plugin tem duas camadas: **agents** (quem faz, com papel e permissões) e **sk
 flowchart LR
     U(["Você"]) -->|"pedido"| O["orchestrator"]
     O -->|"brief + skills"| A["Agents especialistas<br/>product-manager · architect · tech-lead<br/>developer · qa · code-reviewer"]
-    A -->|"carregam"| S[("88 skills<br/>o padrão do projeto")]
+    A -->|"carregam"| S[("89 skills<br/>o padrão do projeto")]
     A -->|"entregas"| O
     O -->|"verifica e pede aprovação"| U
 ```
@@ -216,7 +216,7 @@ flowchart LR
     F --> G["Plano + matriz critério → tarefa"]
     G --> H["Handoff: developer"]
 ```
-- **Skills:** atribui a skill certa a cada tarefa (mapa completo de 88); usa `design-docs`, `repository-understanding`, `refactoring`, `backlog-refinement` e `test-coverage` (DoD com 90%).
+- **Skills:** atribui a skill certa a cada tarefa (mapa completo de 89); usa `design-docs`, `repository-understanding`, `refactoring`, `backlog-refinement` e `test-coverage` (DoD com 90%).
 - **Entrega:** plano acionável, sem escrever código. Decisões estruturais vão para o `architect`; o escopo é do `product-manager`.
 
 #### `developer`
@@ -270,7 +270,7 @@ flowchart LR
 
 ## Skills
 
-88 skills em 12 grupos. A lista completa, com descrição e exemplo de prompt de cada uma, está no [guia de referência](docs/guide.md#catálogo-de-skills).
+89 skills em 12 grupos. A lista completa, com descrição e exemplo de prompt de cada uma, está no [guia de referência](docs/guide.md#catálogo-de-skills).
 
 | Grupo | Skills |
 |---|---|
@@ -285,7 +285,7 @@ flowchart LR
 | **Microsserviços** (10) | `microservices`, `modular-monolith`, `ddd-hexagonal`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing`, `idempotency` |
 | **Produto** (12) | `product-strategy`, `product-discovery`, `prd-writing`, `user-stories`, `prioritization`, `product-roadmap`, `product-metrics`, `agile-delivery`, `release-management`, `technical-product-management`, `privacy-lgpd`, `stakeholder-communication` |
 | **Testes** (4) | `test-patterns`, `integration-testing`, `test-coverage`, `postman-newman` |
-| **Entender, refatorar e refinar** (3) | `repository-understanding`, `refactoring`, `backlog-refinement` |
+| **Entender, refatorar e refinar** (4) | `repository-understanding`, `monolith-decomposition`, `refactoring`, `backlog-refinement` |
 
 Qualquer skill pode ser chamada diretamente: `/squads:<nome>` (ex.: `/squads:design-docs`). A skill `guide` indica qual usar para cada necessidade.
 
@@ -299,7 +299,7 @@ Para usar as skills em **outras ferramentas de IA** (Cursor, Codex, Gemini CLI, 
 npx skills add edimilsonldutra/spring-boot-core --skill '*'
 ```
 
-Instala as 88 skills de uma vez (recomendado — as skills se referenciam entre si). Use `-g` para o nível do usuário ou `-a <ferramenta> -y` para escolher a ferramenta sem perguntas. **Os agents não são instalados** neste modo, e no Claude Code não combine com o plugin (as skills ficariam duplicadas). Detalhes no [guia](docs/guide.md#só-as-skills-em-outras-ferramentas-npx-skills).
+Instala as 89 skills de uma vez (recomendado — as skills se referenciam entre si). Use `-g` para o nível do usuário ou `-a <ferramenta> -y` para escolher a ferramenta sem perguntas. **Os agents não são instalados** neste modo, e no Claude Code não combine com o plugin (as skills ficariam duplicadas). Detalhes no [guia](docs/guide.md#só-as-skills-em-outras-ferramentas-npx-skills).
 
 ---
 
@@ -329,7 +329,7 @@ spring-boot-core/
 │   ├── developer/developer.md
 │   ├── qa/qa.md
 │   └── code-reviewer/code-reviewer.md
-├── skills/                     # 88 skills (<nome>/SKILL.md)
+├── skills/                     # 89 skills (<nome>/SKILL.md)
 ├── prompts/                    # prompts reutilizáveis por fluxo (feature, bug, revisão, ADR…)
 ├── docs/
 │   └── guide.md                # guia de referência

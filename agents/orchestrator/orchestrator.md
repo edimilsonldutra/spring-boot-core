@@ -203,7 +203,7 @@ Nunca declare "pronto" se há ⚠️/❌ em aberto.
 | Microsserviços e arquitetura | `microservices`, `modular-monolith`, `ddd-hexagonal`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing` |
 | Mensageria | `messaging`, `kafka`, `rabbitmq`, `activemq-artemis`, `aws-sns-sqs`, `aws-eventbridge`, `transactional-outbox` |
 | Testes | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `contract-testing`, `localstack`, `postman-newman` |
-| Entender repositório existente; refatorar com segurança | `repository-understanding`, `refactoring` |
+| Entender repositório existente; analisar um monolito antes de dividir; refatorar com segurança | `repository-understanding`, `monolith-decomposition`, `refactoring` |
 | Entrega e infra | `docker-and-docker-compose`, `github-actions`, `github-actions-aws`, `github-actions-cloud`, `kubernetes`, `helm-charts`, `argocd`, `aws-terraform`, `aws-eks`, `aws-ecs-fargate`, `aws-lambda` |
 | AWS (integração) | `aws-sdk-java` (base), `aws-s3-sqs`, `aws-ses`, `aws-parameter-store`, `aws-rds-secrets-manager` |
 | Operação | `observability`, `aws-observability`, `jvm-performance` |

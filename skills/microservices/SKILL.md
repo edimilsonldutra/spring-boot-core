@@ -122,7 +122,7 @@ Não adote o catálogo inteiro: **cada padrão resolve um problema que você pre
 Substitua o monolito **gradualmente**, uma capacidade por vez, mantendo o sistema funcionando (nada de *big bang rewrite*):
 
 1. **Coloque uma fachada na frente** do monolito (API Gateway/proxy — `api-gateway`): todo tráfego passa por ela; no começo, **tudo vai ao monolito**.
-2. **Escolha uma capacidade** com fronteira clara e **valor** (ou dor) — não a mais emaranhada primeiro. Dentro do monolito, **modularize-a antes** (`modular-monolith`) para revelar as dependências.
+2. **Escolha uma capacidade** com fronteira clara e **valor** (ou dor) — não a mais emaranhada primeiro. Em monolito existente, meça antes com `monolith-decomposition` (acoplamento, donos das tabelas, ordem de extração). Dentro do monolito, **modularize-a antes** (`modular-monolith`) para revelar as dependências.
 3. **Construa o novo serviço** (template do `scaffold`), com **seu banco**. Se precisa de dados do monolito: **sincronize por CDC/eventos** (`transactional-outbox`, Debezium) em vez de ler o banco legado — ou use um **Anti-Corruption Layer (ACL)**, uma camada que **traduz** o modelo legado para o seu modelo e impede que o legado "vaze" para o domínio novo.
 4. **Roteie o tráfego gradualmente** pela fachada (por rota, por % — *canary*, ou *shadow traffic* para comparar respostas) e **compare resultados**.
 5. **Migre os dados** (cópia + sincronização, depois corte de escrita) e **aposente** o código antigo daquele trecho.

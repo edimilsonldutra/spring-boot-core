@@ -115,6 +115,7 @@ Antes de descrever a lista de skills, verifique o que realmente está presente e
 | Scrum/Kanban, forecast, retrospectiva | `agile-delivery` |
 | Refinamento de backlog (sessão, DoR, Example Mapping, card refinado) | `backlog-refinement` |
 | Entender um repositório desconhecido (mapa, hotspots, riscos, aderência) | `repository-understanding` |
+| Analisar um monolito antes de dividir (acoplamento, donos das tabelas, o que extrair primeiro) | `monolith-decomposition` |
 | Refatorar com segurança (smells, passos pequenos, Strangler/expand → contract) | `refactoring` |
 | Lançar com segurança (flags, rollout, go/no-go, deprecação) | `release-management` |
 | Requisitos não funcionais, SLO/error budget, dívida técnica, custo de nuvem | `technical-product-management` |
@@ -122,7 +123,7 @@ Antes de descrever a lista de skills, verifique o que realmente está presente e
 | Status, resumo executivo, decision log, release notes, dizer não | `stakeholder-communication` |
 | Decidir entre monolito e microsserviços; como dividir | `microservices` |
 | Começar sem pagar o custo distribuído (módulos com fronteiras verificadas) | `modular-monolith` |
-| Domínio rico: aggregates, value objects, ports and adapters | `ddd-hexagonal` |
+| Domínio rico: aggregates, value objects, ports and adapters; quanto DDD cada subdomínio merece; modelo anêmico | `ddd-hexagonal` |
 | Entrada única para clientes, BFF, rate limit na borda | `api-gateway` |
 | Chamar outro serviço com segurança e timeouts; gRPC; service mesh | `service-communication` |
 | Falha parcial, circuit breaker, retry sem retry storm | `resilience` |
