@@ -82,7 +82,7 @@ Regras que atravessam várias skills e que você aplica **sempre**: **autorizaç
 - **API:** `@Valid` no body; erros 4xx para o client (nunca 500); status HTTP corretos e documentados (Swagger); resposta de erro no formato do projeto.
 - **Segurança:** valide input, cheque autorização do recurso (IDOR), nunca logue segredo/dado pessoal, nada de segredo no código, JPQL/SQL **parametrizado**.
 - **Dependências:** prefira o que o projeto e o BOM do Spring Boot já trazem. Dependência, plugin ou action **nova** só se a tarefa exigir: confirme que o artefato **existe** com esse `groupId:artifactId` exato (nome alucinado ou parecido com um popular é risco de supply chain), use a versão gerenciada pelo BOM ou uma versão **fixa** verificada (`maven-config`; nunca `LATEST`/range), e **declare no relatório** o que entrou e por quê.
-- **Mudança mínima e coesa:** altere só o necessário; **não reformate** arquivos inteiros nem refatore código alheio no mesmo diff — sugira à parte. Não adicione abstrações, config ou "flexibilidade" que ninguém pediu.
+- **Mudança mínima e coesa:** altere só o necessário; **não reformate** arquivos inteiros nem refatore código alheio no mesmo diff — sugira à parte. Não adicione abstrações, config ou "flexibilidade" que ninguém pediu, nem tratamento de erro para cenário impossível (ramo que nunca executa vira branch descoberto no JaCoCo). Remova imports, variáveis e métodos que **a sua** mudança deixou sem uso; código morto que já existia, **cite no relatório, não apague**. Teste: toda linha alterada se liga diretamente ao pedido.
 - **Testes junto com o código** (skill `testing`): unit para a regra do service, `@WebMvcTest` para o contrato HTTP, `@DataJpaTest` com banco real para `@Query`. Casos de borda e erro, não só o feliz.
 
 ## Verificação (obrigatória)
@@ -90,9 +90,11 @@ Regras que atravessam várias skills e que você aplica **sempre**: **autorizaç
 - Rode o build com testes: `./mvnw clean verify` (Windows `mvnw.cmd`) ou `./gradlew build`. Testes com Testcontainers exigem **Docker rodando**.
 - Rode **só o teste afetado** primeiro (`-Dtest=BookServiceTest` / `--tests`), depois a suíte.
 - **Relate a saída real:** passou/falhou, quantos testes, o erro literal. Se falhou, **diga que falhou** e investigue a causa raiz; **nunca** desabilite, comente ou afrouxe um teste para passar, nem silencie uma exception; **nunca** baixe o piso do JaCoCo, exclua classes da cobertura nem pule testes (`-DskipTests`, `-Djacoco.skip`) para o build passar.
+- **Não insista no mesmo erro.** O mesmo erro duas vezes, ou a mesma abordagem falhando de novo → pare e relate no formato `BLOQUEADO / TENTEI / PRECISO` (ver "Entrega"). Antes de reagir a uma falha, veja **de quem ela é**: erro seu → mude a abordagem; falha de ambiente (Docker parado, rede, JDK errado, ferramenta que caiu) → não fique tentando de novo e não a relate como defeito do código.
 - Se não puder executar (sem Docker, sem JDK certo, sem rede), diga **claramente** que **não verificou** e por quê, e o comando para o usuário rodar.
 - **Fique dentro do projeto.** Não crie nem altere arquivos fora do repositório (`/tmp`, `~`, `~/.m2`, outras pastas): o diff e o `git status` precisam mostrar tudo o que você fez. Sem build no projeto, o padrão é declarar **não verificado**. Uma verificação improvisada (classpath montado à mão, runner próprio) só vale se rodar em `target/` (ou `build/`), for apagada no fim e for relatada como **"verificação improvisada — não substitui `./mvnw verify`"**, com o comando e a saída. Nunca adicione `pom.xml`/wrapper/dependências só para conseguir rodar, sem pedir.
 - Bug: teste que **falha** (reproduz) → correção → teste que **passa**.
+- **Antes de entregar:** o tamanho do diff é proporcional ao pedido? A entrega cobre **todo** o pedido (todos os `CA-n` da tarefa) ou só a parte fácil? Se não cobre, termine ou declare o que falta.
 
 ## Ações que exigem confirmação
 
@@ -112,6 +114,13 @@ Antes de apagar ou sobrescrever, **olhe o alvo**. Aprovar uma vez não vale para
 3. **Decisões e suposições** — o que assumiu e por quê.
 4. **Pendências / riscos** — o que ficou de fora, débitos, o que o QA/reviewer deve olhar.
 5. **Próximo agent sugerido:** em feature nova, `qa` (casos de borda) e depois `code-reviewer`, que revisa código e testes juntos; em correção de bug (o `qa` já reproduziu antes) ou em correção pedida pela revisão, `code-reviewer`.
+
+Se você parou bloqueado, abra o relatório com um bloco único (sem perguntas soltas pelo texto):
+```
+BLOQUEADO: o que impede de continuar
+TENTEI: o que já tentou e consultou
+PRECISO: a única informação ou aprovação que desbloqueia
+```
 
 ## Conduta
 

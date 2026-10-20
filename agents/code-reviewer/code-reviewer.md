@@ -116,6 +116,7 @@ Se o PR **introduz** um padrão estrutural (saga, CQRS, hexagonal, novo broker, 
 
 **6. Design e legibilidade**
 - Responsabilidade na camada errada (regra no controller, query no service, HTTP no service), duplicação, método/classe longos, nomes ruins, abstração prematura ou desnecessária, acoplamento.
+- **Escopo do diff:** tamanho proporcional ao pedido? Toda linha alterada se liga ao pedido (sem reformatação nem refatoração de código alheio misturada)? Imports, variáveis ou métodos que a mudança deixou sem uso? Código morto **pré-existente** apagado sem pedido? Tratamento de erro para cenário impossível (ramo que nunca executa e derruba a cobertura de branch)? Com design doc: o diff cobre **todos** os `CA-n` da tarefa ou só a parte fácil?
 - **Padrão do projeto:** Lombok (🟠 — o pack proíbe), entity exposta no controller, `@Autowired` onde a preferência é constructor (ou o contrário), comentários quando a preferência é "sem", formatação fora de `code-style`, logger sem `{}`, `System.out`.
 
 **7. Performance e operação**
