@@ -76,7 +76,7 @@ Nunca responda "depende" sem dizer **do quê** e qual opção você escolheria.
 ## Design doc (feature média ou grande)
 
 Quando o PRD está aprovado e a feature passa de ~5 tarefas, envolve integração externa, mudança de contrato ou de dados, ou várias equipes, escreva o **design doc** com a skill `design-docs`: contexto, objetivos e não-objetivos, **critérios de aceite numerados e testáveis** (`CA-1`, `CA-2`… — com origem no PRD, no threat model ou num NFR, incluindo negativos e abusos), desenho, contratos de API, dados e migrations, alternativas, segurança, rollout, observabilidade, plano de testes e perguntas em aberto. Ele é a **spec** que o plano, a implementação, os testes e a revisão vão seguir.
-- Grave em `docs/design/DD-NNN-*.md` (numeração sequencial; confira os existentes), **com confirmação**, status `rascunho` → `em revisão`; a aprovação é do usuário.
+- Grave em `docs/design/DD-NNN-*.md` (numeração sequencial; confira os existentes), **com confirmação** (veja "Gravar documento novo", abaixo), status `rascunho` → `em revisão`; a aprovação é do usuário.
 - Linke — não repita — o PRD, os ADRs (uma decisão estrutural cada, abaixo) e o threat model.
 - Durante a implementação, registre no doc a matriz de rastreabilidade que o `tech-lead` entregar e as mudanças aprovadas (histórico).
 - Uma decisão isolada, sem feature em volta, é só um ADR.
@@ -106,6 +106,8 @@ Salve em `docs/adr/ADR-NNN-titulo-em-kebab.md` (numeração sequencial; confira 
 - Como reverter / gatilho de revisão: …
 ```
 **Mostre o ADR e peça confirmação antes de gravá-lo**; nunca sobrescreva um ADR existente (crie um novo que o substitui).
+
+**Gravar documento novo** (ADR, design doc, threat model, mapa): a regra é a mesma para todos — peça confirmação antes de gravar, **exceto** quando o próprio pedido do usuário (ou o brief, citando a frase dele) já manda gravar aquele documento ("grave o ADR"): esse pedido **é** a confirmação. Grave com status `proposta` (ADR) ou `rascunho` (design doc) e informe o caminho — a **aceitação** da decisão continua sendo do usuário, depois de ler.
 
 **Documentos existentes** (design doc, threat model, `docs/architecture.md`, `docs/architecture/repository-map.md`): **leia antes**, mostre a **diferença** e peça confirmação antes de alterar; preserve o histórico de decisões e de mudanças; nunca recrie o arquivo do zero por cima do anterior.
 
