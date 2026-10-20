@@ -1,6 +1,6 @@
 ---
 name: application-security
-description: Segurança de aplicação (AppSec) em APIs Spring Boot 4, guiada pelo OWASP API Security Top 10 — autorização por objeto e por função (IDOR/BOLA), mass assignment, consumo de recursos e rate limit, injeção, SSRF, desserialização e XML, security headers e CORS, segredos e criptografia, erros e logs, dependências e SBOM, configuração segura e testes de segurança (unit, integração, ZAP, CodeQL, secret scanning). Use ao criar ou revisar qualquer endpoint, antes de expor uma API ou quando pedirem uma revisão de segurança.
+description: Segurança de aplicação (AppSec) em APIs Spring Boot 4, guiada pelo OWASP API Security Top 10 — autorização por objeto e por função (IDOR/BOLA), mass assignment, consumo de recursos e rate limit, injeção, SSRF, desserialização e XML, security headers e CORS, segredos e criptografia, erros e logs, dependências e SBOM, configuração segura e testes de segurança (unit, integração, ZAP, CodeQL, secret scanning) e relatório de revisão de segurança com correção achado por achado. Use ao criar ou revisar qualquer endpoint, antes de expor uma API ou quando pedirem uma revisão de segurança.
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md) e [`../authentication/SKILL.md`](../authentication/SKILL.md) (JWT, `SecurityConfig`, BCrypt, `@PreAuthorize`). Desenho de ameaças por feature: [`../threat-modeling/SKILL.md`](../threat-modeling/SKILL.md). Dados pessoais: [`../privacy-lgpd/SKILL.md`](../privacy-lgpd/SKILL.md).
@@ -132,10 +132,12 @@ O Spring Security já envia por padrão `X-Content-Type-Options: nosniff`, `X-Fr
 ```
 - `default-src 'none'` serve para respostas JSON; o **Swagger UI** precisa de scripts e estilos — aplique uma CSP mais permissiva só a `/swagger-ui/**` (uma segunda `SecurityFilterChain` com `securityMatcher`) ou desligue a UI em produção (`swagger-advanced`).
 - HSTS só faz efeito sob HTTPS; atrás de um proxy que termina o TLS, configure `server.forward-headers-strategy: framework` para o Spring saber que a request original era HTTPS.
+- **`includeSubDomains` vale para todos os subdomínios do host que responde, e o navegador guarda a regra pelo `max-age` inteiro.** Sirva a API num subdomínio próprio (`api.exemplo.com`): no domínio raiz, um ano de HSTS força HTTPS em **todo** `*.exemplo.com`, inclusive em sistemas que ainda não têm certificado, e não há como desfazer pelo servidor. **Nunca** use `preload` sem decisão registrada (ADR): sair da lista leva meses. Em ambiente local sem TLS, HSTS e falta de HTTPS **não são achados**.
 
 ### Checklist de configuração
 - **CORS:** origins explícitas no `application.yml`, nunca `*` com credenciais (`web-config`).
 - **CSRF:** desligado **só** porque a API é stateless com token em header; se usar cookie de autenticação, religue (`authentication`).
+- **Cookie** (se algum dia houver, ex.: refresh token para um front web): `Secure`, `HttpOnly`, `SameSite=Strict` (ou `Lax` com motivo) e `Path` restrito ao endpoint que o lê (`/auth/refresh`), montado com `ResponseCookie`, nunca por concatenação de header.
 - **Actuator:** porta separada, só `health,info,prometheus` expostos (`observability`).
 - **Swagger UI:** desligado ou protegido em produção (`swagger`).
 - **Erros:** sem stack trace nem mensagem interna no body (`exception-handling`); `server.error.include-stacktrace: never` e `server.error.include-message: never` no profile de produção.
@@ -187,6 +189,22 @@ O Spring Security já envia por padrão `X-Content-Type-Options: nosniff`, `X-Fr
 
 Para cada endpoint novo, o `qa` cobre pelo menos: sem token, permissão insuficiente, **recurso de outro usuário**, campo proibido no body e entrada acima do limite.
 
+## 13. Revisão de segurança: relatório e correção
+
+Quando pedirem uma **revisão de segurança** de um serviço (não de um diff — para o diff, o `code-reviewer` usa esta skill como checklist), use as seções 1–11 como roteiro e entregue um relatório. Para ameaças do sistema como um todo (fronteiras, atacante, caminhos de abuso), faça antes o modo sistema existente de `threat-modeling`.
+
+**Relatório** — `docs/security/security-review-AAAA-MM-DD.md`, gravado com confirmação:
+- **Resumo executivo** no topo: os 3–5 achados que mais importam e a recomendação.
+- **Achados agrupados por gravidade** (crítica → baixa), cada um com **ID** (`SR-1`, `SR-2`…), `arquivo:linha`, a seção desta skill que ele viola e, nos críticos, **uma frase de impacto** ("qualquer usuário autenticado lê empréstimos de outros trocando o id").
+- **Só o que tem evidência.** O que é suspeita sem prova vai para "a verificar", não para a lista de achados.
+- **Sem falso positivo de ambiente**: falta de TLS ou de HSTS em perfil local, Swagger aberto só no profile `local`, credencial fake de teste em `src/test`.
+- **Exceções registradas não são achados novos**: se o projeto documentou o motivo de não seguir uma prática (ADR ou risco aceito no threat model, com dono e data de revisão ainda válida), cite-a em uma linha ("SR-7: aceito em ADR-012 até 2026-12") e siga. Exceção **sem** dono ou data, ou vencida, volta a ser achado. Prática ignorada sem registro → sugira registrá-la, não brigue com a decisão.
+
+**Correção** (quando o usuário pedir, depois de ler o relatório):
+- **Um achado por vez**, cada um com o teste que prova a correção (seção 12) e, se houver commit, **um commit por achado**, citando o ID.
+- **Antes de mudar, procure quem depende do comportamento inseguro** (um client que manda `role` no body, um job que lê sem filtro de dono): código inseguro costuma sobreviver porque algo depende dele. Se a correção quebra um contrato, ela vira **mudança de contrato** (`api-versioning`, `release-management`), não um ajuste silencioso.
+- Rode a suíte completa depois de cada correção; regressão em segurança é tão grave quanto a falha original.
+
 ---
 
 ## Regras principais
@@ -203,4 +221,5 @@ Para cada endpoint novo, o `qa` cobre pelo menos: sem token, permissão insufici
 - Dependências escaneadas, SBOM gerado, imagem escaneada, pipeline com OIDC e permissões mínimas.
 - Eventos de segurança registrados sem dados sensíveis, com alertas para padrões de ataque.
 - Testes de IDOR, permissão, mass assignment e limites em todo endpoint novo; SAST, secret scanning e DAST no pipeline.
+- **Revisão de segurança** vira relatório com IDs, gravidade, evidência e impacto; exceção registrada e válida não é achado novo; correção um achado por vez, com teste e sem quebrar contrato em silêncio.
 - **Sem Lombok** — deliberado.
