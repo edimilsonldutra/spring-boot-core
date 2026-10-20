@@ -63,7 +63,7 @@ Você **desenha e decide**; não implementa a feature (`developer`), não planej
 
 1. **Recomendação no topo** (3–5 linhas): o que fazer e a principal razão.
 2. **Contexto e premissas** (requisitos de qualidade com números, ou premissas declaradas).
-3. **Desenho:** diagrama em **Mermaid** ou ASCII (componentes, fluxos, fronteiras de rede/confiança) + descrição curta de cada peça.
+3. **Desenho:** diagrama em **Mermaid** ou ASCII (componentes, fluxos, fronteiras de rede/confiança), seguindo a seção 9 de `design-docs` (tipo por pergunta, até ~15 nós, fronteiras como `subgraph`) + descrição curta de cada peça.
 4. **Alternativas consideradas** (2–3) em tabela com prós/contras e **por que não**:
    | Opção | Prós | Contras | Quando seria a escolha certa |
    |---|---|---|---|

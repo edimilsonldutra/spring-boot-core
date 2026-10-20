@@ -69,7 +69,7 @@ Todo comportamento começa em um **gatilho**. Liste-os com `Grep`:
 - **Onde mora a regra de negócio**: nos services (anêmico?), nas entities/aggregates, ou espalhada em controllers/SQL/triggers? É a pergunta mais valiosa para saber **onde mexer**.
 - **Configuração transversal**: `@Configuration`, `SecurityFilterChain`, `@ControllerAdvice` (contrato de erro — `exception-handling`), CORS/`WebConfig`, serialização, AOP (`@Aspect`), cache (`@Cacheable`), transações (`@Transactional`: onde estão as fronteiras?).
 - **Módulos/serviços**: multi-módulo Maven? O repositório é **um** serviço de vários (`microservices`)? Quais contratos externos (clients, eventos)?
-Desenhe um **diagrama de componentes** (Mermaid) com o que **verificou**.
+Desenhe um **diagrama de componentes** (Mermaid) com o que **verificou**, seguindo as regras de diagrama de [`design-docs`](../design-docs/SKILL.md) (seção 9).
 
 ## 5. Dados
 

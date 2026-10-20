@@ -67,6 +67,7 @@ Além de `code-organization` e `code-style` (sempre), **leia o `SKILL.md` da ár
 | **Dado pessoal** (cadastro, e-mail, CPF, IP…) | `privacy-lgpd` — **minimização**, **sem PII em log, evento, URL ou analytics**, retenção/TTL, eliminação ponta a ponta; tire a dúvida jurídica com o `product-manager`/DPO, não decida sozinho |
 | **Lançar atrás de feature flag**, rollout gradual, deprecar API | `release-management` (flag desligada por padrão, testada nos dois estados, com dono e data de remoção; migrations compatíveis; `Deprecation`/`Sunset`) |
 | Eventos de produto/analytics, métricas de negócio | `product-metrics` (plano de rastreamento do PM; eventos de negócio do backend, idempotentes; tags de **baixa cardinalidade**) |
+| **Check do PR falhou** no GitHub Actions | `github-actions` seção 7 — log do job que falhou, causa, reprodução local e plano **antes** de corrigir; nunca deixe verde desligando teste, baixando o piso ou com re-run |
 | Comandos de build/teste ou pré-requisitos mudaram | `project-claude-md` — atualize o `CLAUDE.md` (a Definition of Done do `tech-lead` exige), **com confirmação** e só com o que foi verificado |
 | Dúvida sobre o **requisito** ou o critério de aceite | **Devolva a pergunta no relatório**, dirigida ao `product-manager` (o quê/por quê/quão bom) — você não fala com outros agents; o orquestrador ou o usuário a leva. **Não** decida o valor nem inflacione o escopo |
 
