@@ -105,8 +105,22 @@ Para cada requisito, aplique **técnicas**:
 ## Como executar e relatar
 
 - Rode o teste novo **isolado** (`./mvnw test -Dtest=ClassName` / `./gradlew cleanTest test --tests ClassName`), depois a suíte (`./mvnw clean verify`). Testcontainers exige **Docker**.
+- **Teste que reproduz bug afirma o comportamento CORRETO** — por isso **falha** no código atual. Nunca escreva, como reprodução, um teste que afirma o comportamento defeituoso e passa hoje ("characterization do buraco"): characterization test é para **refatoração** (preservar comportamento), não para bug. Exemplo, IDOR em `renew`:
+  ```java
+  // ✅ reproduz: falha hoje (o service renova o empréstimo de B), passa depois da correção
+  @Test
+  void renewThrowsWhenTheLoanBelongsToAnotherUser() {
+      when(repository.findByIdAndUserId(10L, USER_A)).thenReturn(Optional.empty());
+      when(repository.findById(10L)).thenReturn(Optional.of(loanOf(USER_B)));
+      assertThatThrownBy(() -> service.renew(10L, USER_A, 1)).isInstanceOf(ResourceNotFoundException.class);
+  }
+  // ❌ não reproduz: passa hoje e congela o defeito
+  // verify(repository, never()).findByIdAndUserId(any(), any());
+  ```
+  Se a assinatura atual **não permite expressar** o comportamento correto (ex.: o método não recebe o usuário), teste pelo **contrato público** (`@WebMvcTest`/REST Assured: usuário A chamando o recurso de B → `404`) ou escreva o teste com a assinatura **esperada**, marcado no relatório como "não compila até a correção — o `developer` ajusta a assinatura". Antes de entregar, **rode o teste de cabeça contra as duas versões** (com o bug e corrigida): se o resultado for igual nas duas, o assert não discrimina — troque-o (ex.: com repository mockado, afirmar sobre o estado de um objeto que o mock nunca altera não prova nada; afirme a exception, o retorno ou o `save` que não deveria acontecer). **Cuidado com o default do Mockito:** método não stubado que retorna `Optional` devolve `Optional.empty()` — se você só stubar `findByIdAndUserId(...)` como vazio, uma implementação com bug que chame `findById(id)` **também** lança `ResourceNotFoundException` e o teste passa nas duas versões. Stube o caminho do bug com o dado de outro usuário (`findById(id)` → empréstimo de B), como no exemplo. E sem `lenient()` para esconder stub que o código não usa.
 - **Relate a saída real.** Teste novo deve **falhar pelo motivo certo** antes de a produção ser corrigida (bug) e **passar** depois. Se um teste que você escreveu falha por defeito do próprio teste, conserte o teste; se falha por defeito de produção, **é um bug: reporte**.
 - Se não puder rodar, diga **claramente** que não verificou e por quê.
+- **Fique dentro do projeto.** Não crie nem altere arquivos fora do repositório (`/tmp`, `~`, `~/.m2`, outras pastas): o diff e o `git status` precisam mostrar tudo o que você fez. Sem build no projeto, o padrão é declarar **não verificado**. Uma verificação improvisada (classpath montado à mão, runner próprio) só vale se rodar em `target/` (ou `build/`), for apagada no fim e for relatada como **"verificação improvisada — não substitui `./mvnw verify`"**, com o comando e a saída. Nunca adicione `pom.xml`/wrapper/dependências só para conseguir rodar, sem pedir.
 - **Nunca** apague, `@Disabled`, afrouxe assert ou aumente timeout para "passar"; **nunca** baixe o piso do JaCoCo, exclua classes da cobertura nem pule testes — `pom.xml`/`build.gradle` não são código de teste: se a configuração de cobertura precisar mudar, proponha ao `developer`.
 
 ## Formato de entrega

@@ -91,6 +91,7 @@ Regras que atravessam várias skills e que você aplica **sempre**: **autorizaç
 - Rode **só o teste afetado** primeiro (`-Dtest=BookServiceTest` / `--tests`), depois a suíte.
 - **Relate a saída real:** passou/falhou, quantos testes, o erro literal. Se falhou, **diga que falhou** e investigue a causa raiz; **nunca** desabilite, comente ou afrouxe um teste para passar, nem silencie uma exception; **nunca** baixe o piso do JaCoCo, exclua classes da cobertura nem pule testes (`-DskipTests`, `-Djacoco.skip`) para o build passar.
 - Se não puder executar (sem Docker, sem JDK certo, sem rede), diga **claramente** que **não verificou** e por quê, e o comando para o usuário rodar.
+- **Fique dentro do projeto.** Não crie nem altere arquivos fora do repositório (`/tmp`, `~`, `~/.m2`, outras pastas): o diff e o `git status` precisam mostrar tudo o que você fez. Sem build no projeto, o padrão é declarar **não verificado**. Uma verificação improvisada (classpath montado à mão, runner próprio) só vale se rodar em `target/` (ou `build/`), for apagada no fim e for relatada como **"verificação improvisada — não substitui `./mvnw verify`"**, com o comando e a saída. Nunca adicione `pom.xml`/wrapper/dependências só para conseguir rodar, sem pedir.
 - Bug: teste que **falha** (reproduz) → correção → teste que **passa**.
 
 ## Ações que exigem confirmação
