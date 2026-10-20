@@ -1,11 +1,11 @@
 ---
 name: code-organization
-description: Fundação do pacote — faz uma única vez o questionário de preferências do projeto (comentários, database, Swagger, build tool, mapper, injection) e define o layout flat-by-layer sob br.com.padrao, naming, Startup, patterns de entity/DTO/controller/service/exception e o application.yml. Use antes de gerar código em qualquer projeto Spring Boot deste padrão ou quando perguntarem onde algo deve ficar.
+description: Fundação do pacote — faz uma única vez o questionário de preferências do projeto (comentários, database, Swagger, build tool, mapper, injection) e define o layout flat-by-layer sob br.com.edimilsonldutra, naming, Startup, patterns de entity/DTO/controller/service/exception e o application.yml. Use antes de gerar código em qualquer projeto Spring Boot deste padrão ou quando perguntarem onde algo deve ficar.
 ---
 
 # Estrutura de Aplicação Spring Boot
 
-Organização flat-by-layer: controllers, services, repositories, model, DTOs e config vivem em packages dedicados sob `br.com.padrao`. Não é domain-driven. Java e Spring Boot evoluem rápido — sempre resolva as últimas versões estáveis no momento da criação do projeto (veja a skill `maven-config`) e nunca copie versões de outro projeto.
+Organização flat-by-layer: controllers, services, repositories, model, DTOs e config vivem em packages dedicados sob `br.com.edimilsonldutra`. Não é domain-driven. Java e Spring Boot evoluem rápido — sempre resolva as últimas versões estáveis no momento da criação do projeto (veja a skill `maven-config`) e nunca copie versões de outro projeto.
 
 Toda outra skill desta família assume que esta skill e `code-style` foram lidas primeiro.
 
@@ -56,7 +56,7 @@ Sempre que uma skill posterior precisar de uma preferência que ainda é desconh
 ## Package Structure
 
 ```
-br.com.padrao/
+br.com.edimilsonldutra/
 ├── Startup.java                            # @SpringBootApplication entrypoint
 ├── config/                                 # Global configuration
 │   ├── OpenApiConfig.java
@@ -301,7 +301,7 @@ public class BookService {
     }
 }
 ```
-com `import static br.com.padrao.mapper.ObjectMapper.parseObject;`.
+com `import static br.com.edimilsonldutra.mapper.ObjectMapper.parseObject;`.
 
 ### Mapper wrapper (preferência Dozer)
 ```java

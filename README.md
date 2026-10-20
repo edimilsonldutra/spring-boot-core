@@ -1,4 +1,4 @@
-# Padrão Spring Boot — Agents & Skills para Claude Code
+# Squads — Agents & Skills para Claude Code
 
 ![version](https://img.shields.io/badge/version-1.15.0-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
@@ -24,7 +24,7 @@ Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time d
 | **Plataformas** | Docker, Kubernetes, Helm, Argo CD, AWS (EKS, ECS, Lambda, RDS, S3, SQS/SNS…), Google Cloud e Azure via GitHub Actions |
 
 **O padrão aplicado em todo código gerado:**
-- Layout **flat-by-layer** (`controllers`, `services`, `repository`, `model`, `data/dto`, `exception`, `config`) sob `br.com.padrao`; **sem Lombok**; entities nunca expostas.
+- Layout **flat-by-layer** (`controllers`, `services`, `repository`, `model`, `data/dto`, `exception`, `config`) sob `br.com.edimilsonldutra`; **sem Lombok**; entities nunca expostas.
 - Schema versionado com **Flyway**; contrato de erro único (`ExceptionResponse` / `ProblemDetail`); OpenAPI com **springdoc 3**.
 - Autenticação **JWT** (ou Cognito), **autorização por objeto** e as práticas do **OWASP API Security Top 10**.
 - Testes com **JUnit 5, Mockito, Testcontainers** (banco real, nunca H2) e **REST Assured**; cobertura mínima de **90%** de linha e branch.
@@ -39,10 +39,10 @@ Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time d
 
 ```bash
 claude plugin marketplace add edimilsonldutra/spring-boot-core
-claude plugin install padrao-spring-boot@padrao
+claude plugin install squads@edimilsonldutra
 ```
 
-Dentro de uma sessão do Claude Code, o equivalente é `/plugin marketplace add edimilsonldutra/spring-boot-core` seguido de `/plugin install padrao-spring-boot@padrao`. Para conferir, digite `/padrao-spring-boot` e veja as skills no autocomplete, ou rode `/plugin list`.
+Dentro de uma sessão do Claude Code, o equivalente é `/plugin marketplace add edimilsonldutra/spring-boot-core` seguido de `/plugin install squads@edimilsonldutra`. Para conferir, digite `/squads` e veja as skills no autocomplete, ou rode `/plugin list`.
 
 **Três formas de uso:**
 
@@ -50,7 +50,7 @@ Dentro de uma sessão do Claude Code, o equivalente é `/plugin marketplace add 
 |---|---|---|
 | **Pedido direto** | Tarefa pequena e clara — o Claude Code escolhe as skills | `Crie um CRUD para Book com Flyway migration e Swagger.` |
 | **Um agent** | Um papel específico | `Use o agent code-reviewer para revisar o diff da branch.` |
-| **Orquestrador** | Entrega de ponta a ponta, com várias etapas e aprovações | `claude --agent padrao-spring-boot:orchestrator` → `Entregue a renovação online de empréstimo.` |
+| **Orquestrador** | Entrega de ponta a ponta, com várias etapas e aprovações | `claude --agent squads:orchestrator` → `Entregue a renovação online de empréstimo.` |
 
 Na primeira utilização em um projeto, o Claude Code pergunta as **preferências do projeto** (database, build tool, mapper, estilo de injeção, idioma das mensagens…) e oferece salvá-las no `CLAUDE.md`, para que todas as skills e agents as respeitem.
 
@@ -86,6 +86,31 @@ flowchart LR
 | `developer` | Implementar e corrigir com testes | Código e testes | Mudança mínima no padrão, build executado de verdade, desvios da spec reportados |
 | `qa` | Provar que funciona e achar o que quebra | Somente testes | Plano de testes, casos de borda e segurança, testes escritos, bugs reproduzidos, um teste por critério |
 | `code-reviewer` | Revisar o diff contra o padrão e a spec | Nada (somente leitura) | Achados por severidade com `arquivo:linha`, cenário de falha e sugestão, e veredito |
+
+### Modelos e custo
+
+Cada agent tem um modelo padrão pelo custo do erro no seu papel; o orquestrador ajusta o modelo **por tarefa** e você pode fixar um perfil.
+
+| Agent | Modelo padrão | Por quê |
+|---|---|---|
+| `architect`, `code-reviewer` | `opus` | Erro de desenho ou bug que passa na revisão custa muito mais que o token |
+| `product-manager`, `tech-lead`, `developer`, `qa` | `sonnet` | Melhor custo-benefício para o volume de trabalho |
+| `orchestrator` | `inherit` | Usa o modelo da sessão (`claude --model …` ou `/model`) |
+
+**Modo automático (padrão):** o orquestrador parte do padrão e ajusta pelos sinais da tarefa — `haiku` em tarefa mecânica ou varredura de leitura; `opus` em feature sensível (auth, dados pessoais, dinheiro), mudança de contrato/schema, bug difícil; sobe um nível **uma vez** se o agent falhar por limitação de raciocínio; `fable` só com o seu aval. O modelo de cada passo aparece no pipeline e no quadro de andamento.
+
+**Perfis** — em pipelines com 3+ etapas o orquestrador pergunta (ou lê `- Model profile: …` em `## Project preferences` do `CLAUDE.md`):
+
+| Perfil | Comportamento | Custo relativo* |
+|---|---|---|
+| `auto` (recomendado) | Ajuste por tarefa, como acima | 1× |
+| `economico` | `sonnet`/`haiku`; `opus` só em arquitetura e revisão de feature sensível | ~0,6× (mais risco de retrabalho) |
+| `equilibrado` | Todos em `sonnet`; `opus` só em feature sensível ou após falha | ~0,8× |
+| `qualidade-maxima` | Todos em `opus`; `fable` em arquitetura e revisão de feature sensível | ~2–3× |
+
+\* Ordem de grandeza para comparar perfis. Preços de API por 1M tokens (entrada/saída, referência 2026): Haiku 4.5 US$ 1/5 · Sonnet 5 US$ 2/10 · Opus 5.5 US$ 4/20 · Fable 5.1 US$ 10/50. Em planos por assinatura, o efeito é no consumo do limite de uso.
+
+**Sobrepor:** peça no próprio pedido ("revise com opus"); edite o `model:` no frontmatter do agent; ou defina `CLAUDE_CODE_SUBAGENT_MODEL` para forçar um modelo em **todos** os subagents (anula a escolha automática).
 
 ### Fluxo completo de uma feature
 
@@ -145,7 +170,7 @@ flowchart LR
 ```
 - **Skills:** não carrega; **cita no brief** as skills de cada tarefa (ex.: mensageria → `messaging` + broker + `transactional-outbox` + `idempotency`).
 - **Regras:** não faz o trabalho dos especialistas nem arbitra divergências (leva as opções a você); nunca executa ações irreversíveis; "funciona" sem evidência volta para o agent; no máximo 3 ciclos de correção antes de escalar.
-- **Melhor uso:** como agent principal da sessão — `claude --agent padrao-spring-boot:orchestrator`.
+- **Melhor uso:** como agent principal da sessão — `claude --agent squads:orchestrator`.
 
 #### `product-manager`
 
@@ -259,7 +284,7 @@ flowchart LR
 | **Testes** (4) | `test-patterns`, `integration-testing`, `test-coverage`, `postman-newman` |
 | **Entender, refatorar e refinar** (3) | `repository-understanding`, `refactoring`, `backlog-refinement` |
 
-Qualquer skill pode ser chamada diretamente: `/padrao-spring-boot:<nome>` (ex.: `/padrao-spring-boot:design-docs`). A skill `guide` indica qual usar para cada necessidade.
+Qualquer skill pode ser chamada diretamente: `/squads:<nome>` (ex.: `/squads:design-docs`). A skill `guide` indica qual usar para cada necessidade.
 
 ---
 
@@ -277,8 +302,9 @@ Instala as 88 skills de uma vez (recomendado — as skills se referenciam entre 
 
 ## Atualização
 
-- **Automática:** no Claude Code, `/plugin` → **Marketplaces** → `padrao` → **Enable auto-update**.
-- **Manual:** `/plugin marketplace update padrao` (na sessão) ou `claude plugin update padrao-spring-boot@padrao` (no terminal).
+- **Automática:** no Claude Code, `/plugin` → **Marketplaces** → `edimilsonldutra` → **Enable auto-update**.
+- **Manual:** `/plugin marketplace update edimilsonldutra` (na sessão) ou `claude plugin update squads@edimilsonldutra` (no terminal).
+- **Vindo da 1.x?** Na 2.0 o plugin `padrao-spring-boot` passou a se chamar `squads` e o marketplace `padrao` passou a ser `edimilsonldutra`; a atualização não migra sozinha. Rode `claude plugin uninstall padrao-spring-boot@padrao`, `claude plugin marketplace remove padrao`, `claude plugin marketplace add edimilsonldutra/spring-boot-core` e `claude plugin install squads@edimilsonldutra`. Troque também os usos antigos: `/padrao-spring-boot:<skill>` → `/squads:<skill>` e `claude --agent padrao-spring-boot:orchestrator` → `claude --agent squads:orchestrator`.
 
 ---
 
@@ -287,9 +313,16 @@ Instala as 88 skills de uma vez (recomendado — as skills se referenciam entre 
 ```
 spring-boot-core/
 ├── .claude-plugin/
-│   ├── marketplace.json        # marketplace "padrao"
-│   └── plugin.json             # plugin "padrao-spring-boot": nome, versão, descrição
-├── agents/                     # 7 agents (um .md cada)
+│   ├── marketplace.json        # marketplace "edimilsonldutra"
+│   └── plugin.json             # plugin "squads": nome, versão, descrição e lista de agents
+├── agents/                     # 7 agents, um por pasta (<nome>/<nome>.md)
+│   ├── orchestrator/orchestrator.md
+│   ├── product-manager/product-manager.md
+│   ├── architect/architect.md
+│   ├── tech-lead/tech-lead.md
+│   ├── developer/developer.md
+│   ├── qa/qa.md
+│   └── code-reviewer/code-reviewer.md
 ├── skills/                     # 88 skills (<nome>/SKILL.md)
 ├── docs/
 │   └── guide.md                # guia de referência
@@ -301,9 +334,10 @@ spring-boot-core/
 ## Contribuindo
 
 1. **Nova skill:** crie `skills/<nome>/SKILL.md` com frontmatter `name` e `description` (o que cobre + "Use quando…"), siga o formato das existentes (pré-requisitos com links relativos, seções, "Regras principais") e mantenha o padrão do pacote (sem Lombok, layout de `code-organization`).
-2. **Ligue a skill ao time:** cite-a nos agents que devem usá-la (`agents/*.md`), na skill `guide` e no catálogo do [guia de referência](docs/guide.md).
-3. **Versão:** aumente `version` em `.claude-plugin/plugin.json` — sem isso, quem já instalou não recebe a mudança.
-4. **Valide** antes do PR:
+2. **Ligue a skill ao time:** cite-a nos agents que devem usá-la (`agents/<nome>/<nome>.md`), na skill `guide` e no catálogo do [guia de referência](docs/guide.md).
+3. **Novo agent:** crie `agents/<nome>/<nome>.md` (frontmatter `name`, `description`, `tools`, `model`) e **acrescente o caminho em `agents` no `.claude-plugin/plugin.json`** — essa lista substitui a varredura padrão da pasta, então um agent fora dela não é carregado (e, sem ela, a subpasta entraria no nome: `squads:<nome>:<nome>`).
+4. **Versão:** aumente `version` em `.claude-plugin/plugin.json` — sem isso, quem já instalou não recebe a mudança.
+5. **Valide** antes do PR:
    ```bash
    claude plugin validate .
    ```

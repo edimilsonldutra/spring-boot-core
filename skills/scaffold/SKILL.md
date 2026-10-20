@@ -22,7 +22,7 @@ Execute o Step 0 de `code-organization` **na mesma rodada**, para as duas prefer
 
 | Pergunta | Default | Notas |
 |---|---|---|
-| Group id e base package | `br.com.padrao` | O base package é igual ao group id, a menos que o desenvolvedor diga o contrário. |
+| Group id e base package | `br.com.edimilsonldutra` | O base package é igual ao group id, a menos que o desenvolvedor diga o contrário. |
 | Artifact (nome do projeto) | nenhum — pergunte | kebab-case, por exemplo `library-api`. Nomeia a pasta, o jar e o database default (`library_api`), se persistence for escolhida. |
 | Java version | a última LTS | Veja o Step 3. |
 | Build tool | **Maven** | Se Gradle: DSL **Groovy** (`build.gradle`) ou **Kotlin DSL** (`build.gradle.kts`) — default Groovy. |

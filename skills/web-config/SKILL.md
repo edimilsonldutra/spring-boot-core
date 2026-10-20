@@ -28,7 +28,7 @@ Tudo abaixo mostra o setup completo JSON + XML + YAML para referência; quando a
 ## Package structure
 
 ```
-br.com.padrao/
+br.com.edimilsonldutra/
 └── config/
     ├── WebConfig.java
     └── JacksonConfig.java        # only when YAML was chosen

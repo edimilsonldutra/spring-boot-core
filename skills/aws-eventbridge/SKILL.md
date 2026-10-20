@@ -24,7 +24,7 @@ EventBridge tem **latência e limites de vazão maiores** que SNS/Kafka (cotas p
 
 ```json
 {
-  "source": "br.com.padrao.library",
+  "source": "br.com.edimilsonldutra.library",
   "detail-type": "BookCreated",
   "detail": { "eventId": "6f1c...", "eventVersion": 1, "id": 42, "title": "Clean Code", "occurredAt": "2026-01-15T10:30:00Z" },
   "eventBusName": "library-bus"
@@ -63,7 +63,7 @@ public class EventBridgeEventPublisher implements EventPublisher {
     public void publish(String key, String eventType, String eventId, String payload) {
         var entry = PutEventsRequestEntry.builder()
                 .eventBusName(eventBus)
-                .source("br.com.padrao.library")
+                .source("br.com.edimilsonldutra.library")
                 .detailType(eventType)
                 .detail(payload)
                 .build();
@@ -89,7 +89,7 @@ public class EventBridgeEventPublisher implements EventPublisher {
 Uma regra **casa** eventos e os envia a até 5 targets. Exemplo — enviar `BookCreated` para a fila do serviço de busca:
 ```json
 {
-  "source": ["br.com.padrao.library"],
+  "source": ["br.com.edimilsonldutra.library"],
   "detail-type": ["BookCreated", "BookUpdated"],
   "detail": { "price": [{ "numeric": [">", 0] }] }
 }

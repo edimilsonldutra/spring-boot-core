@@ -87,7 +87,7 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
         ignoreExceptions:
-          - br.com.padrao.exception.BookNotFoundException
+          - br.com.edimilsonldutra.exception.BookNotFoundException
   retry:
     instances:
       catalog:
@@ -99,7 +99,7 @@ resilience4j:
         retryExceptions:
           - org.springframework.web.client.ResourceAccessException
         ignoreExceptions:
-          - br.com.padrao.exception.BookNotFoundException
+          - br.com.edimilsonldutra.exception.BookNotFoundException
   bulkhead:
     instances:
       catalog:

@@ -50,7 +50,7 @@ Um **monolito modular** é **uma aplicação, um deploy, um banco** — mas **or
 
 Cada **sub-package direto** do package da aplicação é um **módulo**:
 ```
-br.com.padrao/
+br.com.edimilsonldutra/
 ├── Startup.java
 ├── catalog/                       # módulo catalog
 │   ├── Book.java                  #   (API pública do módulo: tipos no package raiz)
@@ -96,7 +96,7 @@ class ModularityTests {
 Declare as dependências **permitidas** (a arquitetura explícita), em `package-info.java` do módulo:
 ```java
 @ApplicationModule(allowedDependencies = {"catalog", "shared"})
-package br.com.padrao.lending;
+package br.com.edimilsonldutra.lending;
 ```
 `lending` só pode depender de `catalog` e `shared`. Adicionar uma dependência nova vira **uma decisão revisada em PR**, não um acidente. Para expor um sub-package como parte da API, use `@NamedInterface("api")` no `package-info.java` dele e `allowedDependencies = "catalog::api"`.
 

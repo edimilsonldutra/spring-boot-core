@@ -25,7 +25,7 @@ Adicione só os formatos que o projeto usa.
 ## 2. Estrutura
 
 ```
-br.com.padrao/
+br.com.edimilsonldutra/
 └── file/
     ├── exporter/
     │   ├── MediaTypes.java

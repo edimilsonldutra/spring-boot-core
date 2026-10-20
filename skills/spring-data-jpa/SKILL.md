@@ -238,7 +238,7 @@ public class BookDTO implements Serializable {
 
 A conversão sempre passa pelo mapper escolhido no Step 0 — nunca no controller, nunca à mão em cinco lugares.
 
-**Dozer (default):** o wrapper `mapper/ObjectMapper` de `code-organization`, importado estaticamente (`import static br.com.padrao.mapper.ObjectMapper.parseObject;`) para que nunca colida com o próprio `ObjectMapper` do Jackson.
+**Dozer (default):** o wrapper `mapper/ObjectMapper` de `code-organization`, importado estaticamente (`import static br.com.edimilsonldutra.mapper.ObjectMapper.parseObject;`) para que nunca colida com o próprio `ObjectMapper` do Jackson.
 
 ```java
 @Service

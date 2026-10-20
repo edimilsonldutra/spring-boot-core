@@ -113,6 +113,7 @@ Deployment usa.>
 - Configuration file: YAML
 - Entity/DTO mapping: Dozer
 - Dependency injection: field
+- Model profile: auto
 ````
 
 Use as respostas reais no último bloco — essa seção é o que as sessões posteriores leem em vez de perguntar o Step 0 de novo. Mantenha o heading exato e uma linha por preferência, para que qualquer skill da família consiga encontrá-la.

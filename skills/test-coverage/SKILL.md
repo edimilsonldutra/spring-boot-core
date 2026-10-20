@@ -228,12 +228,12 @@ A cobertura diz **o código foi executado**; o **mutation testing** diz **os tes
     </dependencies>
     <configuration>
         <targetClasses>
-            <param>br.com.padrao.services.*</param>
-            <param>br.com.padrao.domain.*</param>
+            <param>br.com.edimilsonldutra.services.*</param>
+            <param>br.com.edimilsonldutra.domain.*</param>
         </targetClasses>
         <targetTests>
-            <param>br.com.padrao.services.*Test</param>
-            <param>br.com.padrao.domain.*Test</param>
+            <param>br.com.edimilsonldutra.services.*Test</param>
+            <param>br.com.edimilsonldutra.domain.*Test</param>
         </targetTests>
         <mutationThreshold>70</mutationThreshold>
         <outputFormats>

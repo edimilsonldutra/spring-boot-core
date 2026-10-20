@@ -65,8 +65,8 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.trusted.packages: br.com.padrao.messaging.event
-        spring.json.value.default.type: br.com.padrao.messaging.event.BookCreatedEvent
+        spring.json.trusted.packages: br.com.edimilsonldutra.messaging.event
+        spring.json.value.default.type: br.com.edimilsonldutra.messaging.event.BookCreatedEvent
         spring.json.use.type.headers: false
     listener:
       ack-mode: record

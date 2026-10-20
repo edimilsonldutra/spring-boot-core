@@ -1,9 +1,9 @@
 ---
 name: guide
-description: Índice do plugin padrao-spring-boot — o que o pacote faz, quais skills estão realmente instaladas, como se agrupam e qual usar para cada necessidade. Use quando o desenvolvedor perguntar o que o plugin sabe fazer, qual skill usar ou por onde começar, ou parecer inseguro sobre o próximo passo.
+description: Índice do plugin squads — o que o pacote faz, quais skills estão realmente instaladas, como se agrupam e qual usar para cada necessidade. Use quando o desenvolvedor perguntar o que o plugin sabe fazer, qual skill usar ou por onde começar, ou parecer inseguro sobre o próximo passo.
 ---
 
-# padrao-spring-boot — guide
+# squads — guide
 
 Esta skill não gera nenhum código — ela apenas explica o pacote. Diferente de todas as outras skills daqui, ela não precisa que `code-organization`/`code-style` sejam lidas antes.
 
@@ -11,7 +11,7 @@ Esta skill não gera nenhum código — ela apenas explica o pacote. Diferente d
 
 ## O que é este plugin
 
-Skills de backend Spring Boot 4.1 / Java 25, um tópico por skill, todas em um único padrão validado: packages flat-by-layer sob `br.com.padrao`, sem Lombok em lugar nenhum, constructors/getters/setters explícitos, logging com SLF4J, auth JWT feita de um jeito específico, um único contrato de erro `ExceptionResponse`/`ProblemDetail`, Flyway dono do schema. Cada skill pode ser chamada diretamente (`/padrao-spring-boot:<name>`) ou encontrada automaticamente a partir de uma descrição em linguagem natural da tarefa — as duas formas funcionam; este guide é para quando o desenvolvedor quer o mapa em vez de adivinhar um nome. A versão em Kotlin deste exato pacote é um plugin separado, `padrao-spring-boot-kt` (todo nome de skill ganha um prefixo `kt-` lá); mencione-o somente se o desenvolvedor estiver trabalhando em Kotlin.
+Skills de backend Spring Boot 4.1 / Java 25, um tópico por skill, todas em um único padrão validado: packages flat-by-layer sob `br.com.edimilsonldutra`, sem Lombok em lugar nenhum, constructors/getters/setters explícitos, logging com SLF4J, auth JWT feita de um jeito específico, um único contrato de erro `ExceptionResponse`/`ProblemDetail`, Flyway dono do schema. Cada skill pode ser chamada diretamente (`/squads:<name>`) ou encontrada automaticamente a partir de uma descrição em linguagem natural da tarefa — as duas formas funcionam; este guide é para quando o desenvolvedor quer o mapa em vez de adivinhar um nome. A versão em Kotlin deste exato pacote é um plugin separado, `squads-kt` (todo nome de skill ganha um prefixo `kt-` lá); mencione-o somente se o desenvolvedor estiver trabalhando em Kotlin.
 
 ---
 

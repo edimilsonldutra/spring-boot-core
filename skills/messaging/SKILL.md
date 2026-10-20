@@ -135,7 +135,7 @@ Monitore o **atraso**, não só se o processo está de pé:
 ## 8. Package layout (estende `code-organization`)
 
 ```
-br.com.padrao/
+br.com.edimilsonldutra/
 └── messaging/
     ├── event/                  # records dos eventos (contrato público)
     │   └── BookCreatedEvent.java

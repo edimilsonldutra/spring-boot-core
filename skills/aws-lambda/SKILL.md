@@ -186,7 +186,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/book-events.jar
-      Handler: br.com.padrao.lambda.BookEventHandler::handleRequest
+      Handler: br.com.edimilsonldutra.lambda.BookEventHandler::handleRequest
       AutoPublishAlias: live
       Policies:
         - SQSPollerPolicy:

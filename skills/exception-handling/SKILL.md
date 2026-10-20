@@ -18,7 +18,7 @@ Os clients recebem **dois** formatos de erro, e a skill precisa ser honesta sobr
 ## Package structure
 
 ```
-br.com.padrao/
+br.com.edimilsonldutra/
 └── exception/
     ├── ExceptionResponse.java
     ├── ResourceNotFoundException.java

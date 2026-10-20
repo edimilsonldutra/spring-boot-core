@@ -39,7 +39,7 @@ Não chute versões de memória — o Spring Boot se move rápido e várias libr
         <relativePath/>
     </parent>
 
-    <groupId>br.com.padrao</groupId>
+    <groupId>br.com.edimilsonldutra</groupId>
     <artifactId>rest-with-spring-boot-and-java-padrao</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rest-with-spring-boot-and-java-padrao</name>

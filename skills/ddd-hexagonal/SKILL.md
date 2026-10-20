@@ -182,7 +182,7 @@ Só carrega/salva **aggregates inteiros pelo root**. Consultas de leitura sofist
 ### Layout de packages (por contexto)
 
 ```
-br.com.padrao.lending/
+br.com.edimilsonldutra.lending/
 ├── domain/
 │   ├── model/                  # Loan, LoanId, MemberId, BookId, LoanStatus, Money, LoanPolicy
 │   ├── event/                  # DomainEvent, LoanStarted, BookReturned
@@ -315,7 +315,7 @@ Regra de dependência que só existe na cabeça de quem a desenhou **é violada 
 </dependency>
 ```
 ```java
-@AnalyzeClasses(packages = "br.com.padrao.lending", importOptions = ImportOption.DoNotIncludeTests.class)
+@AnalyzeClasses(packages = "br.com.edimilsonldutra.lending", importOptions = ImportOption.DoNotIncludeTests.class)
 class ArchitectureTest {
 
     @ArchTest

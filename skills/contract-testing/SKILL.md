@@ -200,7 +200,7 @@ response:
 O **plugin do SCC** (Maven/Gradle) **gera testes** do provedor a partir dos contratos (você implementa uma **base class** que monta o estado, equivalente ao `@State`) e **publica um stubs JAR** com os WireMock stubs. O **consumidor** usa o **Stub Runner** para subir os stubs reais:
 ```java
 @SpringBootTest
-@AutoConfigureStubRunner(ids = "br.com.padrao:library-catalog:+:stubs:8090", stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+@AutoConfigureStubRunner(ids = "br.com.edimilsonldutra:library-catalog:+:stubs:8090", stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 class CatalogGatewayContractTest {
     // o client aponta para http://localhost:8090 e fala com os stubs gerados do contrato REAL do provedor
 }
