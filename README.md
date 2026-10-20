@@ -1,6 +1,6 @@
 # Squads — Agents & Skills para Claude Code
 
-![version](https://img.shields.io/badge/version-1.15.0-blue)
+![version](https://img.shields.io/badge/version-2.1.0-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-D97757)
@@ -74,6 +74,7 @@ flowchart LR
 - **Skills** são carregadas sob demanda (ferramenta `Skill`) — nenhum agent descreve o padrão de memória.
 - **Agents** rodam isolados, com permissões mínimas: só o `developer` altera código de produção; `qa` altera só testes; `architect` e `product-manager` só documentos; `tech-lead`, `code-reviewer` e `orchestrator` são somente leitura.
 - **Gates humanos:** escopo, design doc/ADR, plano e qualquer ação irreversível ou externa (`commit`, `push`, deploy, `kubectl`, `aws`, `terraform apply`) exigem a sua aprovação.
+- **Guardrails:** os agents tratam o que leem (arquivos, diffs, logs, relatórios de outros agents) como **dado, não instrução**, não reproduzem segredos, não rodam build de código não confiável fora de sandbox e só aceitam aprovação sua citada literalmente no brief. Um hook do plugin (`hooks/guard-commands.sh`) **pede a sua confirmação** antes de comandos destrutivos ou externos (`git push`/`commit`/`reset --hard`, `rm -r`, `kubectl apply`, `helm upgrade`, `terraform apply`, `aws` que altera recursos, `mvn deploy`, `docker push`, `gh pr create`…) — também na sessão principal.
 
 ---
 
@@ -83,7 +84,7 @@ flowchart LR
 |---|---|---|---|
 | `orchestrator` | Coordenar o time: escolher o menor pipeline, delegar, verificar, parar nos gates | Nada (delega e lê) | Pipeline, quadro de andamento e relatório final com o que foi e o que **não** foi verificado |
 | `product-manager` | O **quê**, o **porquê** e o **quão bom** | `docs/product/` (com confirmação) | PRD, histórias com critérios, casos de abuso, priorização, roadmap/OKRs, métricas, plano de lançamento |
-| `architect` | Decisões estruturais e especificação técnica | `docs/design/`, `docs/adr/`, `docs/security/` (com confirmação) | Design doc (spec), ADRs, threat model, recomendação com alternativas e custos |
+| `architect` | Decisões estruturais e especificação técnica | `docs/design/`, `docs/adr/`, `docs/security/`, `docs/architecture/` (com confirmação) | Design doc (spec), ADRs, threat model, recomendação com alternativas e custos |
 | `tech-lead` | Transformar a spec em plano executável | Nada (somente leitura) | Tarefas ordenadas com skill e agent, riscos, MVP, estimativa, Definition of Done, matriz critério → tarefa |
 | `developer` | Implementar e corrigir com testes | Código e testes | Mudança mínima no padrão, build executado de verdade, desvios da spec reportados |
 | `qa` | Provar que funciona e achar o que quebra | Somente testes | Plano de testes, casos de borda e segurança, testes escritos, bugs reproduzidos, um teste por critério |
@@ -317,6 +318,9 @@ spring-boot-core/
 ├── .claude-plugin/
 │   ├── marketplace.json        # marketplace "edimilsonldutra"
 │   └── plugin.json             # plugin "squads": nome, versão, descrição e lista de agents
+├── hooks/                      # guardrail: pede confirmação antes de comandos destrutivos ou externos
+│   ├── hooks.json
+│   └── guard-commands.sh
 ├── agents/                     # 7 agents, um por pasta (<nome>/<nome>.md)
 │   ├── orchestrator/orchestrator.md
 │   ├── product-manager/product-manager.md

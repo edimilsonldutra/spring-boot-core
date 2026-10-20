@@ -1,0 +1,17 @@
+{
+  "description": "Guardrails do squads: pede confirmação do usuário antes de comandos destrutivos ou externos (push, deploy, cluster, nuvem, banco não local, apagar arquivos).",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-commands.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
