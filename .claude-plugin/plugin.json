@@ -2,7 +2,7 @@
   "name": "squads",
   "displayName": "Squads",
   "description": "Construa, teste, containerize e implante aplicações Spring Boot 4 / Java 25 no padrão do pacote (flat-by-layer, sem Lombok, Flyway, Swagger, JWT/Cognito), com skills de paginação, HATEOAS, versionamento de API, arquivos (upload, XLSX/CSV, PDF), e-mail, design docs para desenvolvimento orientado a especificação, segurança de aplicação (OWASP) e threat modeling, SOLID e padrões de projeto, testes, mensageria, microsserviços, CI/CD (GitHub Actions para AWS, GCP e Azure), Kubernetes/Argo CD, AWS e produto, e um time de agents (product manager, architect, tech lead, developer, QA, code reviewer) coordenado por um orquestrador.",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "author": {
     "name": "edimilsonldutra"
   },

@@ -1,6 +1,6 @@
 # Squads — Agents & Skills para Claude Code
 
-![version](https://img.shields.io/badge/version-2.3.1-blue)
+![version](https://img.shields.io/badge/version-2.3.2-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-D97757)
@@ -335,6 +335,7 @@ spring-boot-core/
 │   └── guide.md                # guia de referência
 ├── scripts/
 │   └── validate-plugin.py      # validação estrutural (rodada no CI)
+├── evals/                      # evals de gatilho: a skill certa dispara? (claude plugin eval)
 ├── .github/workflows/
 │   └── validate-plugin.yml
 └── README.md
@@ -354,6 +355,7 @@ spring-boot-core/
    python scripts/validate-plugin.py
    ```
    O segundo comando (também rodado no CI em todo PR) confere o frontmatter de skills e agents (nome = pasta, description até 1024 caracteres, sem `<`/`>`, com "Use quando…"), os links `../<skill>/SKILL.md`, as skills citadas nos agents, prompts e guias, a lista `agents` do `plugin.json`, o catálogo do guia, os grupos do README e as contagens e a versão.
+6. **Mudou uma `description` ou criou uma skill que compete com outra?** Rode os [evals de gatilho](evals/README.md) (`claude plugin eval . --runs 1 --ablation none --no-publish`) e confirme com 3 rodadas antes de concluir que algo piorou.
 
 ---
 
