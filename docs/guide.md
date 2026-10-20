@@ -130,6 +130,8 @@ Somente o necessário é perguntado: database e mapper apenas quando há persist
 | **Agent** | Um papel específico (revisar, testar, planejar, desenhar) | `@developer`, ou *"use o agent qa para montar o plano de testes do BookService"* |
 | **Orquestrador** | Entrega de ponta a ponta, com várias etapas e aprovações | `claude --agent squads:orchestrator` e descreva o objetivo — ex.: *"Entregue a renovação online de empréstimo."* |
 
+Para não começar do zero, use os modelos de [`prompts/`](../prompts/README.md): um por fluxo, com campos para preencher e exemplo preenchido.
+
 ---
 
 ## Agents

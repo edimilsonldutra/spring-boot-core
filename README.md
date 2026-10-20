@@ -52,6 +52,8 @@ Dentro de uma sessão do Claude Code, o equivalente é `/plugin marketplace add 
 | **Um agent** | Um papel específico | `Use o agent code-reviewer para revisar o diff da branch.` |
 | **Orquestrador** | Entrega de ponta a ponta, com várias etapas e aprovações | `claude --agent squads:orchestrator` → `Entregue a renovação online de empréstimo.` |
 
+**Prompts prontos:** a pasta [`prompts/`](prompts/README.md) tem modelos para preencher e colar — nova funcionalidade, correção de bug, revisão, decisão de arquitetura, refatoração, go/no-go e outros.
+
 Na primeira utilização em um projeto, o Claude Code pergunta as **preferências do projeto** (database, build tool, mapper, estilo de injeção, idioma das mensagens…) e oferece salvá-las no `CLAUDE.md`, para que todas as skills e agents as respeitem.
 
 ---
@@ -324,6 +326,7 @@ spring-boot-core/
 │   ├── qa/qa.md
 │   └── code-reviewer/code-reviewer.md
 ├── skills/                     # 88 skills (<nome>/SKILL.md)
+├── prompts/                    # prompts reutilizáveis por fluxo (feature, bug, revisão, ADR…)
 ├── docs/
 │   └── guide.md                # guia de referência
 └── README.md
