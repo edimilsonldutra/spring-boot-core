@@ -1,6 +1,6 @@
 ---
 name: rabbitmq
-description: RabbitMQ com Spring Boot 4 / Spring AMQP — exchanges, queues, bindings e dead-letter exchange como beans, publisher confirms, @RabbitListener com ack e retry, quorum queues, retry com atraso (TTL e DLX), prefetch, JSON, Docker/Kubernetes/Amazon MQ, segurança, métricas e testes. Use quando criar filas de trabalho ou roteamento de mensagens com RabbitMQ.
+description: RabbitMQ com Spring Boot 4 / Spring AMQP — exchanges, queues, bindings e dead-letter exchange como beans, publisher confirms, @RabbitListener com ack e retry, quorum queues, retry com atraso (TTL e DLX), prefetch, JSON, Docker/Kubernetes/Amazon MQ, segurança, métricas e testes. Use quando criar filas de trabalho ou roteamento de mensagens com RabbitMQ. Não use para escolher o broker (messaging).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md) e [`../messaging/SKILL.md`](../messaging/SKILL.md) (escolha de broker, desenho de eventos, garantias) — e **`../transactional-outbox/SKILL.md`** se a mensagem nasce de uma mudança no database.

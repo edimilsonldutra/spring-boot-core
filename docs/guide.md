@@ -10,7 +10,7 @@ Guia de referência do plugin `squads` para o Claude Code: instalação, configu
 
 O plugin leva para o Claude Code um padrão único de construção de APIs REST com **Java 25 e Spring Boot 4** — package layout, code style, segurança, testes, documentação e entrega — em duas camadas:
 
-- **Skills (88)** — o *como*. Cada skill documenta uma maneira específica de fazer algo: uma entity, uma migration, um teste de integração, um design doc, um pipeline. São a **fonte de verdade do padrão**: agents e o próprio Claude Code as carregam sob demanda, em vez de responder de memória.
+- **Skills (89)** — o *como*. Cada skill documenta uma maneira específica de fazer algo: uma entity, uma migration, um teste de integração, um design doc, um pipeline. São a **fonte de verdade do padrão**: agents e o próprio Claude Code as carregam sob demanda, em vez de responder de memória.
 - **Agents (7)** — o *quem*. Especialistas com papel, permissões e formato de entrega próprios: `product-manager`, `architect`, `tech-lead`, `developer`, `qa` e `code-reviewer`, coordenados pelo `orchestrator`. Cada agent carrega as skills da sua tarefa antes de agir.
 
 ```
@@ -73,7 +73,7 @@ Na pasta do projeto onde as skills vão ficar, rode:
 npx skills add edimilsonldutra/spring-boot-core --skill '*'
 ```
 
-O `'*'` instala **as 88 skills de uma vez** — e é o recomendado, porque as skills se referenciam umas às outras (a `design-docs` aponta para `prd-writing` e `threat-modeling`, por exemplo) e esses links só funcionam quando todas estão instaladas lado a lado. O CLI pergunta para quais ferramentas instalar.
+O `'*'` instala **as 89 skills de uma vez** — e é o recomendado, porque as skills se referenciam umas às outras (a `design-docs` aponta para `prd-writing` e `threat-modeling`, por exemplo) e esses links só funcionam quando todas estão instaladas lado a lado. O CLI pergunta para quais ferramentas instalar.
 
 | Quero… | Comando |
 |---|---|
@@ -146,7 +146,7 @@ Cada agent tem papel, permissões e formato de entrega próprios. Todos leem `co
 | `tech-lead` | Plano, tarefas, riscos, estimativa, DoD | Nada (somente leitura) | Planeja a partir dos critérios do design doc; **atribui uma skill a cada tarefa** do plano, para o `developer` e o `qa` executarem no padrão; DoD com `test-coverage` (90%); `repository-understanding`, `refactoring`, `backlog-refinement` |
 | `developer` | Implementar e corrigir, com testes e build real | Código e testes | **Sempre** `code-organization` + `code-style`, e `application-security` em todo endpoint; depois a skill da área (`spring-data-jpa`, `flyway-migrations`, `bean-validation`, `exception-handling`, `swagger`, `authentication`, `maven-config`…); `aws-sdk-java` antes de qualquer AWS; `testing`, `test-patterns`, `integration-testing`. Padrões estruturais (saga, CQRS, hexagonal) **só com ADR** |
 | `qa` | Provar que funciona e achar o que quebra | Somente testes | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `application-security` (IDOR, permissão, limites); cada ameaça do threat model vira teste; a skill da área diz **o que provar** (`idempotency`, `resilience`, `contract-testing`, `localstack`, `saga-pattern`…); **cada critério Given/When/Then** de `prd-writing`/`user-stories` vira caso de teste |
-| `code-reviewer` | Revisar o diff e dar o veredito | Nada (somente leitura) | `code-organization` + `code-style`; revisa contra o design doc quando existe; para cada área do diff, usa a seção **"Regras principais"** da skill correspondente como **checklist** (violação = achado) |
+| `code-reviewer` | Revisar o diff e dar o veredito | Nada (somente leitura) | `code-organization` + `code-style`; revisa contra o design doc quando existe; para cada área do diff, usa a seção **"Regras principais"** da skill correspondente como **checklist** (violação = achado); não repete o que o CI já barra, varre atalhos (`@Disabled`, `@SuppressWarnings`, TLS desligado), limita minors/nits a 5, separa bugs pré-existentes e, na nova rodada, confere só a resolução e blockers novos (máximo de 3) |
 
 ### Modelo de cada agent
 
@@ -258,9 +258,9 @@ Skills que os agents carregam e que também podem ser usadas diretamente (pedido
 
 | Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
-| `design-docs` | `/squads:design-docs` | O **design doc** (tech spec / SDD) que serve de **spec** no desenvolvimento orientado a especificação: template em `docs/design/`, critérios de aceite numerados (`CA-1`…) e testáveis, aprovação antes do plano, desvios registrados e a matriz critério → tarefa → teste. | "Escreva o design doc da renovação online de empréstimo a partir do PRD." |
-| `application-security` | `/squads:application-security` | Segurança da API pelo **OWASP API Security Top 10**: autorização por objeto (IDOR), mass assignment, limites e rate limit, injeção, SSRF, desserialização, security headers, segredos, logs de segurança, dependências e SBOM, e testes (incluindo SAST, secret scanning e ZAP). | "Faça uma revisão de segurança dos endpoints de empréstimo." |
-| `threat-modeling` | `/squads:threat-modeling` | Pensa em como a feature pode ser abusada **antes** de construir: diagrama com fronteiras de confiança, STRIDE, casos de abuso, prioridade e uma decisão por ameaça — cada mitigação vira tarefa e teste. Grava em `docs/security/`. | "Faça o threat model da renovação online de empréstimo." |
+| `design-docs` | `/squads:design-docs` | O **design doc** (tech spec / SDD) que serve de **spec** no desenvolvimento orientado a especificação: template em `docs/design/`, critérios de aceite numerados (`CA-1`…) e testáveis, aprovação antes do plano, desvios registrados , a matriz critério → tarefa → teste e as regras de diagrama Mermaid. | "Escreva o design doc da renovação online de empréstimo a partir do PRD." |
+| `application-security` | `/squads:application-security` | Segurança da API pelo **OWASP API Security Top 10**: autorização por objeto (IDOR), mass assignment, limites e rate limit, injeção, SSRF, desserialização, security headers, segredos, logs de segurança, dependências e SBOM, e testes (incluindo SAST, secret scanning e ZAP); a **revisão de segurança** vira relatório com IDs, gravidade e evidência, e a correção sai um achado por vez. | "Faça uma revisão de segurança dos endpoints de empréstimo." |
+| `threat-modeling` | `/squads:threat-modeling` | Pensa em como a feature pode ser abusada **antes** de construir: diagrama com fronteiras de confiança, STRIDE, casos de abuso, prioridade e uma decisão por ameaça — cada mitigação vira tarefa e teste. Também modela um **sistema que já roda**, a partir do código e com evidência. Grava em `docs/security/`. | "Faça o threat model da renovação online de empréstimo." |
 | `solid` | `/squads:solid` | Os cinco princípios SOLID no código Spring Boot do pacote, com antes/depois, mais DRY, KISS, YAGNI e Lei de Demeter — e quando **não** aplicar (CRUD simples continua simples). | "Este BookService está difícil de testar. O que viola SOLID e como corrigir?" |
 | `design-patterns` | `/squads:design-patterns` | Padrões de projeto que aparecem de verdade numa API Spring Boot (Strategy, Factory, Adapter, Proxy/AOP, Observer, State, Specification…), onde o Spring já os usa, a armadilha da auto-invocação e os anti-padrões. | "Qual padrão usar para calcular multas diferentes por tipo de sócio?" |
 
@@ -330,7 +330,7 @@ Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-
 
 | Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
-| `github-actions` | `/squads:github-actions` | **O CI, para qualquer destino:** build e testes (com Testcontainers), cobertura, imagem no GitHub Container Registry sem segredo extra, release por tag, CodeQL, Dependabot, permissões mínimas e proteção da branch. | "Crie o pipeline de CI deste projeto." |
+| `github-actions` | `/squads:github-actions` | **O CI, para qualquer destino:** build e testes (com Testcontainers), cobertura, imagem no GitHub Container Registry sem segredo extra, release por tag, CodeQL, Dependabot, permissões mínimas, proteção da branch e **diagnóstico de check vermelho** no PR (log do job, causa, plano aprovado, correção sem afrouxar testes). | "Crie o pipeline de CI deste projeto." · "O check do PR 42 falhou, descubra por quê." |
 | `github-actions-cloud` | `/squads:github-actions-cloud` | Deploy no **Google Cloud** (Cloud Run, GKE) ou no **Azure** (Container Apps, AKS) com OIDC, sem chaves no GitHub, com segredos no Secret Manager/Key Vault e rollback. Na AWS, o equivalente é `github-actions-aws`. | "Faça o deploy da API no Cloud Run a cada push na main, com aprovação para produção." |
 | `argocd` | `/squads:argocd` | Entrega por **GitOps**: o Argo CD no cluster aplica o que está no Git. Cobre o repositório de configuração, Application/AppProject/ApplicationSet, migration do Flyway como `PreSync` hook, CI que só atualiza a tag da imagem, promoção por pull request, rollback por `git revert`, segredos fora do Git e a segurança do próprio Argo CD. | "Configure o Argo CD para implantar a API em dev, staging e prod, com aprovação por PR em produção." |
 
@@ -344,7 +344,7 @@ Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-
 |---|---|---|---|
 | `microservices` | `/squads:microservices` | **Comece por aqui.** Quando dividir em serviços (e quando não), decomposição por bounded context, dados privados por serviço, o "distributed monolith", pré-requisitos de plataforma, migração com Strangler Fig e um checklist de decisão. | "Devemos migrar este monolito para microsserviços? Como dividir?" |
 | `modular-monolith` | `/squads:modular-monolith` | Monolito modular com **Spring Modulith**: módulos com fronteiras verificadas no build, eventos entre módulos, e o caminho para extrair um serviço depois. | "Organize esta aplicação em módulos por domínio, sem microsserviços." |
-| `ddd-hexagonal` | `/squads:ddd-hexagonal` | DDD tático e arquitetura hexagonal: aggregates, value objects (records), ports e adapters, ArchUnit — e quando **não** usar (CRUD). | "Modele o domínio de empréstimos com aggregates e hexagonal." |
+| `ddd-hexagonal` | `/squads:ddd-hexagonal` | DDD tático e arquitetura hexagonal: **quanto DDD cada subdomínio merece** (Core/Supporting/Generic), aggregates, value objects (records), ports e adapters, ArchUnit, diagnóstico de **modelo anêmico** — e quando **não** usar (CRUD). | "Modele o domínio de empréstimos com aggregates e hexagonal." |
 | `api-gateway` | `/squads:api-gateway` | Gateway e BFF com Spring Cloud Gateway: o que fazer e o que **não** fazer na borda, auth, rate limit, headers de identidade seguros, composição. | "Crie um gateway com rotas, JWT e circuit breaker para os serviços." |
 | `service-communication` | `/squads:service-communication` | Chamadas entre serviços: `RestClient`/`@HttpExchange`, timeouts, ACL de erros, descoberta sem Eureka, **auth serviço-a-serviço (zero trust)**, gRPC e service mesh. | "Faça o serviço de empréstimos chamar o catálogo com segurança." |
 | `resilience` | `/squads:resilience` | Timeout, retry (sem retry storm), circuit breaker, bulkhead e fallback honesto com Resilience4j e os recursos nativos do Spring 7, e como testar falhas. | "Proteja a chamada ao catálogo contra lentidão e falhas." |
@@ -389,17 +389,18 @@ Complementam a skill `testing` (unit e slice). *Usadas por:* `qa` (o dono do tem
 
 **Ordem sugerida:** `testing` → `test-patterns` → `integration-testing` → `test-coverage` (→ `contract-testing` entre serviços; → `postman-newman` contra a aplicação implantada). Lembre: **cobertura mostra o que não foi testado; não prova qualidade**.
 
-**Entender, refatorar e refinar (3 skills)**
+**Entender, refatorar e refinar (4 skills)**
 
-*Usadas por:* `repository-understanding` — `architect` (grava o mapa), `tech-lead`, `developer`, `qa` e `code-reviewer`; `refactoring` — `qa` (rede de segurança), `developer` e `code-reviewer`; `backlog-refinement` — `product-manager` com `tech-lead` e `qa`.
+*Usadas por:* `repository-understanding` — `architect` (grava o mapa), `tech-lead`, `developer`, `qa` e `code-reviewer`; `monolith-decomposition` — `architect` (grava o relatório) e `tech-lead` (roadmap → tarefas); `refactoring` — `qa` (rede de segurança), `developer` e `code-reviewer`; `backlog-refinement` — `product-manager` com `tech-lead` e `qa`.
 
 | Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
 | `repository-understanding` | `/squads:repository-understanding` | Entende um repositório desconhecido **só lendo**: builda/testa de verdade, entrypoints, dados pelas migrations, integrações, hotspots no Git, uma fatia vertical rastreada, riscos com evidência e aderência ao padrão; entrega `docs/architecture/repository-map.md`. | "Mapeie este repositório e me diga os maiores riscos." |
+| `monolith-decomposition` | `/squads:monolith-decomposition` | Analisa um monolito existente **só lendo** antes de dividir: tamanho das capacidades, regra de negócio duplicada, classes sem dono, **acoplamento em três dimensões** (força, distância, volatilidade), domínios com **um dono por tabela** e um roadmap que **modulariza primeiro** e extrai só com motivo, com rollback por passo; entrega `docs/architecture/decomposition-<sistema>.md`. | "Analise este monolito: o que extrair primeiro, e vale a pena?" |
 | `refactoring` | `/squads:refactoring` | Refatoração segura: rede de segurança (characterization tests), passos pequenos e verdes, catálogo de smells → refatoração, Parallel Change/Strangler/expand → contract e como revisar o PR. | "Refatore o `LoanService` sem mudar o comportamento." |
 | `backlog-refinement` | `/squads:backlog-refinement` | Sessão de refinamento de backlog: preparação, roteiro de 60 min, DoR estendida (privacidade, NFRs, contrato, migration, rollout, métricas), Example Mapping, fatiamento, estimativa e card refinado. Também usada pelo agent `product-manager`. | "Refine estes 5 itens do topo do backlog." |
 
-**Total: 88 skills, todas neste plugin.** Na dúvida sobre qual usar, pergunte à skill `guide` — ela lê o que está realmente instalado e indica a skill certa para cada necessidade.
+**Total: 89 skills, todas neste plugin.** Na dúvida sobre qual usar, pergunte à skill `guide` — ela lê o que está realmente instalado e indica a skill certa para cada necessidade.
 
 ---
 

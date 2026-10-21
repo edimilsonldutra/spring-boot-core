@@ -1,6 +1,6 @@
 ---
 name: messaging
-description: Ponto de partida de mensageria — quando usar (e quando não), comparação de Kafka, RabbitMQ, Artemis, SQS/SNS, EventBridge e outros, desenho de eventos, garantias de entrega, idempotência, ordenação, retry, DLQ, schema, observabilidade, segurança e anti-patterns como dual write. Use para escolher um broker ou antes de kafka, rabbitmq, activemq-artemis, aws-sns-sqs ou transactional-outbox.
+description: Ponto de partida de mensageria — quando usar (e quando não), comparação de Kafka, RabbitMQ, Artemis, SQS/SNS, EventBridge e outros, desenho de eventos, garantias de entrega, idempotência, ordenação, retry, DLQ, schema, observabilidade, segurança e anti-patterns como dual write. Use para escolher um broker ou antes de kafka, rabbitmq, activemq-artemis, aws-sns-sqs ou transactional-outbox. Não use para configurar um broker já escolhido (use a skill dele).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md) e [`../code-style/SKILL.md`](../code-style/SKILL.md) para as preferências do projeto, o package layout base e as convenções de code style.

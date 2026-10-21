@@ -1,6 +1,6 @@
 ---
 name: repository-understanding
-description: Método somente leitura para entender um repositório desconhecido — objetivo, orientação, provar que builda e testa, entrypoints, camadas, dados pelas migrations, integrações, configuração, testes, hotspots no Git, uma fatia vertical, riscos com evidência e aderência ao padrão, entregando docs/architecture/repository-map.md. Use ao chegar a um código novo ou esquecido.
+description: Método somente leitura para entender um repositório desconhecido — objetivo, orientação, provar que builda e testa, entrypoints, camadas, dados pelas migrations, integrações, configuração, testes, hotspots no Git, uma fatia vertical, riscos com evidência e aderência ao padrão, entregando docs/architecture/repository-map.md. Use ao chegar a um código novo ou esquecido. Não use para mudar o código (refactoring) nem para planejar a divisão de um monolito (monolith-decomposition).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md) e [`../code-style/SKILL.md`](../code-style/SKILL.md) (o padrão contra o qual a aderência é medida), [`../project-claude-md/SKILL.md`](../project-claude-md/SKILL.md) (registrar o que foi aprendido) e [`../microservices/SKILL.md`](../microservices/SKILL.md) (sistemas com vários serviços). O que fazer **depois** de entender: `refactoring`, `test-patterns` (characterization tests), `technical-product-management` (dívida técnica) e o agent `tech-lead`.
@@ -69,7 +69,7 @@ Todo comportamento começa em um **gatilho**. Liste-os com `Grep`:
 - **Onde mora a regra de negócio**: nos services (anêmico?), nas entities/aggregates, ou espalhada em controllers/SQL/triggers? É a pergunta mais valiosa para saber **onde mexer**.
 - **Configuração transversal**: `@Configuration`, `SecurityFilterChain`, `@ControllerAdvice` (contrato de erro — `exception-handling`), CORS/`WebConfig`, serialização, AOP (`@Aspect`), cache (`@Cacheable`), transações (`@Transactional`: onde estão as fronteiras?).
 - **Módulos/serviços**: multi-módulo Maven? O repositório é **um** serviço de vários (`microservices`)? Quais contratos externos (clients, eventos)?
-Desenhe um **diagrama de componentes** (Mermaid) com o que **verificou**.
+Desenhe um **diagrama de componentes** (Mermaid) com o que **verificou**, seguindo as regras de diagrama de [`design-docs`](../design-docs/SKILL.md) (seção 9).
 
 ## 5. Dados
 
@@ -110,13 +110,18 @@ Resuma em uma tabela **integração · direção · protocolo · resiliência ·
 O histórico mostra **intenção** e **risco** que o código não mostra (somente leitura):
 ```bash
 git log --oneline -30
-git shortlog -sn --since="12 months ago"
+git shortlog -sn --since="12 months ago" HEAD
 git log --since="6 months ago" --name-only --pretty=format: | sort | uniq -c | sort -rn | head -20
 git log --since="6 months ago" --pretty=format:'%h %s' -- <caminho>
 git blame -L 1,80 <arquivo>
 ```
 - **Hotspots** = arquivos com **alto churn** (mudam muito) **e alta complexidade/tamanho** — é onde estão os **bugs e a dívida**. Combine a lista de mais alterados com os **maiores** (`git ls-files | xargs wc -l | sort -rn | head -20`).
 - **Quem conhece o quê** (`shortlog`, `blame`): **bus factor** (uma pessoa dona de um módulo crítico?).
+- **Bus factor do código sensível**: aplique o mesmo nos caminhos de segurança — `SecurityConfig`, `JwtTokenProvider`/`JwtTokenFilter`, classes com `@PreAuthorize`, migrations com dado pessoal, policies IAM e Terraform, workflows de deploy:
+  ```bash
+  git shortlog -sn --since="12 months ago" HEAD -- '*SecurityConfig*.java' '*Jwt*.java' 'src/main/resources/db/migration' 'infra' '.github/workflows'
+  ```
+  Uma só pessoa nesses caminhos é **risco** (seção 12): recomende um `CODEOWNERS` com revisão obrigatória de uma segunda pessoa nesses caminhos e branch protection exigindo o review (`github-actions`).
 - **Mudanças recentes grandes**, **reversões** (`revert`), **tags/releases**: o ritmo e a estabilidade.
 - **Co-change**: arquivos que **sempre mudam juntos** revelam acoplamento escondido.
 - **Mensagens de commit** explicam o **porquê** de decisões estranhas — leia antes de "consertar" algo esquisito (*Chesterton's fence*: não remova uma cerca sem saber por que foi posta).
@@ -134,7 +139,7 @@ Escolha **uma requisição representativa** (ex.: `POST /api/book/v1`) e siga-a 
 Liste achados **ordenados por severidade**, cada um com **evidência (`arquivo:linha`)** e **impacto**; **não** invente. Sinais que valem procurar:
 | Área | Sinais |
 |---|---|
-| **Segurança** | Endpoint sem authz; `permitAll`/`csrf.disable` sem justificativa; entity exposta em controller; segredo em arquivo; JPQL concatenado; `decode` em vez de `verify` de JWT; dado pessoal em log |
+| **Segurança** | Código sensível (security config, JWT, migrations com PII, IAM) com uma só pessoa no histórico e sem `CODEOWNERS`; endpoint sem authz; `permitAll`/`csrf.disable` sem justificativa; entity exposta em controller; segredo em arquivo; JPQL concatenado; `decode` em vez de `verify` de JWT; dado pessoal em log |
 | **Confiabilidade** | Chamada externa **sem timeout**; retry em `POST`; **dual write** (salvar + publicar); consumer não idempotente; sem DLQ; exception engolida |
 | **Dados** | N+1; falta de índice/paginação; migration destrutiva; seed aleatória; sem `@Version` onde há concorrência |
 | **Manutenção** | God service/classe; lógica em controller; duplicação; ciclos de dependência; Lombok (o pacote proíbe); `@SuppressWarnings` em massa; código morto |

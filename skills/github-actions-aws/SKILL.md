@@ -1,6 +1,6 @@
 ---
 name: github-actions-aws
-description: Pipeline GitHub Actions para Spring Boot na AWS — build e testes com Testcontainers, OIDC sem access keys, imagem no ECR com tag imutável (git sha), deploy no EKS com verificação e rollback, environments com aprovação, cache, cobertura no PR e trust policy mínima. Use quando criar ou revisar CI/CD para a AWS.
+description: Pipeline GitHub Actions para Spring Boot na AWS — build e testes com Testcontainers, OIDC sem access keys, imagem no ECR com tag imutável (git sha), deploy no EKS com verificação e rollback, environments com aprovação, cache, cobertura no PR e trust policy mínima. Use quando criar ou revisar CI/CD para a AWS. Não use para CI sem nuvem (github-actions) nem para deploy fora da AWS (github-actions-cloud).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../docker-and-docker-compose/SKILL.md`](../docker-and-docker-compose/SKILL.md), [`../kubernetes/SKILL.md`](../kubernetes/SKILL.md) e [`../aws-eks/SKILL.md`](../aws-eks/SKILL.md).

@@ -278,6 +278,8 @@ spring:
 2. *Migrate* (release N): a aplicação passa a escrever nas duas; um `UPDATE` em lotes preenche o histórico.
 3. *Contract* (release N+1): só depois que nenhuma instância antiga existe, remova a coluna velha ou coloque `NOT NULL`.
 
+**Antes de toda migration sem volta** (o *contract*, um `DROP`, uma transformação que sobrescreve dado): backup ou snapshot **verificado** (um restore de teste deu certo, não só "o job rodou") e o tempo de restore conhecido. É uma porta de mão única: registre-a no design doc ou no plano de lançamento (`release-management`) e confirme que nenhuma instância da versão anterior ainda roda.
+
 Nunca, em uma única release: renomear/remover coluna usada pela versão anterior, nem adicionar `NOT NULL` sem default em tabela com dados. Em tabelas grandes, `UPDATE` e `CREATE INDEX` travam — faça em lotes e, onde o database suporta, crie o índice online (`CREATE INDEX CONCURRENTLY` no PostgreSQL exige `-- flyway:executeInTransaction=false`).
 
 **Índices.** Toda foreign key e toda coluna usada em `WHERE`/`ORDER BY` frequente merece um índice, criado em uma migration própria (`V20__Create_Index_Books_Title.sql`). O MySQL cria índice para FK automaticamente; o PostgreSQL **não**.
@@ -297,4 +299,4 @@ Nunca, em uma única release: renomear/remover coluna usada pela versão anterio
 - `NOT NULL` na migration para toda coluna que uma entity marca com `nullable = false`.
 - Use `spring-boot-starter-flyway` + o módulo do database — nunca `flyway-core` sozinho no Boot 4.
 - Seeds podem ser aleatórios (`ORDER BY RAND()`), os testes não devem depender da parte aleatória.
-- Em produção: `clean-disabled: true`, nunca `baseline-on-migrate` em database novo, e mudanças destrutivas em duas releases (expand → contract).
+- Em produção: `clean-disabled: true`, nunca `baseline-on-migrate` em database novo, e mudanças destrutivas em duas releases (expand → contract), com backup verificado antes do contract.

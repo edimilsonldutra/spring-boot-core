@@ -1,6 +1,6 @@
 ---
 name: testing
-description: Unit tests e slice tests no Spring Boot 4 — service com JUnit 5, Mockito e AssertJ (sem Spring), controller com @WebMvcTest, MockMvc e @MockitoBean, @ParameterizedTest, ArgumentCaptor, naming Given-When-Then e o que testar ou não. Use quando escrever testes de service ou de controller.
+description: Unit tests e slice tests no Spring Boot 4 — service com JUnit 5, Mockito e AssertJ (sem Spring), controller com @WebMvcTest, MockMvc e @MockitoBean, @ParameterizedTest, ArgumentCaptor, naming Given-When-Then e o que testar ou não. Use quando escrever testes de service ou de controller. Não use para testes contra banco real ou a aplicação rodando (integration-testing) nem para cobertura (test-coverage).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md) e [`../code-style/SKILL.md`](../code-style/SKILL.md) para as preferências do projeto, o package layout base e as convenções de code style.

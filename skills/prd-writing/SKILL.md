@@ -1,6 +1,6 @@
 ---
 name: prd-writing
-description: PRD que a engenharia consegue executar — template completo (problema, objetivos e não-objetivos, requisitos funcionais e NFRs com números, critérios Given/When/Then, métricas e guardrails, riscos, lançamento, perguntas em aberto), exemplo preenchido e handoff ao tech lead. Use quando escrever, revisar ou atualizar um PRD.
+description: PRD que a engenharia consegue executar — template completo (problema, objetivos e não-objetivos, requisitos funcionais e NFRs com números, critérios Given/When/Then, métricas e guardrails, riscos, lançamento, perguntas em aberto), exemplo preenchido e handoff ao tech lead. Use quando escrever, revisar ou atualizar um PRD. Não use para o desenho técnico (design-docs).
 ---
 
 O PRD define o quê e o porquê; em features médias e grandes, o **como** técnico vem depois, no design doc do `architect` (`design-docs`), que parte dos requisitos numerados deste PRD.

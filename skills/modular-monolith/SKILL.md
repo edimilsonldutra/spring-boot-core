@@ -1,9 +1,9 @@
 ---
 name: modular-monolith
-description: Monolito modular com Spring Modulith — módulos por capacidade de negócio, API pública e internals encapsulados, verificação da estrutura em teste, eventos entre módulos com publication registry, @ApplicationModuleTest, dados por módulo e extração para microsserviço. Use quando organizar uma aplicação em módulos por domínio sem pagar o custo distribuído.
+description: Monolito modular com Spring Modulith — módulos por capacidade de negócio, API pública e internals encapsulados, verificação da estrutura em teste, eventos entre módulos com publication registry, @ApplicationModuleTest, dados por módulo e extração para microsserviço. Use quando organizar uma aplicação em módulos por domínio sem pagar o custo distribuído. Não use para decidir se vale dividir (microservices) nem para medir o acoplamento de um monolito existente (monolith-decomposition).
 ---
 
-Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md) e [`../microservices/SKILL.md`](../microservices/SKILL.md) (a decisão monolito × microsserviços). Para o modelo de domínio dentro de cada módulo, veja `ddd-hexagonal`.
+Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md) e [`../microservices/SKILL.md`](../microservices/SKILL.md) (a decisão monolito × microsserviços). Para o modelo de domínio dentro de cada módulo, veja `ddd-hexagonal`. Para modularizar um monolito **existente**, comece pela análise de `monolith-decomposition` (quais componentes formam cada módulo e quem é dono de cada tabela).
 
 # Monolito modular (Spring Modulith)
 

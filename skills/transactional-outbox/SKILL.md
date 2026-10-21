@@ -1,6 +1,6 @@
 ---
 name: transactional-outbox
-description: Publicação confiável de eventos sem dual write — tabela outbox na mesma transaction, relay por polling com SELECT … FOR UPDATE SKIP LOCKED ou CDC com Debezium, consumer idempotente com tabela de processados, migrations, limpeza, ordenação, falhas e testes, para qualquer broker. Use quando um evento nasce de uma mudança no banco e não pode se perder nem duplicar efeito.
+description: Publicação confiável de eventos sem dual write — tabela outbox na mesma transaction, relay por polling com SELECT … FOR UPDATE SKIP LOCKED ou CDC com Debezium, consumer idempotente com tabela de processados, migrations, limpeza, ordenação, falhas e testes, para qualquer broker. Use quando um evento nasce de uma mudança no banco e não pode se perder nem duplicar efeito. Não use para configurar o broker em si (kafka, rabbitmq, aws-sns-sqs).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../code-style/SKILL.md`](../code-style/SKILL.md), [`../messaging/SKILL.md`](../messaging/SKILL.md), [`../spring-data-jpa/SKILL.md`](../spring-data-jpa/SKILL.md) e [`../flyway-migrations/SKILL.md`](../flyway-migrations/SKILL.md).

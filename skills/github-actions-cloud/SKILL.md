@@ -1,6 +1,6 @@
 ---
 name: github-actions-cloud
-description: Deploy por GitHub Actions no Google Cloud e no Azure, sem chaves de longa duração — OIDC com Workload Identity Federation (GCP) e federated credentials (Azure) restritos ao repositório e ao environment, imagem no Artifact Registry/ACR com tag imutável, deploy no Cloud Run, GKE, Azure Container Apps e AKS com verificação e rollback, segredos no Secret Manager/Key Vault e aprovação para produção. Use quando o destino do deploy não for a AWS.
+description: Deploy por GitHub Actions no Google Cloud e no Azure, sem chaves de longa duração — OIDC com Workload Identity Federation (GCP) e federated credentials (Azure) restritos ao repositório e ao environment, imagem no Artifact Registry/ACR com tag imutável, deploy no Cloud Run, GKE, Azure Container Apps e AKS com verificação e rollback, segredos no Secret Manager/Key Vault e aprovação para produção. Use quando o destino do deploy não for a AWS. Não use para deploy na AWS (github-actions-aws).
 ---
 
 Antes de aplicar este pattern, leia também [`../github-actions/SKILL.md`](../github-actions/SKILL.md) (o CI: build, testes, segurança do pipeline), [`../docker-and-docker-compose/SKILL.md`](../docker-and-docker-compose/SKILL.md) e, para os destinos Kubernetes, [`../kubernetes/SKILL.md`](../kubernetes/SKILL.md) e [`../helm-charts/SKILL.md`](../helm-charts/SKILL.md). Na AWS, o equivalente é [`../github-actions-aws/SKILL.md`](../github-actions-aws/SKILL.md); por GitOps, [`../argocd/SKILL.md`](../argocd/SKILL.md).

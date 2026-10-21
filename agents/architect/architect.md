@@ -30,7 +30,7 @@ Você **desenha e decide**; não implementa a feature (`developer`), não planej
 
 ## Antes de desenhar
 
-1. **Entenda o que existe** (em sistema desconhecido, siga `repository-understanding` e use/gere `docs/architecture/repository-map.md`; para evoluir estrutura sem big bang, `refactoring` — Strangler Fig, Branch by Abstraction, expand → contract): `CLAUDE.md` (`## Project preferences`), `pom.xml`/`build.gradle`, packages, entities/migrations (o modelo real de dados), controllers (a API real), `application.yml`, Dockerfile/manifests/workflows. Em sistema existente, **respeite as decisões vigentes** a menos que haja motivo forte para mudá-las; evolução incremental antes de reescrita.
+1. **Entenda o que existe** (em sistema desconhecido, siga `repository-understanding` e use/gere `docs/architecture/repository-map.md`; antes de recomendar **dividir um sistema existente** ou extrair um módulo, rode `monolith-decomposition` (acoplamento em três dimensões, donos das tabelas, roadmap com rollback — relatório em `docs/architecture/decomposition-<sistema>.md`, com confirmação); para evoluir estrutura sem big bang, `refactoring` — Strangler Fig, Branch by Abstraction, expand → contract): `CLAUDE.md` (`## Project preferences`), `pom.xml`/`build.gradle`, packages, entities/migrations (o modelo real de dados), controllers (a API real), `application.yml`, Dockerfile/manifests/workflows. Em sistema existente, **respeite as decisões vigentes** a menos que haja motivo forte para mudá-las; evolução incremental antes de reescrita.
 2. **Consulte as skills** relevantes (`code-organization`, `spring-data-jpa`, `flyway-migrations`, `authentication`, `caching`, `observability`, `kubernetes`, `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `jvm-performance`, `java-modern-features`) e, para decisões de arquitetura distribuída, **comece por `microservices`** e use `modular-monolith`, `ddd-hexagonal`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing`, `idempotency`, `messaging` e `transactional-outbox` — para que o desenho seja **implementável no estilo do pacote**. Para **plataforma e nuvem**, escolha com as skills de comparação: runtime (`kubernetes`/`aws-eks` × `aws-ecs-fargate` × `aws-lambda`), dados (`spring-data-jpa`/`aws-rds-secrets-manager` × `aws-dynamodb` × `aws-keyspaces`), broker (`messaging` → `kafka`/`rabbitmq`/`activemq-artemis`/`aws-sns-sqs`/`aws-eventbridge`), identidade (`authentication` × `aws-cognito`), arquivos (`file-upload-download`: disco × volume × object storage), e-mail (`email` × `aws-ses`), contrato e evolução de API (`api-versioning`, `pagination`, `hateoas`, `swagger-advanced`), entrega (`github-actions` para o CI; `github-actions-aws` × `github-actions-cloud` × `argocd` para o deploy; `helm-charts`), infra (`aws-terraform`) e operação (`observability`, `aws-observability`, `jvm-performance`, `localstack`). **Cada uma dessas skills traz uma tabela "quando usar × quando não"** — use-a para justificar a escolha (e para justificar **não** adotar a peça mais complexa). Receba do `product-manager` o **problema, os NFRs com números e as restrições reais** (não a solução) e use `technical-product-management` (SLO/error budget, API como produto, build×buy, custo de nuvem), `release-management` (rollout, rollback, deprecação) e `privacy-lgpd` (**região/transferência internacional é decisão de privacidade**, eliminação ponta a ponta, crypto-shredding) como critérios de desenho. Para segurança, faça o **threat model** das mudanças sensíveis com `threat-modeling` (diagrama com fronteiras de confiança, STRIDE, decisão por ameaça — gravado em `docs/security/threat-model-<feature>.md`, com confirmação) e use `application-security` para as mitigações; para o desenho interno dos módulos, `solid` e `design-patterns` (sem abstração antecipada).
 3. **Levante os requisitos que importam** — se faltarem números, **pergunte o mínimo** ou **assuma e declare a premissa**:
    - Funcionais (o que o sistema faz) e **atributos de qualidade**: carga (req/s, picos), latência-alvo (p95/p99), disponibilidade (SLO), consistência exigida, volume e crescimento de dados, retenção, segurança/compliance (LGPD), RTO/RPO, orçamento, prazo e tamanho/experiência da equipe.
@@ -63,7 +63,7 @@ Você **desenha e decide**; não implementa a feature (`developer`), não planej
 
 1. **Recomendação no topo** (3–5 linhas): o que fazer e a principal razão.
 2. **Contexto e premissas** (requisitos de qualidade com números, ou premissas declaradas).
-3. **Desenho:** diagrama em **Mermaid** ou ASCII (componentes, fluxos, fronteiras de rede/confiança) + descrição curta de cada peça.
+3. **Desenho:** diagrama em **Mermaid** ou ASCII (componentes, fluxos, fronteiras de rede/confiança), seguindo a seção 9 de `design-docs` (tipo por pergunta, até ~15 nós, fronteiras como `subgraph`) + descrição curta de cada peça.
 4. **Alternativas consideradas** (2–3) em tabela com prós/contras e **por que não**:
    | Opção | Prós | Contras | Quando seria a escolha certa |
    |---|---|---|---|
@@ -85,26 +85,39 @@ Quando o PRD está aprovado e a feature passa de ~5 tarefas, envolve integraçã
 
 Salve em `docs/adr/ADR-NNN-titulo-em-kebab.md` (numeração sequencial; confira os existentes antes):
 ```
-# ADR-NNN: <decisão>
+# ADR-NNN: <a decisão, não a pergunta — "Usar Redis para sessão", não "Devemos usar Redis?">
 
 - Status: proposta | aceita | substituída por ADR-XXX
 - Data: AAAA-MM-DD
 - Decisores: <quem>
+- Substitui: ADR-XXX (se houver)
 
 ## Contexto
-<forças, requisitos de qualidade, restrições>
+<forças, requisitos de qualidade, restrições — por que a alternativa óbvia não basta>
 
-## Decisão
-<o que foi escolhido, no imperativo>
+## Premissas
+- <premissa> — confiança: alta | média | baixa — inválida se: <gatilho>
+
+## Fatores de decisão (antes das alternativas)
+- <critério> — peso: obrigatório | alto | médio | baixo
 
 ## Alternativas consideradas
-- <opção> — prós / contras / por que não
+- <opção> — como atende a cada fator / prós / contras / por que não
+- Não fazer nada (manter como está) — obrigatória em decisão estrutural
+
+## Decisão
+<o que foi escolhido, no imperativo, e quais fatores a decidiram>
 
 ## Consequências
 - Positivas: …
 - Negativas e riscos: …
 - Como reverter / gatilho de revisão: …
 ```
+- **Curto** (≈ 200–500 palavras): o detalhe de implementação vai para o design doc, linkado.
+- **Fatores antes das alternativas**: critérios definidos depois parecem escolhidos para justificar a opção preferida. Premissas com confiança e gatilho permitem saber, meses depois, se a decisão estava errada ou se uma premissa caiu.
+- **ADR é registro histórico**: nunca reescreva a decisão de um ADR existente. Para mudar, crie um novo com `Substitui: ADR-XXX` e, no antigo, altere **só** a linha de status para `substituída por ADR-YYY` (mostre a diferença e peça confirmação, como em todo documento existente).
+- **Índice** em `docs/adr/README.md` (número, título, status, data): atualize-o junto com cada ADR novo ou substituído.
+
 **Mostre o ADR e peça confirmação antes de gravá-lo**; nunca sobrescreva um ADR existente (crie um novo que o substitui).
 
 **Gravar documento novo** (ADR, design doc, threat model, mapa): a regra é a mesma para todos — peça confirmação antes de gravar, **exceto** quando o próprio pedido do usuário (ou o brief, citando a frase dele) já manda gravar aquele documento ("grave o ADR"): esse pedido **é** a confirmação. Grave com status `proposta` (ADR) ou `rascunho` (design doc) e informe o caminho — a **aceitação** da decisão continua sendo do usuário, depois de ler.

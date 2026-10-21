@@ -1,6 +1,6 @@
 ---
 name: github-actions
-description: CI com GitHub Actions para Spring Boot, sem depender de nuvem — build e testes com Testcontainers (Maven e Gradle), cache, cobertura no PR, imagem no GitHub Container Registry com GITHUB_TOKEN, tags por commit e por versão, permissões mínimas, actions fixadas, Dependabot, CodeQL, branch protection, concurrency, workflows reutilizáveis e release por tag. Use quando criar ou revisar o pipeline de integração contínua de um projeto, antes de escolher onde fazer o deploy.
+description: CI com GitHub Actions para Spring Boot, sem depender de nuvem — build e testes com Testcontainers (Maven e Gradle), cache, cobertura no PR, imagem no GitHub Container Registry com GITHUB_TOKEN, tags por commit e por versão, permissões mínimas, actions fixadas, Dependabot, CodeQL, branch protection, concurrency, workflows reutilizáveis, release por tag e diagnóstico de check que falhou no PR (gh, log do job, causa, plano e correção com aprovação). Use quando criar ou revisar o pipeline de integração contínua de um projeto, antes de escolher onde fazer o deploy, ou quando um check do GitHub Actions falhar. Não use para o deploy (github-actions-aws, github-actions-cloud, argocd).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md), [`../maven-config/SKILL.md`](../maven-config/SKILL.md) (comandos Maven/Gradle), [`../docker-and-docker-compose/SKILL.md`](../docker-and-docker-compose/SKILL.md) (o Dockerfile) e [`../test-coverage/SKILL.md`](../test-coverage/SKILL.md) (gate de 90%). Deploy: [`../github-actions-aws/SKILL.md`](../github-actions-aws/SKILL.md) (AWS), [`../github-actions-cloud/SKILL.md`](../github-actions-cloud/SKILL.md) (GCP e Azure) ou [`../argocd/SKILL.md`](../argocd/SKILL.md) (GitOps).
@@ -173,6 +173,39 @@ O job de deploy consome a **mesma imagem** (mesmo SHA) que passou no CI — nunc
 
 ---
 
+## 7. Diagnosticar um check que falhou no PR
+
+Leitura primeiro, correção só depois de aprovação. Os comandos `gh` abaixo só leem; re-run, push e qualquer alteração no PR pedem confirmação.
+
+1. **Acesso e PR.** `gh auth status` (sem login, peça ao usuário `! gh auth login` com os escopos `repo` e `workflow`). PR do branch atual: `gh pr view --json number,url,headRefName`; ou o número/URL que o usuário deu.
+2. **Quais checks falharam.**
+   ```bash
+   gh pr checks <pr> --json name,state,bucket,link,workflow
+   gh run list --branch <branch> --limit 5 --json databaseId,workflowName,conclusion,headSha
+   ```
+   Check de **outro provedor** (Sonar, Codecov, um CI externo) está fora do escopo: informe o nome e o link, sem tentar corrigir.
+3. **O log que importa**, só do job que falhou: `gh run view <run-id> --log-failed`. Procure o **primeiro** erro, não o último (`BUILD FAILURE` costuma ser consequência): o teste que falhou e o seu `expected`/`actual`, a regra do plugin Maven que quebrou, a mensagem do runner. Confira se o `headSha` do run é o último commit do PR — run antigo não diz nada sobre o código atual.
+4. **Classifique a falha** antes de mexer:
+
+   | Sinal no log | Causa provável | Onde corrigir |
+   |---|---|---|
+   | `./mvnw: Permission denied` | wrapper sem bit de execução (criado no Windows) | `git add --chmod=+x mvnw` (`scaffold`) |
+   | `Could not find a valid Docker environment`, timeout do container | Testcontainers sem Docker ou imagem lenta | runner `ubuntu-latest`, imagem fixada, `integration-testing` |
+   | `Rule violated for bundle … covered ratio is 0.8x, but expected minimum is 0.90` | cobertura do código novo abaixo do piso | testes para os ramos descobertos (`test-coverage`) — **nunca** baixe o piso |
+   | `Migrations have failed validation` / checksum mismatch | migration já aplicada foi editada | nova migration (`flyway-migrations`) |
+   | teste que falha às vezes e passa no re-run | flaky: `Thread.sleep`, `now()`, ordem, dado compartilhado | a causa no teste (`test-patterns`) |
+   | `Not authorized to perform sts:AssumeRoleWithWebIdentity` | OIDC: falta `id-token: write` ou o trust policy não casa com o `sub` | `github-actions-aws` / `github-actions-cloud` |
+   | Trivy, CodeQL ou `dependency-check` vermelho | vulnerabilidade ou alerta novo | atualizar a dependência; exceção só registrada (`application-security`) |
+   | `Resource not accessible by integration` | `permissions` do workflow sem o escopo que o passo usa | o escopo mínimo **naquele job** (seção 3) |
+   | erro de compilação ou teste comum | o código do PR | o código, reproduzindo localmente |
+
+5. **Reproduza localmente** quando a causa é o código: o mesmo comando do workflow (`./mvnw -B clean verify`) ou só o teste (`./mvnw -B verify -Dtest=LoanServiceTest`, `-Dit.test=…` para integração). Se passa local e falha no CI, compare: versão do JDK, fuso e locale, Docker, ordem dos testes, variáveis de ambiente.
+6. **Resumo e plano para o usuário:** checks que falharam com o link do run, o trecho do log (poucas linhas), a causa e o plano de correção. **Pare e espere a aprovação** antes de alterar arquivos.
+7. **Corrija a causa, nunca o sintoma.** Proibido para deixar verde: `@Disabled` ou assert afrouxado, `-DskipTests`/`-Djacoco.skip`, piso do JaCoCo baixado, `continue-on-error: true`, `if: false` no job, retry de teste, re-run até passar, remover o check da branch protection.
+8. **Confirme:** build local verde e, depois do push (que é do usuário), `gh pr checks <pr> --watch`. Flaky só está resolvido quando a causa foi corrigida, não porque um re-run passou.
+
+---
+
 ## Regras principais
 
 - `./mvnw -B clean verify` (ou `./gradlew clean build`) roda todos os testes, inclusive Testcontainers, e o gate de cobertura; nenhuma imagem é publicada se falhar.
@@ -183,3 +216,4 @@ O job de deploy consome a **mesma imagem** (mesmo SHA) que passou no CI — nunc
 - `main` protegida: PR obrigatório, status checks obrigatórios, sem push direto.
 - `timeout-minutes` nos jobs; `concurrency` cancelando só execuções de PR.
 - O deploy usa a imagem que passou no CI, com a skill do destino.
+- Check vermelho: log do job que falhou, causa classificada, reprodução local, plano aprovado e correção da causa — nunca teste desligado, piso baixado, `continue-on-error` ou re-run até passar.

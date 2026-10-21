@@ -1,6 +1,6 @@
 ---
 name: microservices
-description: Ponto de partida de arquitetura de microsserviços — quando adotar (e quando não), monolito modular primeiro, decomposição por bounded context, dados por serviço, distributed monolith, pré-requisitos de plataforma, catálogo de padrões com a skill de cada um, Strangler Fig e checklist de decisão. Use quando discutir dividir um sistema em serviços.
+description: Ponto de partida de arquitetura de microsserviços — quando adotar (e quando não), monolito modular primeiro, decomposição por bounded context, dados por serviço, distributed monolith, pré-requisitos de plataforma, catálogo de padrões com a skill de cada um, Strangler Fig e checklist de decisão. Use quando discutir dividir um sistema em serviços. Não use para analisar o código de um monolito existente (monolith-decomposition) nem para implementar os módulos (modular-monolith).
 ---
 
 Antes de aplicar este pattern, leia também [`../code-organization/SKILL.md`](../code-organization/SKILL.md) e [`../code-style/SKILL.md`](../code-style/SKILL.md). Esta skill é o **mapa**: decide **se** e **como dividir**, e aponta para as skills que implementam cada padrão: `ddd-hexagonal`, `modular-monolith`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing`, `idempotency`, `messaging`, `transactional-outbox`.
@@ -122,7 +122,7 @@ Não adote o catálogo inteiro: **cada padrão resolve um problema que você pre
 Substitua o monolito **gradualmente**, uma capacidade por vez, mantendo o sistema funcionando (nada de *big bang rewrite*):
 
 1. **Coloque uma fachada na frente** do monolito (API Gateway/proxy — `api-gateway`): todo tráfego passa por ela; no começo, **tudo vai ao monolito**.
-2. **Escolha uma capacidade** com fronteira clara e **valor** (ou dor) — não a mais emaranhada primeiro. Dentro do monolito, **modularize-a antes** (`modular-monolith`) para revelar as dependências.
+2. **Escolha uma capacidade** com fronteira clara e **valor** (ou dor) — não a mais emaranhada primeiro. Em monolito existente, meça antes com `monolith-decomposition` (acoplamento, donos das tabelas, ordem de extração). Dentro do monolito, **modularize-a antes** (`modular-monolith`) para revelar as dependências.
 3. **Construa o novo serviço** (template do `scaffold`), com **seu banco**. Se precisa de dados do monolito: **sincronize por CDC/eventos** (`transactional-outbox`, Debezium) em vez de ler o banco legado — ou use um **Anti-Corruption Layer (ACL)**, uma camada que **traduz** o modelo legado para o seu modelo e impede que o legado "vaze" para o domínio novo.
 4. **Roteie o tráfego gradualmente** pela fachada (por rota, por % — *canary*, ou *shadow traffic* para comparar respostas) e **compare resultados**.
 5. **Migre os dados** (cópia + sincronização, depois corte de escrita) e **aposente** o código antigo daquele trecho.

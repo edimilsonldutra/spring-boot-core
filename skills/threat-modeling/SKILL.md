@@ -1,6 +1,6 @@
 ---
 name: threat-modeling
-description: Modelagem de ameaças leve, por feature — quando fazer, as quatro perguntas, diagrama de fluxo de dados com fronteiras de confiança, STRIDE por elemento com exemplos de API Spring Boot, casos de abuso, priorização simples, mitigações que viram tarefas, critérios de aceite e testes, template em docs/security e revisão. Use antes de construir uma feature que toca autenticação, dados pessoais, dinheiro, arquivos ou integrações externas, ou quando a arquitetura mudar.
+description: Modelagem de ameaças leve, por feature — quando fazer, as quatro perguntas, diagrama de fluxo de dados com fronteiras de confiança, STRIDE por elemento com exemplos de API Spring Boot, casos de abuso, priorização simples, mitigações que viram tarefas, critérios de aceite e testes, template em docs/security, revisão e modo sistema existente (threat model a partir do código, com evidência). Use antes de construir uma feature que toca autenticação, dados pessoais, dinheiro, arquivos ou integrações externas, quando a arquitetura mudar, ou para modelar um serviço que já roda.
 ---
 
 Antes de aplicar este pattern, leia também [`../application-security/SKILL.md`](../application-security/SKILL.md) (as mitigações técnicas), [`../authentication/SKILL.md`](../authentication/SKILL.md) e [`../privacy-lgpd/SKILL.md`](../privacy-lgpd/SKILL.md). Requisitos e escopo: [`../prd-writing/SKILL.md`](../prd-writing/SKILL.md), [`../user-stories/SKILL.md`](../user-stories/SKILL.md). Decisões estruturais: [`../microservices/SKILL.md`](../microservices/SKILL.md) e o agent `architect`.
@@ -156,6 +156,52 @@ Ameaças que exigem decisão estrutural (novo componente, mudança de fronteira)
 
 ---
 
+## 9. Modo sistema existente (threat model a partir do código)
+
+As seções anteriores modelam uma feature **antes** de construí-la. Para um sistema que **já roda** (assumir um serviço, preparar um pentest, avaliar antes de abrir para a internet), o modelo parte do **código**, e cada afirmação precisa de evidência (`arquivo:linha`). É **somente leitura**: o modelo aponta, a correção é outra tarefa (`application-security`, seção 13).
+
+1. **Sistema real, não o imaginado.** Use o mapa de `repository-understanding` (entrypoints, integrações, dados, configuração) ou levante-os. **Separe o que roda em produção** do que é CI, testes, scripts de dev e exemplos: um script de teste inseguro não é ameaça em produção (mas um segredo no pipeline é). Diga o que ficou fora do escopo.
+2. **Fronteiras, ativos e entradas.** Cada fronteira de confiança como uma aresta concreta (client → API, API → banco, API → serviço de terceiro, fila → consumer), com protocolo, autenticação, validação e limite. Entradas: endpoints, uploads, parsers (JSON, XML, CSV, XLSX), listeners, `@Scheduled`, Actuator, Swagger UI, webhooks.
+3. **O atacante realista: capacidades e não-capacidades.** Pela exposição real (internet? só rede interna? multi-tenant?). Declare também o que ele **não** consegue ("sem acesso à rede do cluster", "sem conta de administrador"): é o que impede inflar a gravidade.
+4. **Ameaças como caminhos de abuso** (objetivo → passos → impacto), ligadas a um ativo e a uma fronteira, com o STRIDE da seção 4. Poucas e concretas valem mais que um checklist.
+5. **Prioridade justificada e ajustada pelos controles existentes.** Probabilidade e impacto (seção 6) com **uma ou duas frases de justificativa** cada, e a prioridade **depois** de considerar o que já existe. Diga quais premissas mais mexem no ranking.
+6. **Premissas antes do relatório final.** Liste 3–6 premissas que mudam o resultado e faça 1–3 perguntas (exposição, quem são os usuários, sensibilidade dos dados, multi-tenancy, onde termina o TLS). Como subagent, **devolva as perguntas** e entregue o modelo marcado como **condicional**; com o usuário presente, espere a resposta.
+7. **Mitigação existente × recomendada.** Existente só com evidência (`SecurityConfig.java:42`); recomendada com local e tipo de controle ("checagem de dono em `LoanService.renew`", "limite de tamanho no upload de `ImportController`"), nunca "valide as entradas".
+8. **Checagem de cobertura antes de entregar:** todo entrypoint encontrado aparece em pelo menos uma ameaça ou é declarado sem risco relevante; toda fronteira está representada; produção e CI/dev estão separados; premissas e perguntas estão explícitas.
+
+**Template** — `docs/security/threat-model-<sistema>.md`, gravado com confirmação:
+```markdown
+# Threat model: <sistema> (sistema existente)
+
+- Data: AAAA-MM-DD · Commit: <sha> · Escopo: <caminhos dentro e fora> · Modelo: final | condicional
+- Legenda: ✅ verificado (arquivo:linha) · 🔎 inferido · ❓ desconhecido
+
+## Resumo
+Os temas de maior risco e as áreas mais expostas, em um parágrafo.
+
+## Premissas e perguntas em aberto
+| # | Premissa | Se for falsa, muda… | Confirmada? |
+
+## Sistema
+Diagrama (Mermaid, com as fronteiras de confiança) · componentes · o que é produção e o que é CI/dev
+
+## Ativos
+## Atacante
+Capacidades · Não-capacidades
+
+## Entradas
+| Entrada | Fronteira | Autenticação | Validação/limite | Evidência |
+
+## Ameaças
+| # | Caminho de abuso | Ativo | STRIDE | Prob. (porquê) | Impacto (porquê) | Controle existente (evidência) | Prioridade | Mitigação recomendada (onde) |
+
+## Riscos aceitos
+| # | Motivo | Dono | Revisar em |
+```
+As mitigações seguem a seção 8: viram tarefa e teste; as estruturais, ADR.
+
+---
+
 ## Regras principais
 
 - Modele antes de construir toda feature que toca autenticação, dados pessoais, dinheiro, arquivos, integrações externas ou fluxos automatizáveis — e em mudanças de arquitetura.
@@ -166,3 +212,4 @@ Ameaças que exigem decisão estrutural (novo componente, mudança de fronteira)
 - Priorização simples (probabilidade × impacto) e uma decisão por ameaça; risco aceito só com dono, motivo e data de revisão.
 - Toda mitigação vira tarefa **e** teste; críticas e altas resolvidas antes do lançamento.
 - Documento em `docs/security/threat-model-<feature>.md`, sem segredos nem dados reais; revisado quando a feature muda.
+- **Sistema existente**: modelo a partir do código, com evidência; produção separada de CI/dev; capacidades **e não-capacidades** do atacante; prioridade justificada e ajustada pelos controles existentes; premissas confirmadas antes do relatório final (ou modelo condicional); todo entrypoint e toda fronteira cobertos.

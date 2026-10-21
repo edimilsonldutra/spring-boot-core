@@ -1,6 +1,6 @@
 ---
 name: design-docs
-description: Design doc técnico (tech spec / SDD) usado como spec no desenvolvimento orientado a especificação — quando escrever (e quando um ADR basta), relação com PRD, ADR, threat model e plano, template completo (contexto, objetivos e não-objetivos, desenho, contratos de API, dados e migrations, alternativas, segurança, rollout, observabilidade, testes), critérios de aceite numerados e testáveis, status e ciclo de vida, desvios durante a implementação, matriz de rastreabilidade critério → tarefa → teste, revisão e anti-padrões. Use antes de construir uma feature média ou grande, quando o PRD estiver aprovado e faltar o "como", ou quando a implementação precisar seguir uma especificação verificável.
+description: Design doc técnico (tech spec / SDD) usado como spec no desenvolvimento orientado a especificação — quando escrever (e quando um ADR basta), relação com PRD, ADR, threat model e plano, template completo (contexto, objetivos e não-objetivos, desenho, contratos de API, dados e migrations, alternativas, segurança, rollout, observabilidade, testes), critérios de aceite numerados e testáveis, status e ciclo de vida, desvios durante a implementação, matriz de rastreabilidade critério → tarefa → teste, revisão, anti-padrões e regras de diagramas Mermaid (tipo por pergunta, densidade, fronteiras). Use antes de construir uma feature média ou grande, quando o PRD estiver aprovado e faltar o "como", ou quando a implementação precisar seguir uma especificação verificável. Não use para o quê e o porquê do produto (prd-writing) nem para uma decisão isolada (ADR do architect).
 ---
 
 Antes de aplicar este pattern, leia também [`../prd-writing/SKILL.md`](../prd-writing/SKILL.md) (o "quê" e o "porquê" que o design doc parte), [`../user-stories/SKILL.md`](../user-stories/SKILL.md) (critérios Given/When/Then), [`../threat-modeling/SKILL.md`](../threat-modeling/SKILL.md) e [`../code-organization/SKILL.md`](../code-organization/SKILL.md). Conforme o desenho: `api-versioning`, `flyway-migrations`, `release-management`, `observability`, `microservices`.
@@ -190,6 +190,28 @@ Revise **no PR do documento** (comentários por linha, histórico). Uma reunião
 
 ---
 
+## 9. Diagramas
+
+Vale para todo diagrama do time: design doc, ADR, threat model e mapa do repositório. **Mermaid no próprio Markdown** (o GitHub renderiza e o diff é revisável); ASCII quando o destino é o terminal.
+
+| Pergunta que o diagrama responde | Tipo |
+|---|---|
+| Quais peças existem e onde estão as fronteiras (sistema, containers, confiança)? | `flowchart LR` com um `subgraph` por fronteira |
+| Quem chama quem, em que ordem, e o caminho de erro? | `sequenceDiagram` |
+| Como são as tabelas e as relações? | `erDiagram` |
+| Por quais estados uma entidade passa (empréstimo: ativo → renovado → devolvido)? | `stateDiagram-v2` |
+| Como um processo decide (regra com ramos)? | `flowchart TD` |
+
+- **Um diagrama, uma pergunta.** No máximo **~15 nós**; passou disso, divida (visão geral + um diagrama por fluxo). Desenhe só o que a feature **muda** e o contexto mínimo para entendê-la.
+- **IDs com significado e rótulos legíveis:** `loanService[LoanService]`, nunca `A` ou `s1`. **Seta com verbo e protocolo:** `-->|"POST /api/loan/v1/{id}/renew (HTTPS)"|`, `-->|"publica LoanRenewed (Kafka)"|`.
+- **Fronteira de confiança é `subgraph`** com nome ("Internet", "VPC", "Parceiro"), e a mesma fronteira tem o mesmo nome no design doc e no threat model.
+- **Visão C4 com `flowchart` + `subgraph`**, não com `C4Context`/`C4Container`: os blocos C4 do Mermaid ainda são experimentais e embaralham as setas.
+- **Sem `%%{init}` com cores fixas:** o tema padrão funciona no modo claro e no escuro do GitHub; cor fixa com fundo branco fica ilegível no escuro. Para destacar o que é novo na feature, no máximo uma `classDef`.
+- **Diagrama de sistema existente só com o que foi verificado** no código (`repository-understanding`); o inferido é marcado como tal.
+- Confira que renderiza (preview do GitHub ou do IDE) antes de pedir aprovação: diagrama quebrado é seção vazia.
+
+---
+
 ## Regras principais
 
 - Escreva design doc para features médias e grandes (plano > ~5 tarefas, integração externa, mudança de contrato ou de dados, várias equipes); ADR para uma decisão isolada; nada para mudanças pequenas.
@@ -200,4 +222,5 @@ Revise **no PR do documento** (comentários por linha, histórico). Uma reunião
 - O plano cobre cada critério; cada critério tem teste; a matriz de rastreabilidade mostra o que está verificado.
 - Desvio que muda contrato, dados, critério, segurança ou rollout → atualiza o doc e reaprova antes de seguir.
 - O code review confere o código contra o design doc.
+- Diagramas em Mermaid, um por pergunta, até ~15 nós, IDs e setas com significado, fronteiras como `subgraph`, sem cores fixas nem blocos C4 experimentais.
 - Documento curto, vivo e verificado vale mais que documento longo e esquecido.
