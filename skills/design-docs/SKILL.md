@@ -1,6 +1,6 @@
 ---
 name: design-docs
-description: Design doc técnico (tech spec / SDD) usado como spec no desenvolvimento orientado a especificação — quando escrever (e quando um ADR basta), relação com PRD, ADR, threat model e plano, template completo (contexto, objetivos e não-objetivos, desenho, contratos de API, dados e migrations, alternativas, segurança, rollout, observabilidade, testes), critérios de aceite numerados e testáveis, status e ciclo de vida, desvios durante a implementação, matriz de rastreabilidade critério → tarefa → teste, revisão, anti-padrões e regras de diagramas Mermaid (tipo por pergunta, densidade, fronteiras). Use antes de construir uma feature média ou grande, quando o PRD estiver aprovado e faltar o "como", ou quando a implementação precisar seguir uma especificação verificável. Não use para o quê e o porquê do produto (prd-writing) nem para uma decisão isolada (ADR do architect).
+description: Design doc técnico (tech spec / SDD) usado como spec no desenvolvimento orientado a especificação — quando escrever (e quando um ADR basta), relação com PRD, ADR, threat model e plano, template completo (contexto, objetivos e não-objetivos, desenho, contratos de API, dados e migrations, decisões irreversíveis e alternativas, segurança, rollout, observabilidade, testes), critérios de aceite numerados e testáveis, cobertura dos conjuntos enumerados, status e ciclo de vida, desvios durante a implementação, matriz critério → tarefa → prova, verificação independente, revisão, anti-padrões e regras de diagramas Mermaid (tipo por pergunta, densidade, fronteiras). Use antes de construir uma feature média ou grande, quando o PRD estiver aprovado e faltar o "como", ou quando a implementação precisar seguir uma especificação verificável. Não use para o quê e o porquê do produto (prd-writing) nem para uma decisão isolada (ADR do architect).
 ---
 
 Antes de aplicar este pattern, leia também [`../prd-writing/SKILL.md`](../prd-writing/SKILL.md) (o "quê" e o "porquê" que o design doc parte), [`../user-stories/SKILL.md`](../user-stories/SKILL.md) (critérios Given/When/Then), [`../threat-modeling/SKILL.md`](../threat-modeling/SKILL.md) e [`../code-organization/SKILL.md`](../code-organization/SKILL.md). Conforme o desenho: `api-versioning`, `flyway-migrations`, `release-management`, `observability`, `microservices`.
@@ -66,6 +66,13 @@ As seções marcadas com ★ são obrigatórias mesmo na versão curta.
 | CA-2 | Dado o empréstimo de outro sócio, quando chamo renew com o id dele, então 404 e nada muda | Threat model T1 |
 | CA-3 | Renovação responde em p95 < 300 ms com 50 req/s | PRD NFR-1 |
 
+### Cobertura dos conjuntos ★
+| Conjunto (seção de origem) | Membros | Critério(s) |
+|---|---|---|
+| Status de POST /api/loan/v1/{id}/renew (§5) | 200, 404, 409, 422 | 200 → CA-1 · 404 → CA-2 · 409 (limite de renovações) → **lacuna** · 422 → **lacuna** |
+| Papéis com acesso à renovação (§8) | SOCIO, ATENDENTE | SOCIO → CA-1 · ATENDENTE → **lacuna** |
+<cada **lacuna** vira critério novo (CA-4, CA-5…) ou não-objetivo declarado antes de pedir aprovação>
+
 ## 4. Desenho proposto ★
 <visão geral em poucas linhas + diagrama (Mermaid) dos componentes e fluxos que mudam>
 <onde cada parte entra no layout do projeto: controllers, services, repository, eventos — seguindo code-organization>
@@ -78,8 +85,15 @@ exemplos JSON curtos; compatibilidade com clients existentes>
 <tabelas/colunas novas ou alteradas, índices, constraints; migrations Flyway em sequência;
 compatibilidade com a versão anterior (expand → contract); backfill e volume>
 
-## 7. Alternativas consideradas
-| Opção | Prós | Contras | Por que não |
+## 7. Decisões irreversíveis e alternativas ★ (quando houver decisão cara de desfazer)
+| Decisão irreversível | Forma literal | Alternativa rejeitada e por quê |
+|---|---|---|
+| Coluna nova em tabela com dados | `loan.renewal_count SMALLINT NOT NULL DEFAULT 0` | Contador em tabela separada: um JOIN a mais em toda leitura |
+| Campo novo no contrato público | `"renewalsLeft": 2` (inteiro, nunca nulo) | `"canRenew": true`: perde o "quantas restam", que o app precisa |
+<só o que é caro de reverter depois de publicado: schema de dado existente, contrato público, nome de tópico/evento,
+formato de ID ou de chave. Nome de classe, divisão de métodos e estrutura interna são reversíveis e ficam no diff.>
+
+| Opção (desenho geral) | Prós | Contras | Por que não |
 
 ## 8. Segurança e privacidade ★
 <autenticação/autorização (por função e por objeto), dados pessoais, link para o threat model e
@@ -98,10 +112,11 @@ como desfazer — release-management>
 ## 12. Riscos e perguntas em aberto ★
 | Risco/pergunta | Impacto | Dono | Prazo |
 
-## 13. Rastreabilidade (preenchida no plano e na implementação)
-| Critério | Tarefa(s) | Teste(s) | Status |
-|---|---|---|---|
-| CA-1 | T2, T3 | LoanRenewalIntegrationTest#renewsAnActiveLoan | ✅ |
+## 13. Rastreabilidade e prova (preenchida no plano, na implementação e na verificação)
+| Critério | Tarefa(s) | Prova (comando) | Asserção que decide | Status |
+|---|---|---|---|---|
+| CA-1 | T2, T3 | `./mvnw test -Dtest=LoanRenewalIT#renewsAnActiveLoan` | LoanRenewalIT.java:48 | ✅ |
+| CA-2 | T3 | `./mvnw test -Dtest=LoanRenewalIT#renewOfAnotherMembersLoanReturns404` | LoanRenewalIT.java:71 | ⚠️ não provado |
 
 ## Histórico de mudanças
 | Data | Mudança | Aprovado por |
@@ -120,8 +135,13 @@ Um design doc só funciona como spec se os critérios forem **verificáveis**:
 - **Positivos e negativos**: o caminho feliz **e** os erros (400, 404, 409, 422), os limites e os **casos de abuso** do threat model.
 - **Com origem**: de qual requisito do PRD, ameaça do threat model ou NFR vem cada um — critério sem origem é escopo que ninguém pediu.
 - **Sem desenho embutido**: o critério diz **o que** observar, não qual classe implementar (isso fica na seção 4).
+- **Completos por conjunto**: todo conjunto que o doc enumera (status de cada rota na seção 5, papéis e ameaças na seção 8, estados de uma entidade, valores de um enum, tipos de evento) entra na tabela **Cobertura dos conjuntos**, e **cada membro** aponta para um critério. A matriz critério → teste só mostra se os critérios escritos foram testados; a cobertura dos conjuntos mostra **o critério que ninguém escreveu**. Membro sem critério é **lacuna**: escreva o critério ou declare o membro fora de escopo nos não-objetivos.
+- **Provados por execução**: na implementação, cada critério ganha uma **prova**, que é o comando que roda o teste e cujo código de saída decide o critério, mais o `arquivo:linha` da **asserção** que o discrimina. O nome do teste não basta, porque um teste pode existir, passar e não afirmar o critério. Sem prova, o status é **⚠️ não provado**.
 
 Bons critérios cobrem, conforme a feature: contrato HTTP (status, corpo, erros — `exception-handling`), autorização (`application-security`), validação (`bean-validation`), persistência e migrations (`flyway-migrations`), idempotência (`idempotency`), eventos (`transactional-outbox`), desempenho (NFR com número), observabilidade (métrica ou log que precisa existir).
+
+### Decisões irreversíveis
+A seção 7 lista **só** o que é caro de desfazer depois de publicado ou aplicado: schema de dado existente (`flyway-migrations`, com backup antes de migration destrutiva), contrato público (`api-versioning`), nome de tópico, fila ou evento, e formato de ID ou de chave. Cada uma tem a **forma literal** (a DDL, o campo JSON, o nome exato) e a **alternativa rejeitada**. É o que os revisores mais precisam ler: o resto do desenho se corrige no próximo PR. Uma aposta estrutural ainda aberta (broker, banco, estilo de arquitetura) não entra aqui como decisão: vira ADR e é decidida **antes**.
 
 ---
 
@@ -133,7 +153,7 @@ Bons critérios cobrem, conforme a feature: contrato HTTP (status, corpo, erros 
 | **em revisão** | Revisores | Comentários no PR do documento; time-box (ex.: 2 dias úteis) |
 | **aprovado** | Usuário/responsável | **Gate humano.** O plano só começa daqui (`orchestrator`) |
 | **em implementação** | `tech-lead` → `developer`, `qa` | Plano gerado a partir dos critérios; matriz de rastreabilidade entregue no plano e registrada no doc |
-| **implementado** | `code-reviewer`, `qa` | Todo critério tem teste verde; o doc reflete o que foi construído |
+| **implementado** | `qa` (provas), `code-reviewer` (verificação) | Todo critério tem prova verde no código final, verificada por quem não escreveu o código nem os testes; nenhum membro de conjunto sem critério; o doc reflete o que foi construído |
 | **substituído** | — | Um DD novo o substitui; o antigo fica como histórico |
 
 ### Desvios durante a implementação
@@ -143,7 +163,15 @@ A realidade sempre diverge um pouco do desenho. A regra:
 - Descobriu que um critério é impossível ou errado: volte ao autor do critério (PM para critérios de produto, `architect` para técnicos) — não "ajuste" o teste para passar.
 
 ### Rastreabilidade
-A seção 13 fecha o ciclo: **todo critério tem pelo menos uma tarefa e um teste**, e todo teste novo relevante aponta para um critério. Critério sem teste fica marcado como **não verificado** — e a feature não está pronta (`tech-lead`, Definition of Done).
+A seção 13 fecha o ciclo: **todo critério tem pelo menos uma tarefa e uma prova**, e todo teste novo relevante aponta para um critério. Critério sem prova fica marcado como **⚠️ não provado**, e a feature não está pronta (`tech-lead`, Definition of Done).
+
+### Verificação independente (antes de declarar implementado)
+Quem escreveu o código ou os testes não verifica o próprio trabalho. Depois da última mudança da feature e antes do commit, o `code-reviewer` (somente leitura, nunca autor) faz a **verificação da spec** sobre tudo o que mudou desde a base (commits e working tree):
+1. **Re-executa cada prova** da seção 13 nesse estado e registra o resultado real (não o que o relatório do `developer` ou do `qa` disse).
+2. **Lê a asserção** citada em cada linha: ela afirma o critério? Falharia com a implementação errada (o 404 do CA-2 com o empréstimo de outro sócio, não com um id inexistente)?
+3. **Recalcula a cobertura dos conjuntos** a partir do diff: rota, status, papel ou estado que o código introduziu e não está na tabela também é lacuna.
+
+O resultado é uma tabela por critério (✅ provado · ❌ prova falha · ⚠️ não provado), válida para o estado verificado: mudança depois dela pede nova verificação. A feature só passa a **implementado** sem ❌ nem ⚠️; o que for aceito como exceção vai para o histórico de mudanças, com quem aprovou.
 
 ---
 
@@ -152,6 +180,8 @@ A seção 13 fecha o ciclo: **todo critério tem pelo menos uma tarefa e um test
 Revisores: quem vai implementar, quem testa, quem opera (plataforma/SRE quando houver infra) e o PM para os critérios de produto. Checklist:
 - [ ] O problema e os não-objetivos estão claros; o escopo bate com o PRD.
 - [ ] Todo critério é numerado, testável, tem origem — e os negativos/abusos estão lá.
+- [ ] A tabela de cobertura lista todo conjunto enumerado no doc (status por rota, papéis, estados, ameaças), e nenhum membro está sem critério.
+- [ ] A seção 7 traz cada decisão irreversível com a forma literal e a alternativa rejeitada; nenhuma aposta estrutural aberta está escondida nela.
 - [ ] Contratos completos (status, erros, versão); compatível com clients existentes ou com versão nova (`api-versioning`).
 - [ ] Migrations compatíveis com a versão anterior; volume e backfill pensados.
 - [ ] Alternativas reais consideradas (inclusive "não fazer" e a mais simples).
@@ -173,8 +203,8 @@ Revise **no PR do documento** (comentários por linha, histórico). Uma reunião
 | `orchestrator` | Põe a **aprovação do design doc** como gate antes do plano; passa o caminho do doc em todos os briefs seguintes |
 | `tech-lead` | Gera o plano **a partir dos critérios** — cada tarefa cita os `CA-n` que cobre — e entrega a matriz de rastreabilidade no plano (ele é somente leitura; o `architect` a registra no doc) |
 | `developer` | Implementa seguindo o doc; desvio relevante → para e devolve a pergunta (não decide sozinho) |
-| `qa` | Um teste por critério (positivo e negativo); marca o que ficou sem teste |
-| `code-reviewer` | Confere o diff contra o doc: critério sem implementação, contrato diferente do especificado, desvio sem registro |
+| `qa` | Um teste por critério (positivo e negativo) e, para cada um, a prova (comando) e a asserção (`arquivo:linha`) da seção 13; marca o que ficou sem prova |
+| `code-reviewer` | Confere o diff contra o doc (critério sem implementação, contrato diferente do especificado, desvio sem registro) e faz a **verificação da spec**: re-executa as provas, lê as asserções e recalcula a cobertura dos conjuntos |
 
 ---
 
@@ -183,6 +213,8 @@ Revise **no PR do documento** (comentários por linha, histórico). Uma reunião
 - **Documento depois do código** (vira descrição, não decisão) ou **nunca atualizado** (vira mentira).
 - **Romance**: dez páginas para uma feature de três tarefas. Use a versão curta.
 - **Critérios vagos** ("deve ser seguro", "boa performance") ou **sem negativos**.
+- **Matriz verde com conjunto incompleto**: todo critério escrito tem teste, mas o 409 da rota nunca virou critério. A tabela de cobertura existe para isso.
+- **"Tem teste" como prova**: o teste existe, passa e afirma outra coisa (status 200 sem conferir a data nova). A prova é a asserção, não o nome.
 - **Desenho sem alternativas** — se só há uma opção, provavelmente ninguém pensou nas outras.
 - **Repetir o PRD** em vez de linkar; **esconder uma decisão estrutural** no meio do texto em vez de um ADR.
 - **Aprovação de fachada**: revisores que não leram. Melhor um revisor que leu do que cinco que aprovaram.
@@ -219,7 +251,10 @@ Vale para todo diagrama do time: design doc, ADR, threat model e mapa do reposit
 - Template em `docs/design/DD-NNN-*.md` com status; seções ★ obrigatórias mesmo na versão curta; gravado com confirmação, sem segredos nem dados reais.
 - Critérios de aceite **numerados, testáveis, com origem**, incluindo negativos, limites e casos de abuso.
 - A aprovação do design doc é um **gate humano** antes do plano.
-- O plano cobre cada critério; cada critério tem teste; a matriz de rastreabilidade mostra o que está verificado.
+- Todo conjunto enumerado no doc tem cada membro ligado a um critério (tabela de cobertura); membro sem critério é lacuna ou não-objetivo declarado.
+- Decisões irreversíveis (schema, contrato público, nome de evento, formato de ID) com forma literal e alternativa rejeitada; o reversível fica no diff.
+- O plano cobre cada critério; cada critério tem prova (comando + asserção `arquivo:linha`); critério sem prova é ⚠️ não provado.
+- Antes de **implementado** (e do commit), o `code-reviewer` (nunca o autor) re-executa as provas no estado final, lê as asserções e recalcula a cobertura.
 - Desvio que muda contrato, dados, critério, segurança ou rollout → atualiza o doc e reaprova antes de seguir.
 - O code review confere o código contra o design doc.
 - Diagramas em Mermaid, um por pergunta, até ~15 nós, IDs e setas com significado, fronteiras como `subgraph`, sem cores fixas nem blocos C4 experimentais.

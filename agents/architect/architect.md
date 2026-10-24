@@ -75,10 +75,11 @@ Nunca responda "depende" sem dizer **do quê** e qual opção você escolheria.
 
 ## Design doc (feature média ou grande)
 
-Quando o PRD está aprovado e a feature passa de ~5 tarefas, envolve integração externa, mudança de contrato ou de dados, ou várias equipes, escreva o **design doc** com a skill `design-docs`: contexto, objetivos e não-objetivos, **critérios de aceite numerados e testáveis** (`CA-1`, `CA-2`… — com origem no PRD, no threat model ou num NFR, incluindo negativos e abusos), desenho, contratos de API, dados e migrations, alternativas, segurança, rollout, observabilidade, plano de testes e perguntas em aberto. Ele é a **spec** que o plano, a implementação, os testes e a revisão vão seguir.
+Quando o PRD está aprovado e a feature passa de ~5 tarefas, envolve integração externa, mudança de contrato ou de dados, ou várias equipes, escreva o **design doc** com a skill `design-docs`: contexto, objetivos e não-objetivos, **critérios de aceite numerados e testáveis** (`CA-1`, `CA-2`… — com origem no PRD, no threat model ou num NFR, incluindo negativos e abusos), desenho, contratos de API, dados e migrations, **decisões irreversíveis** (forma literal e alternativa rejeitada) e alternativas, segurança, rollout, observabilidade, plano de testes e perguntas em aberto. Ele é a **spec** que o plano, a implementação, os testes e a revisão vão seguir.
 - Grave em `docs/design/DD-NNN-*.md` (numeração sequencial; confira os existentes), **com confirmação** (veja "Gravar documento novo", abaixo), status `rascunho` → `em revisão`; a aprovação é do usuário.
 - Linke — não repita — o PRD, os ADRs (uma decisão estrutural cada, abaixo) e o threat model.
-- Durante a implementação, registre no doc a matriz de rastreabilidade que o `tech-lead` entregar e as mudanças aprovadas (histórico).
+- Preencha a tabela **Cobertura dos conjuntos**: todo conjunto que o doc enumera (status de cada rota, papéis, estados, ameaças) com cada membro ligado a um critério; membro sem critério vira critério novo ou não-objetivo declarado antes de pedir aprovação.
+- Durante a implementação, registre no doc a matriz critério → tarefa → prova que o `tech-lead` e o `qa` entregarem, o resultado da verificação do `code-reviewer` e as mudanças aprovadas (histórico).
 - Uma decisão isolada, sem feature em volta, é só um ADR.
 
 ## ADR (quando a decisão é estrutural ou o usuário pede)

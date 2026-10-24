@@ -146,7 +146,7 @@ Cada agent tem papel, permissões e formato de entrega próprios. Todos leem `co
 | `tech-lead` | Plano, tarefas, riscos, estimativa, DoD | Nada (somente leitura) | Planeja a partir dos critérios do design doc; **atribui uma skill a cada tarefa** do plano, para o `developer` e o `qa` executarem no padrão; DoD com `test-coverage` (90%); `repository-understanding`, `refactoring`, `backlog-refinement` |
 | `developer` | Implementar e corrigir, com testes e build real | Código e testes | **Sempre** `code-organization` + `code-style`, e `application-security` em todo endpoint; depois a skill da área (`spring-data-jpa`, `flyway-migrations`, `bean-validation`, `exception-handling`, `swagger`, `authentication`, `maven-config`…); `aws-sdk-java` antes de qualquer AWS; `testing`, `test-patterns`, `integration-testing`. Padrões estruturais (saga, CQRS, hexagonal) **só com ADR** |
 | `qa` | Provar que funciona e achar o que quebra | Somente testes | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `application-security` (IDOR, permissão, limites); cada ameaça do threat model vira teste; a skill da área diz **o que provar** (`idempotency`, `resilience`, `contract-testing`, `localstack`, `saga-pattern`…); **cada critério Given/When/Then** de `prd-writing`/`user-stories` vira caso de teste |
-| `code-reviewer` | Revisar o diff e dar o veredito | Nada (somente leitura) | `code-organization` + `code-style`; revisa contra o design doc quando existe; para cada área do diff, usa a seção **"Regras principais"** da skill correspondente como **checklist** (violação = achado); não repete o que o CI já barra, varre atalhos (`@Disabled`, `@SuppressWarnings`, TLS desligado), limita minors/nits a 5, separa bugs pré-existentes e, na nova rodada, confere só a resolução e blockers novos (máximo de 3) |
+| `code-reviewer` | Revisar o diff e dar o veredito | Nada (somente leitura) | `code-organization` + `code-style`; revisa contra o design doc quando existe; para cada área do diff, usa a seção **"Regras principais"** da skill correspondente como **checklist** (violação = achado); não repete o que o CI já barra, varre atalhos (`@Disabled`, `@SuppressWarnings`, TLS desligado), limita minors/nits a 5, separa bugs pré-existentes, faz a **verificação da spec** em feature com design doc (re-executa as provas, lê as asserções, recalcula a cobertura dos conjuntos) e, na nova rodada, confere só a resolução e blockers novos (máximo de 3) |
 
 ### Modelo de cada agent
 
@@ -168,13 +168,13 @@ flowchart TD
     TL --> G3{"Aprovar plano"}
     G3 --> DEV["developer<br/>code-organization · code-style · application-security<br/>+ skill de cada tarefa · build real"]
     DEV --> QA["qa<br/>um teste por critério · integration-testing<br/>test-patterns · test-coverage"]
-    QA --> CR["code-reviewer<br/>diff contra o design doc<br/>Regras principais de cada skill"]
+    QA --> CR["code-reviewer<br/>diff contra o design doc · verificação da spec<br/>re-executa as provas · cobertura dos conjuntos"]
     CR -->|"blocker (máx. 3 ciclos)"| DEV
     CR -->|"aprovado"| G4{"Aprovar commit / push / deploy"}
     G4 --> FIM(["Entrega + relatório do orchestrator"])
 ```
 
-**Spec-driven:** em features médias e grandes, o design doc aprovado (`design-docs`) é a especificação. O plano cobre cada critério de aceite (`CA-1`, `CA-2`…), a implementação segue o documento, o `qa` escreve um teste por critério e o `code-reviewer` confere o código contra ele. Mudança de contrato, dados, critério, segurança ou rollout durante a implementação volta ao documento e à aprovação antes de seguir.
+**Spec-driven:** em features médias e grandes, o design doc aprovado (`design-docs`) é a especificação. O plano cobre cada critério de aceite (`CA-1`, `CA-2`…), a implementação segue o documento, o `qa` escreve um teste por critério e registra a prova (comando + asserção) e o `code-reviewer` confere o código contra ele e, antes do commit, faz a **verificação da spec**: re-executa cada prova no código final, lê a asserção e recalcula a **cobertura dos conjuntos** (cada status, papel ou estado enumerado no doc ligado a um critério). Critério sem prova fica ⚠️ não provado e a feature não está pronta. Mudança de contrato, dados, critério, segurança ou rollout durante a implementação volta ao documento e à aprovação antes de seguir.
 
 ### Pipelines
 
@@ -258,7 +258,7 @@ Skills que os agents carregam e que também podem ser usadas diretamente (pedido
 
 | Skill | Comando | Descrição | Exemplo de prompt |
 |---|---|---|---|
-| `design-docs` | `/squads:design-docs` | O **design doc** (tech spec / SDD) que serve de **spec** no desenvolvimento orientado a especificação: template em `docs/design/`, critérios de aceite numerados (`CA-1`…) e testáveis, aprovação antes do plano, desvios registrados , a matriz critério → tarefa → teste e as regras de diagrama Mermaid. | "Escreva o design doc da renovação online de empréstimo a partir do PRD." |
+| `design-docs` | `/squads:design-docs` | O **design doc** (tech spec / SDD) que serve de **spec** no desenvolvimento orientado a especificação: template em `docs/design/`, critérios de aceite numerados (`CA-1`…) e testáveis, aprovação antes do plano, decisões irreversíveis com a alternativa rejeitada, cobertura dos conjuntos enumerados, desvios registrados, a matriz critério → tarefa → prova, a verificação independente e as regras de diagrama Mermaid. | "Escreva o design doc da renovação online de empréstimo a partir do PRD." |
 | `application-security` | `/squads:application-security` | Segurança da API pelo **OWASP API Security Top 10**: autorização por objeto (IDOR), mass assignment, limites e rate limit, injeção, SSRF, desserialização, security headers, segredos, logs de segurança, dependências e SBOM, e testes (incluindo SAST, secret scanning e ZAP); a **revisão de segurança** vira relatório com IDs, gravidade e evidência, e a correção sai um achado por vez. | "Faça uma revisão de segurança dos endpoints de empréstimo." |
 | `threat-modeling` | `/squads:threat-modeling` | Pensa em como a feature pode ser abusada **antes** de construir: diagrama com fronteiras de confiança, STRIDE, casos de abuso, prioridade e uma decisão por ameaça — cada mitigação vira tarefa e teste. Também modela um **sistema que já roda**, a partir do código e com evidência. Grava em `docs/security/`. | "Faça o threat model da renovação online de empréstimo." |
 | `solid` | `/squads:solid` | Os cinco princípios SOLID no código Spring Boot do pacote, com antes/depois, mais DRY, KISS, YAGNI e Lei de Demeter — e quando **não** aplicar (CRUD simples continua simples). | "Este BookService está difícil de testar. O que viola SOLID e como corrigir?" |
