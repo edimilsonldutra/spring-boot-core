@@ -201,7 +201,7 @@ Nunca declare "pronto" se há ⚠️/❌ em aberto.
 | Arquivos e e-mail | `file-upload-download`, `file-import-export`, `pdf-reports`, `email` (na AWS, `aws-ses`) |
 | Segurança | `authentication`, `aws-cognito`, `application-security`, `threat-modeling` |
 | Especificação técnica | `design-docs` (design doc como spec, critérios `CA-n`, rastreabilidade) |
-| Microsserviços e arquitetura | `microservices`, `modular-monolith`, `ddd-hexagonal`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing` |
+| Microsserviços e arquitetura | `aws-architecture-diagram` (visão física AWS em draw.io), `microservices`, `modular-monolith`, `ddd-hexagonal`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing` |
 | Mensageria | `messaging`, `kafka`, `rabbitmq`, `activemq-artemis`, `aws-sns-sqs`, `aws-eventbridge`, `transactional-outbox` |
 | Testes | `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `contract-testing`, `localstack`, `postman-newman` |
 | Entender repositório existente; analisar um monolito antes de dividir; refatorar com segurança | `repository-understanding`, `monolith-decomposition`, `refactoring` |

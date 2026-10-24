@@ -238,6 +238,7 @@ Vale para todo diagrama do time: design doc, ADR, threat model e mapa do reposit
 - **IDs com significado e rótulos legíveis:** `loanService[LoanService]`, nunca `A` ou `s1`. **Seta com verbo e protocolo:** `-->|"POST /api/loan/v1/{id}/renew (HTTPS)"|`, `-->|"publica LoanRenewed (Kafka)"|`.
 - **Fronteira de confiança é `subgraph`** com nome ("Internet", "VPC", "Parceiro"), e a mesma fronteira tem o mesmo nome no design doc e no threat model.
 - **Visão C4 com `flowchart` + `subgraph`**, não com `C4Context`/`C4Container`: os blocos C4 do Mermaid ainda são experimentais e embaralham as setas.
+- **Visão física da AWS** (conta, região, VPC, AZ, subnets, ícones oficiais) é a exceção: draw.io com `aws-architecture-diagram`, em `docs/architecture/*.drawio` com o PNG exportado ao lado, e o documento linka o PNG.
 - **Sem `%%{init}` com cores fixas:** o tema padrão funciona no modo claro e no escuro do GitHub; cor fixa com fundo branco fica ilegível no escuro. Para destacar o que é novo na feature, no máximo uma `classDef`.
 - **Diagrama de sistema existente só com o que foi verificado** no código (`repository-understanding`); o inferido é marcado como tal.
 - Confira que renderiza (preview do GitHub ou do IDE) antes de pedir aprovação: diagrama quebrado é seção vazia.

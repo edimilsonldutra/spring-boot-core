@@ -47,7 +47,7 @@ Antes de descrever a lista de skills, verifique o que realmente está presente e
 - ➕ **Extras — Produto (perfil de PM):** `product-strategy` (visão, estratégia, business case), `product-discovery`, `prd-writing`, `user-stories`, `prioritization` (RICE/MoSCoW/WSJF), `product-roadmap` (Now/Next/Later + OKRs), `product-metrics` (North Star, tracking plan, A/B), `agile-delivery`, `release-management` (flags, rollout, go/no-go), `technical-product-management` (NFRs, SLO, API como produto), `privacy-lgpd` e `stakeholder-communication`. O agent `product-manager` as usa.
 - ➕ **Extras — Arquitetura de microsserviços:** `microservices` (**comece aqui**: quando dividir, decomposição, dados, migração), `modular-monolith` (Spring Modulith), `ddd-hexagonal` (domínio rico), `api-gateway` (gateway e BFF), `service-communication` (REST/gRPC, auth serviço-a-serviço), `resilience` (timeout, retry, circuit breaker), `saga-pattern`, `cqrs-event-sourcing`, `contract-testing` (Pact/SCC) e `idempotency`.
 - ➕ **Extras — GitOps:** `argocd` (Argo CD: repo GitOps, Application/AppProject/ApplicationSet, migration como PreSync hook, promoção por PR, secrets e segurança).
-- ➕ **Extras — AWS (serviços e integração):** `aws-sdk-java` (base: SDK v2, credenciais, clients, timeouts), `localstack` (emular a AWS local e em testes), `aws-dynamodb`, `aws-keyspaces`, `aws-lambda`, `aws-ecs-fargate`, `aws-cognito`, `aws-parameter-store` (+ AppConfig), `aws-ses`, `aws-eventbridge`, `aws-observability` (CloudWatch/X-Ray/alarmes) e `aws-terraform` (infra como código).
+- ➕ **Extras — AWS (serviços e integração):** `aws-sdk-java` (base: SDK v2, credenciais, clients, timeouts), `localstack` (emular a AWS local e em testes), `aws-dynamodb`, `aws-keyspaces`, `aws-lambda`, `aws-ecs-fargate`, `aws-cognito`, `aws-parameter-store` (+ AppConfig), `aws-ses`, `aws-eventbridge`, `aws-observability` (CloudWatch/X-Ray/alarmes), `aws-terraform` (infra como código) e `aws-architecture-diagram` (diagrama de infraestrutura AWS no draw.io).
 - ➕ **Extras — AWS:** `aws-eks` (ECR, EKS, IRSA, ALB), `aws-rds-secrets-manager`, `aws-s3-sqs`, `github-actions-aws` (CI/CD com OIDC).
 
 ---
@@ -141,6 +141,7 @@ Antes de descrever a lista de skills, verifique o que realmente está presente e
 | Barramento de eventos, Scheduler, eventos da AWS | `aws-eventbridge` |
 | Logs, métricas, traces e alarmes na AWS | `aws-observability` |
 | Infraestrutura como código (Terraform/CDK) | `aws-terraform` |
+| Diagrama de arquitetura AWS (draw.io, ícones oficiais) | `aws-architecture-diagram` |
 
 ---
 

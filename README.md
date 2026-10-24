@@ -1,13 +1,13 @@
 # Squads — Agents & Skills para Claude Code
 
-![version](https://img.shields.io/badge/version-2.4.0-blue)
+![version](https://img.shields.io/badge/version-2.5.0-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-D97757)
-![skills](https://img.shields.io/badge/skills-89-informational)
+![skills](https://img.shields.io/badge/skills-90-informational)
 ![agents](https://img.shields.io/badge/agents-7-informational)
 
-Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time de agents especialistas** e **89 skills** para o desenvolvimento de APIs REST com **Java 25 e Spring Boot 4**. Os agents planejam, implementam, testam e revisam; as skills definem o padrão que todos seguem — do layout de packages ao deploy — para que o código gerado por IA saia consistente, testado e seguro em qualquer projeto do time.
+Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time de agents especialistas** e **90 skills** para o desenvolvimento de APIs REST com **Java 25 e Spring Boot 4**. Os agents planejam, implementam, testam e revisam; as skills definem o padrão que todos seguem — do layout de packages ao deploy — para que o código gerado por IA saia consistente, testado e seguro em qualquer projeto do time.
 
 **Sumário:** [Visão geral](#visão-geral) · [Início rápido](#início-rápido) · [Como funciona](#como-funciona) · [Agents](#agents) · [Fluxo completo](#fluxo-completo-de-uma-feature) · [Fluxos individuais](#fluxo-individual-de-cada-agent) · [Skills](#skills) · [Instalação alternativa](#instalação-alternativa-só-as-skills) · [Atualização](#atualização) · [Estrutura](#estrutura-do-repositório) · [Contribuindo](#contribuindo)
 
@@ -18,7 +18,7 @@ Plugin para o [Claude Code](https://claude.com/claude-code) que leva um **time d
 | | |
 |---|---|
 | **Agents** | 7 — `orchestrator`, `product-manager`, `architect`, `tech-lead`, `developer`, `qa`, `code-reviewer` |
-| **Skills** | 89 — Spring Boot, API, arquivos e e-mail, especificação, segurança, design de código, testes, mensageria, microsserviços, CI/CD, Kubernetes, AWS e produto |
+| **Skills** | 90 — Spring Boot, API, arquivos e e-mail, especificação, segurança, design de código, testes, mensageria, microsserviços, CI/CD, Kubernetes, AWS e produto |
 | **Stack** | Java 25 (LTS), Spring Boot 4, Spring Framework 7, Spring Security 7, Hibernate 7, Jackson 3, Maven ou Gradle |
 | **Databases** | MySQL (padrão), PostgreSQL, SQL Server, Oracle, MariaDB |
 | **Plataformas** | Docker, Kubernetes, Helm, Argo CD, AWS (EKS, ECS, Lambda, RDS, S3, SQS/SNS…), Google Cloud e Azure via GitHub Actions |
@@ -270,7 +270,7 @@ flowchart LR
 
 ## Skills
 
-89 skills em 12 grupos. A lista completa, com descrição e exemplo de prompt de cada uma, está no [guia de referência](docs/guide.md#catálogo-de-skills).
+90 skills em 12 grupos. A lista completa, com descrição e exemplo de prompt de cada uma, está no [guia de referência](docs/guide.md#catálogo-de-skills).
 
 | Grupo | Skills |
 |---|---|
@@ -280,7 +280,7 @@ flowchart LR
 | **Especificação, segurança e design** (5) | `design-docs`, `application-security`, `threat-modeling`, `solid`, `design-patterns` |
 | **Java, Kubernetes e AWS** (13) | `authentication`, `testing`, `caching`, `java-modern-features`, `jvm-performance`, `observability`, `docker-and-docker-compose`, `kubernetes`, `helm-charts`, `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `github-actions-aws` |
 | **Mensageria** (6) | `messaging`, `kafka`, `rabbitmq`, `activemq-artemis`, `aws-sns-sqs`, `transactional-outbox` |
-| **AWS** (12) | `aws-sdk-java`, `localstack`, `aws-dynamodb`, `aws-keyspaces`, `aws-lambda`, `aws-ecs-fargate`, `aws-cognito`, `aws-parameter-store`, `aws-ses`, `aws-eventbridge`, `aws-observability`, `aws-terraform` |
+| **AWS** (13) | `aws-sdk-java`, `localstack`, `aws-dynamodb`, `aws-keyspaces`, `aws-lambda`, `aws-ecs-fargate`, `aws-cognito`, `aws-parameter-store`, `aws-ses`, `aws-eventbridge`, `aws-observability`, `aws-terraform`, `aws-architecture-diagram` |
 | **CI/CD e GitOps** (3) | `github-actions`, `github-actions-cloud`, `argocd` |
 | **Microsserviços** (10) | `microservices`, `modular-monolith`, `ddd-hexagonal`, `api-gateway`, `service-communication`, `resilience`, `saga-pattern`, `cqrs-event-sourcing`, `contract-testing`, `idempotency` |
 | **Produto** (12) | `product-strategy`, `product-discovery`, `prd-writing`, `user-stories`, `prioritization`, `product-roadmap`, `product-metrics`, `agile-delivery`, `release-management`, `technical-product-management`, `privacy-lgpd`, `stakeholder-communication` |

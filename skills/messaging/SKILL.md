@@ -55,6 +55,8 @@ Spring Boot tem suporte de primeira classe para **Kafka**, **RabbitMQ (AMQP)** e
 4. **Requisito de JMS/XA ou legado?** → **ActiveMQ Artemis**.
 5. **Equipe pequena, sem experiência com brokers?** → comece pelo **gerenciado mais simples** (SQS, ou RabbitMQ/Amazon MQ) e evolua; Kafka só se o caso de uso o justificar.
 
+**Contexto que faltar, pergunte; não assuma.** Se o pedido não diz a nuvem, se os consumidores precisam de replay, o volume e quem vai operar o broker, dê a recomendação condicionada ("se vocês estão na AWS, SNS + SQS") e **termine com essas perguntas, explícitas**. Uma condicional no meio do texto não substitui a pergunta.
+
 **Não misture sem necessidade:** um broker por necessidade. Cada broker novo é custo de operação, monitoramento, segurança e conhecimento da equipe. Registre a decisão em um ADR (`architect`).
 
 ---
