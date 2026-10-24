@@ -1,7 +1,7 @@
 # Funcionalidade já especificada
 
 **Quando usar:** PRD, histórias com critérios de aceite ou design doc já existem.
-**Pipeline:** `tech-lead` → `developer` (por tarefa) → `qa` → `code-reviewer`.
+**Pipeline:** `tech-lead` → `developer` (por tarefa) → `qa` → `code-reviewer` (revisão + verificação da spec).
 **Como rodar:** `claude --agent squads:orchestrator` e cole o prompt.
 **Aprovações:** plano · commit/push.
 
@@ -36,4 +36,4 @@ Perfil de modelo: equilibrado
 ## Dicas
 
 - Desvio que muda contrato, dados, critério, segurança ou rollout volta ao `architect` e a você **antes** de seguir.
-- O relatório final traz a matriz critério → tarefa → teste; critério sem teste aparece como não verificado.
+- O relatório final traz a matriz critério → tarefa → prova e a verificação da spec feita pelo `code-reviewer` (provas re-executadas no código final, cobertura dos conjuntos); critério sem prova aparece como ⚠️ não provado.

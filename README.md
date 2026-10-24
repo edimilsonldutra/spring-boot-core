@@ -1,6 +1,6 @@
 # Squads — Agents & Skills para Claude Code
 
-![version](https://img.shields.io/badge/version-2.3.2-blue)
+![version](https://img.shields.io/badge/version-2.4.0-blue)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-D97757)
@@ -85,10 +85,10 @@ flowchart LR
 | `orchestrator` | Coordenar o time: escolher o menor pipeline, delegar, verificar, parar nos gates | Nada (delega e lê) | Pipeline, quadro de andamento e relatório final com o que foi e o que **não** foi verificado |
 | `product-manager` | O **quê**, o **porquê** e o **quão bom** | `docs/product/` (com confirmação) | PRD, histórias com critérios, casos de abuso, priorização, roadmap/OKRs, métricas, plano de lançamento |
 | `architect` | Decisões estruturais e especificação técnica | `docs/design/`, `docs/adr/`, `docs/security/`, `docs/architecture/` (com confirmação) | Design doc (spec), ADRs, threat model, recomendação com alternativas e custos |
-| `tech-lead` | Transformar a spec em plano executável | Nada (somente leitura) | Tarefas ordenadas com skill e agent, riscos, MVP, estimativa, Definition of Done, matriz critério → tarefa |
+| `tech-lead` | Transformar a spec em plano executável | Nada (somente leitura) | Tarefas ordenadas com skill e agent, riscos, MVP, estimativa, Definition of Done, matriz critério → tarefa → prova |
 | `developer` | Implementar e corrigir com testes | Código e testes | Mudança mínima no padrão, build executado de verdade, desvios da spec reportados |
-| `qa` | Provar que funciona e achar o que quebra | Somente testes | Plano de testes, casos de borda e segurança, testes escritos, bugs reproduzidos, um teste por critério |
-| `code-reviewer` | Revisar o diff contra o padrão e a spec | Nada (somente leitura) | Achados por severidade com `arquivo:linha`, cenário de falha e sugestão, e veredito |
+| `qa` | Provar que funciona e achar o que quebra | Somente testes | Plano de testes, casos de borda e segurança, testes escritos, bugs reproduzidos, um teste por critério com prova (comando + asserção) |
+| `code-reviewer` | Revisar o diff contra o padrão e a spec | Nada (somente leitura) | Achados por severidade com `arquivo:linha`, cenário de falha e sugestão, veredito e, com design doc, a verificação da spec (provas re-executadas, cobertura dos conjuntos) |
 
 ### Modelos e custo
 
@@ -131,13 +131,13 @@ flowchart TD
     TL --> G3{"Aprovar plano"}
     G3 --> DEV["developer<br/>code-organization · code-style · application-security<br/>+ skill de cada tarefa · build real"]
     DEV --> QA["qa<br/>um teste por critério · integration-testing<br/>test-patterns · test-coverage"]
-    QA --> CR["code-reviewer<br/>diff contra o design doc<br/>Regras principais de cada skill"]
+    QA --> CR["code-reviewer<br/>diff contra o design doc · verificação da spec<br/>re-executa as provas · cobertura dos conjuntos"]
     CR -->|"blocker (máx. 3 ciclos)"| DEV
     CR -->|"aprovado"| G4{"Aprovar commit / push / deploy"}
     G4 --> FIM(["Entrega + relatório do orchestrator"])
 ```
 
-**Spec-driven:** em features médias e grandes, o design doc aprovado é a especificação. O plano cobre cada critério (`CA-1`, `CA-2`…), a implementação segue o documento, o `qa` escreve um teste por critério e o `code-reviewer` confere o código contra ele. Mudança de contrato, dados, critério, segurança ou rollout durante a implementação volta ao documento e à sua aprovação antes de seguir.
+**Spec-driven:** em features médias e grandes, o design doc aprovado é a especificação. O plano cobre cada critério (`CA-1`, `CA-2`…), a implementação segue o documento, o `qa` escreve um teste por critério e registra a prova (comando + asserção) e o `code-reviewer` confere o código contra ele e, antes do commit, faz a **verificação da spec**: re-executa cada prova no código final, lê a asserção e recalcula a **cobertura dos conjuntos** (cada status, papel ou estado enumerado no doc ligado a um critério). Critério sem prova fica ⚠️ não provado e a feature não está pronta. Mudança de contrato, dados, critério, segurança ou rollout durante a implementação volta ao documento e à sua aprovação antes de seguir.
 
 **Pipelines** — o orquestrador usa sempre o menor que resolve:
 
@@ -245,7 +245,7 @@ flowchart LR
     D --> E["Escreve os testes<br/>(só src/test)"]
     E --> F{"Executa"}
     F -->|"falha de produção"| G["Bug reproduzido → developer"]
-    F -->|"verde"| H["Cobertura · matriz critério → teste"]
+    F -->|"verde"| H["Cobertura · matriz critério → prova<br/>comando + asserção arquivo:linha"]
     H --> I["Handoff: code-reviewer"]
 ```
 - **Skills:** `testing`, `test-patterns`, `integration-testing`, `test-coverage`, `application-security`, `postman-newman` e a da área para saber **o que provar** (`idempotency`, `resilience`, `contract-testing`, `localstack`, `saga-pattern`…).

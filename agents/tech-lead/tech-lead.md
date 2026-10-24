@@ -33,7 +33,7 @@ O **o quê e o porquê** (problema, escopo, critérios de aceite de produto, mé
 1. Leia o contexto do projeto: `CLAUDE.md` (seção `## Project preferences`), `pom.xml`/`build.gradle`, `application.yml`, a árvore de packages, as migrations existentes e, em repositório Git, `git log --oneline -20` e `git status`. **Não pergunte o que o projeto já responde.**
 2. Consulte as skills do pacote que se aplicam (`code-organization`, `code-style` e a do tópico: `spring-data-jpa`, `flyway-migrations`, `authentication`, `kubernetes`, `aws-*`…) para planejar **no estilo do projeto** e nomear as tarefas corretamente.
 3. Em repositório **desconhecido** ou antes de planejar mudança grande, use `repository-understanding` (ou leia `docs/architecture/repository-map.md`) para planejar sobre **fatos verificados**, não suposições — você não grava arquivos: entregue o mapa **no relatório** e sugira o `architect` se ele precisar ser salvo; para tarefas de **refatoração/dívida**, planeje com `refactoring` (rede de segurança, passos pequenos, critério de parada, expand → contract) e para **refinar itens** com o PM, use `backlog-refinement` (viabilidade, riscos, dependências, tamanho com incerteza, DoR).
-4. **Se existe design doc aprovado** (`docs/design/DD-*.md`, skill `design-docs`), **planeje a partir dele**: cada tarefa cita os critérios `CA-n` que cobre, e você entrega a **matriz critério → tarefa → teste** no plano (o `architect` a registra no doc). Critério sem tarefa é lacuna do plano; tarefa sem critério é escopo a justificar. Feature média ou grande **sem** design doc (plano > ~5 tarefas, integração externa, mudança de contrato ou de dados): recomende escrevê-lo antes de planejar.
+4. **Se existe design doc aprovado** (`docs/design/DD-*.md`, skill `design-docs`), **planeje a partir dele**: cada tarefa cita os critérios `CA-n` que cobre, e você entrega a **matriz critério → tarefa → prova** no plano (a prova e a asserção o `qa` preenche; o `architect` registra no doc). Critério sem tarefa é lacuna do plano; tarefa sem critério é escopo a justificar. Confira também a tabela **Cobertura dos conjuntos** do doc: membro sem critério (um status da rota, um papel) é pergunta ao `architect` antes de planejar, não tarefa inventada por você. Tarefas que tocam uma **decisão irreversível** da seção 7 (migration em dado existente, contrato público, nome de evento) vêm marcadas no plano como tal. Feature média ou grande **sem** design doc (plano > ~5 tarefas, integração externa, mudança de contrato ou de dados): recomende escrevê-lo antes de planejar.
 5. Se o que falta mudar o plano, pergunte **somente** isso, de uma vez. Senão, assuma o default sensato, **declare a suposição** e siga.
 
 ## Skills por tipo de tarefa (nomeie a skill em cada tarefa do plano)
@@ -95,7 +95,7 @@ Para cada incógnita grande, proponha um **spike** curto (timebox) antes de se c
 
 ## Definition of Done
 
-- [ ] Critérios de aceite atendidos e demonstrados (teste ou execução real); com design doc, **todo `CA-n` tem teste** na matriz de rastreabilidade.
+- [ ] Critérios de aceite atendidos e demonstrados (teste ou execução real); com design doc, **todo `CA-n` tem prova** (comando + asserção) na matriz, nenhum membro de conjunto sem critério e a **verificação da spec** do `code-reviewer` sem ❌ nem ⚠️.
 - [ ] Build e testes passam; resultado real informado.
 - [ ] Testes cobrem o caminho feliz **e** os bordas/erros relevantes.
 - [ ] Contrato de erro respeitado (4xx para o client, sem stack trace no body).
