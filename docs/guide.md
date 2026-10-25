@@ -10,7 +10,7 @@ Guia de referência do plugin `squads` para o Claude Code: instalação, configu
 
 O plugin leva para o Claude Code um padrão único de construção de APIs REST com **Java 25 e Spring Boot 4** — package layout, code style, segurança, testes, documentação e entrega — em duas camadas:
 
-- **Skills (89)** — o *como*. Cada skill documenta uma maneira específica de fazer algo: uma entity, uma migration, um teste de integração, um design doc, um pipeline. São a **fonte de verdade do padrão**: agents e o próprio Claude Code as carregam sob demanda, em vez de responder de memória.
+- **Skills (90)** — o *como*. Cada skill documenta uma maneira específica de fazer algo: uma entity, uma migration, um teste de integração, um design doc, um pipeline. São a **fonte de verdade do padrão**: agents e o próprio Claude Code as carregam sob demanda, em vez de responder de memória.
 - **Agents (7)** — o *quem*. Especialistas com papel, permissões e formato de entrega próprios: `product-manager`, `architect`, `tech-lead`, `developer`, `qa` e `code-reviewer`, coordenados pelo `orchestrator`. Cada agent carrega as skills da sua tarefa antes de agir.
 
 ```
@@ -73,7 +73,7 @@ Na pasta do projeto onde as skills vão ficar, rode:
 npx skills add edimilsonldutra/spring-boot-core --skill '*'
 ```
 
-O `'*'` instala **as 89 skills de uma vez** — e é o recomendado, porque as skills se referenciam umas às outras (a `design-docs` aponta para `prd-writing` e `threat-modeling`, por exemplo) e esses links só funcionam quando todas estão instaladas lado a lado. O CLI pergunta para quais ferramentas instalar.
+O `'*'` instala **as 90 skills de uma vez** — e é o recomendado, porque as skills se referenciam umas às outras (a `design-docs` aponta para `prd-writing` e `threat-modeling`, por exemplo) e esses links só funcionam quando todas estão instaladas lado a lado. O CLI pergunta para quais ferramentas instalar.
 
 | Quero… | Comando |
 |---|---|
@@ -301,7 +301,7 @@ Skills que os agents carregam e que também podem ser usadas diretamente (pedido
 
 **Ordem sugerida:** `messaging` → a skill do broker escolhido → `transactional-outbox` (sempre que o evento nascer de uma mudança no banco) → `observability` (lag, DLQ) → `kubernetes`/`aws-eks`.
 
-**AWS: serviços e integração com Spring Boot (12 skills)**
+**AWS: serviços e integração com Spring Boot (13 skills)**
 
 Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-sns-sqs` e `github-actions-aws` listadas acima.
 
@@ -321,8 +321,9 @@ Complementam as skills `aws-eks`, `aws-rds-secrets-manager`, `aws-s3-sqs`, `aws-
 | `aws-eventbridge` | `/squads:aws-eventbridge` | Barramento de eventos: regras, targets com DLQ, `PutEvents` seguro, Scheduler no lugar de `@Scheduled`, replay. | "Publique BookCreated no EventBridge e roteie para uma fila." |
 | `aws-observability` | `/squads:aws-observability` | Logs (retenção!), métricas (e o custo delas), traces com X-Ray/OpenTelemetry e alarmes acionáveis. | "Monte os alarmes essenciais da API na AWS." |
 | `aws-terraform` | `/squads:aws-terraform` | Infra como código: estado remoto, módulos por ambiente, IAM mínimo, plan/apply no CI com OIDC, scanners. | "Declare em Terraform o ECR, a fila e a tabela deste serviço." |
+| `aws-architecture-diagram` | `/squads:aws-architecture-diagram` | Diagrama de infraestrutura AWS no **draw.io** com os ícones e grupos oficiais (conta, região, VPC, AZ, subnets), gerado por script, exportado em PNG e **conferido visualmente** antes da entrega. Mermaid continua para fluxo e componentes. | "Desenhe a arquitetura AWS deste serviço no padrão draw.io." |
 
-**Ordem sugerida:** `aws-sdk-java` → `aws-terraform` → a plataforma (`aws-ecs-fargate` *ou* `aws-eks` *ou* `aws-lambda`) → dados (`aws-rds-secrets-manager`, `aws-dynamodb`/`aws-keyspaces`) → integração (`aws-s3-sqs`, `aws-sns-sqs`, `aws-eventbridge`, `aws-ses`, `aws-cognito`, `aws-parameter-store`) → `aws-observability` → `github-actions-aws`.
+**Ordem sugerida:** `aws-sdk-java` → `aws-terraform` → a plataforma (`aws-ecs-fargate` *ou* `aws-eks` *ou* `aws-lambda`) → dados (`aws-rds-secrets-manager`, `aws-dynamodb`/`aws-keyspaces`) → integração (`aws-s3-sqs`, `aws-sns-sqs`, `aws-eventbridge`, `aws-ses`, `aws-cognito`, `aws-parameter-store`) → `aws-observability` → `github-actions-aws`; para documentar, `aws-architecture-diagram`.
 
 **CI/CD e GitOps (3 skills)**
 
@@ -400,7 +401,7 @@ Complementam a skill `testing` (unit e slice). *Usadas por:* `qa` (o dono do tem
 | `refactoring` | `/squads:refactoring` | Refatoração segura: rede de segurança (characterization tests), passos pequenos e verdes, catálogo de smells → refatoração, Parallel Change/Strangler/expand → contract e como revisar o PR. | "Refatore o `LoanService` sem mudar o comportamento." |
 | `backlog-refinement` | `/squads:backlog-refinement` | Sessão de refinamento de backlog: preparação, roteiro de 60 min, DoR estendida (privacidade, NFRs, contrato, migration, rollout, métricas), Example Mapping, fatiamento, estimativa e card refinado. Também usada pelo agent `product-manager`. | "Refine estes 5 itens do topo do backlog." |
 
-**Total: 89 skills, todas neste plugin.** Na dúvida sobre qual usar, pergunte à skill `guide` — ela lê o que está realmente instalado e indica a skill certa para cada necessidade.
+**Total: 90 skills, todas neste plugin.** Na dúvida sobre qual usar, pergunte à skill `guide` — ela lê o que está realmente instalado e indica a skill certa para cada necessidade.
 
 ---
 
